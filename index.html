@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎀 Joyeux Anniversaire ! 🎀</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet" />
+    <!-- Fichier CSS externe -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- CŒURS FLOTTANTS EN ARRIÈRE-PLAN -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- CANVAS POUR LES CONFETTIS -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- CARTE PRINCIPALE -->
+    <div class="card" role="main" aria-label="Carte d'anniversaire">
+
+        <!-- Déco coeurs autour -->
+        <span class="card-hearts-deco" aria-hidden="true">🌸</span>
+        <span class="card-hearts-deco" aria-hidden="true">🌿</span>
+        <span class="card-hearts-deco" aria-hidden="true">💕</span>
+        <span class="card-hearts-deco" aria-hidden="true">🍀</span>
+
+        <!-- Badge -->
+        <div class="badge">✨ Spéciale ✨</div>
+
+        <!-- Titre -->
+        <h1>
+            <span class="heart-icon">💚</span>
+            Joyeux
+            <span class="highlight">Anniversaire</span>
+            <span class="heart-icon">💚</span>
+        </h1>
+        <div class="subtitle">🎂 à la plus merveilleuse des personnes 🎂</div>
+
+        <!-- Message principal -->
+        <div class="message-box">
+            <p>
+                🌷 Aujourd'hui, le monde est un peu plus beau<br />
+                parce que <strong>TOI</strong> tu existes 🌷
+            </p>
+            <div class="small-note">✨ clique sur le bouton pour lire ton message secret ✨</div>
+
+            <!-- Message caché (révélé au clic) -->
+            <div class="hidden-message" id="hiddenMessage">
+                <div class="msg-content">
+                    <span class="big-heart">💖</span><br />
+                    Tu es une personne tellement spéciale, lumineuse et unique.<br />
+                    Chaque jour qui passe, tu rends le monde plus doux, plus vert,<br />
+                    plus rempli de <strong>💚 coeurs 💚</strong>.<br /><br />
+                    Profite de cette journée comme tu le mérites :<br />
+                    avec <strong>amour</strong>, <strong>rires</strong> et tout ce qui te fait briller.<br /><br />
+                    <span style="font-size:1.6rem;">🎀 Bisous infiniment 🎀</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boutons interactifs -->
+        <div class="btn-group">
+            <button class="btn" id="revealBtn">💌 Lire le message secret</button>
+            <button class="btn btn-pink" id="confettiBtn">🎉 Lancer des confettis !</button>
+            <button class="btn btn-outline" id="heartBtn">💚 +1 cœur</button>
+        </div>
+
+        <!-- Compteur de cœurs -->
+        <div class="counter-area">
+            <span>💕 Cœurs reçus</span>
+            <span class="count" id="heartCount">0</span>
+            <span style="font-size:1.2rem;">💕</span>
+        </div>
+
+        <div style="margin-top:16px; font-size:0.85rem; color:#5f8a5f; opacity:0.7;">
+            🌱 clique partout pour faire apparaître des cœurs 🌱
+        </div>
+    </div>
+
+    <!-- Fichier JavaScript externe -->
+    <script src="script.js"></script>
+</body>
+</html>

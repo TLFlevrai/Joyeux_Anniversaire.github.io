@@ -1,0 +1,421 @@
+/* ===== RESET & BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Quicksand', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(145deg, #f2faf2 0%, #dcefe0 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="28" viewBox="0 0 24 28"><text y="20" font-size="22">💚</text></svg>') 12 12, auto;
+}
+
+/* ===== FONDS ANIMÉ : CŒURS QUI FLOTTENT ===== */
+.floating-hearts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.heart-float {
+    position: absolute;
+    font-size: 1.8rem;
+    animation: floatUp linear infinite;
+    opacity: 0.6;
+    user-select: none;
+    filter: drop-shadow(0 4px 8px rgba(120, 180, 120, 0.2));
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(100vh) rotate(0deg) scale(0.6);
+        opacity: 0.2;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    90% {
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-10vh) rotate(720deg) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* ===== CARTE PRINCIPALE ===== */
+.card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 620px;
+    background: rgba(255, 255, 255, 0.80);
+    backdrop-filter: blur(12px);
+    border-radius: 48px 48px 48px 48px;
+    padding: 40px 35px 45px;
+    box-shadow:
+        0 20px 60px rgba(90, 140, 90, 0.25),
+        0 8px 24px rgba(90, 140, 90, 0.10),
+        inset 0 1px 2px rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(180, 215, 180, 0.5);
+    text-align: center;
+    transition: transform 0.4s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.card:hover {
+    transform: scale(1.01);
+}
+
+/* ===== DÉCORS CŒURS AUTOUR DE LA CARTE ===== */
+.card-hearts-deco {
+    position: absolute;
+    font-size: 2.2rem;
+    opacity: 0.25;
+    pointer-events: none;
+    animation: gentlePulse 3s ease-in-out infinite alternate;
+}
+.card-hearts-deco:nth-child(1) {
+    top: -12px;
+    left: -10px;
+    transform: rotate(-12deg);
+    animation-delay: 0.2s;
+}
+.card-hearts-deco:nth-child(2) {
+    top: -10px;
+    right: -10px;
+    transform: rotate(12deg);
+    animation-delay: 0.8s;
+}
+.card-hearts-deco:nth-child(3) {
+    bottom: -10px;
+    left: -6px;
+    transform: rotate(8deg);
+    animation-delay: 1.4s;
+}
+.card-hearts-deco:nth-child(4) {
+    bottom: -10px;
+    right: -6px;
+    transform: rotate(-8deg);
+    animation-delay: 2.0s;
+}
+
+@keyframes gentlePulse {
+    0% {
+        transform: scale(1) rotate(-2deg);
+        opacity: 0.20;
+    }
+    100% {
+        transform: scale(1.15) rotate(2deg);
+        opacity: 0.45;
+    }
+}
+
+/* ===== BADGE ANNIVERSAIRE ===== */
+.badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ffb6c9, #ff8aa8);
+    padding: 8px 22px;
+    border-radius: 60px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(255, 130, 160, 0.35);
+    margin-bottom: 18px;
+}
+
+/* ===== TITRE ===== */
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #2a5a2a;
+    line-height: 1.1;
+    margin-bottom: 4px;
+    text-shadow: 0 2px 8px rgba(90, 160, 90, 0.15);
+}
+h1 .highlight {
+    background: linear-gradient(135deg, #ff8aa8, #ffb6c9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+h1 .heart-icon {
+    display: inline-block;
+    animation: heartBeat 1.6s ease-in-out infinite;
+}
+
+@keyframes heartBeat {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    14% {
+        transform: scale(1.25);
+    }
+    28% {
+        transform: scale(1);
+    }
+    42% {
+        transform: scale(1.2);
+    }
+    70% {
+        transform: scale(1);
+    }
+}
+
+.subtitle {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #4a7a4a;
+    background: rgba(160, 200, 160, 0.25);
+    padding: 6px 20px;
+    border-radius: 40px;
+    display: inline-block;
+    margin-top: 2px;
+    margin-bottom: 18px;
+    backdrop-filter: blur(4px);
+}
+
+/* ===== MESSAGE CACHÉ (révélation) ===== */
+.message-box {
+    background: rgba(230, 245, 230, 0.70);
+    border-radius: 28px;
+    padding: 28px 22px;
+    margin: 18px 0 22px;
+    border: 2px dashed #9bcb9e;
+    transition: all 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+.message-box::before {
+    content: '💌';
+    position: absolute;
+    top: -6px;
+    right: 12px;
+    font-size: 2.4rem;
+    opacity: 0.20;
+    transform: rotate(12deg);
+}
+.message-box p {
+    font-size: 1.2rem;
+    color: #1f3f1f;
+    line-height: 1.7;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.message-box .small-note {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #4f7a4f;
+    opacity: 0.8;
+}
+
+.hidden-message {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.8s cubic-bezier(.34, 1.56, .64, 1),
+        opacity 0.6s ease,
+        margin 0.4s ease;
+    margin-top: 0;
+}
+.hidden-message.open {
+    max-height: 500px;
+    opacity: 1;
+    margin-top: 18px;
+}
+.hidden-message .msg-content {
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    padding: 20px 18px;
+    border: 1px solid #c6e0c6;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #1d3a1d;
+}
+.hidden-message .msg-content .big-heart {
+    color: #ff6b8a;
+    font-size: 1.8rem;
+    display: inline-block;
+    animation: heartBeat 1.8s ease-in-out infinite;
+}
+
+/* ===== BOUTONS ===== */
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 22px 0 10px;
+}
+
+.btn {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 60px;
+    background: linear-gradient(135deg, #9ed0a2, #7bbf7e);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 18px rgba(100, 170, 100, 0.30);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 0.3px;
+    flex: 1 1 auto;
+    justify-content: center;
+    min-width: 140px;
+}
+.btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(100, 170, 100, 0.40);
+    background: linear-gradient(135deg, #a8d8ac, #82c986);
+}
+.btn:active {
+    transform: scale(0.96) translateY(0);
+}
+
+.btn-pink {
+    background: linear-gradient(135deg, #ffb0c6, #ff8aa8);
+    box-shadow: 0 6px 18px rgba(255, 130, 160, 0.30);
+}
+.btn-pink:hover {
+    background: linear-gradient(135deg, #ffbed2, #ff94b2);
+    box-shadow: 0 12px 28px rgba(255, 130, 160, 0.45);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2.5px solid #8fc992;
+    color: #2a5a2a;
+    box-shadow: none;
+}
+.btn-outline:hover {
+    background: #eaf5ea;
+    box-shadow: 0 6px 18px rgba(100, 170, 100, 0.15);
+    transform: translateY(-3px);
+}
+
+/* ===== COMPTEUR DE CŒURS ===== */
+.counter-area {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-weight: 600;
+    color: #2f5a2f;
+    background: rgba(200, 225, 200, 0.35);
+    padding: 12px 20px;
+    border-radius: 60px;
+    backdrop-filter: blur(4px);
+}
+.counter-area span {
+    font-size: 1.3rem;
+}
+.counter-area .count {
+    background: #fff;
+    padding: 2px 16px;
+    border-radius: 40px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #ff6b8a;
+    min-width: 50px;
+    display: inline-block;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== CONFETTI CANVAS ===== */
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 520px) {
+    .card {
+        padding: 28px 18px 32px;
+        border-radius: 32px;
+    }
+    h1 {
+        font-size: 2.2rem;
+    }
+    .subtitle {
+        font-size: 0.95rem;
+        padding: 4px 14px;
+    }
+    .message-box p {
+        font-size: 1rem;
+    }
+    .btn {
+        font-size: 0.9rem;
+        padding: 12px 18px;
+        min-width: 110px;
+    }
+    .counter-area {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+    .counter-area .count {
+        font-size: 1.3rem;
+        min-width: 40px;
+    }
+    .heart-float {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 400px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+    .card {
+        padding: 20px 14px 24px;
+    }
+    .btn-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .btn {
+        min-width: unset;
+    }
+}
+
+/* ===== SCROLLBAR STYLÉE ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #e2efe2;
+    border-radius: 12px;
+}
+::-webkit-scrollbar-thumb {
+    background: #9bcb9e;
+    border-radius: 12px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #7bbf7e;
+}
