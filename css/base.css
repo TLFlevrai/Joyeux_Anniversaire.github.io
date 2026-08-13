@@ -1,0 +1,31 @@
+/* ===== RESET & VARIABLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-green-light: #e2f0e2;
+    --color-green-mid: #9bcb9e;
+    --color-green-dark: #2a5a2a;
+    --color-pink-soft: #ffb6c9;
+    --color-pink-bright: #ff8aa8;
+    --color-lavender: #d9c9e6;
+    --color-peach: #fdd9b5;
+    --color-cream: #fff9f0;
+    --font-main: 'Quicksand', sans-serif;
+    --font-script: 'Dancing Script', cursive;
+}
+
+body {
+    font-family: var(--font-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="28" viewBox="0 0 24 28"><text y="20" font-size="22">🧸</text></svg>') 12 12, auto;
+}

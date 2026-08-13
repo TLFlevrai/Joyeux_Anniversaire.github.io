@@ -1,20 +1,20 @@
 // ============================================================
-//  1.  CŒURS FLOTTANTS EN ARRIÈRE-PLAN
+//  1.  FONDS FLOTTANT : CŒURS + NOUNOURS + HIBISCUS
 // ============================================================
-(function createFloatingHearts() {
-    const container = document.getElementById('floatingHearts');
-    const symbols = ['💚', '💕', '🌸', '🌿', '💗', '🍀', '✨', '🌷'];
-    const count = 24;
+(function createFloatingItems() {
+    const container = document.getElementById('floatingBg');
+    const symbols = ['💚', '💕', '🧸', '🌺', '💗', '🍀', '✨', '🌺', '💜'];
+    const count = 30;
 
     for (let i = 0; i < count; i++) {
         const el = document.createElement('span');
-        el.className = 'heart-float';
+        el.className = 'floating-item';
         el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
         el.style.left = Math.random() * 100 + '%';
-        el.style.fontSize = (1.2 + Math.random() * 2.2) + 'rem';
-        el.style.animationDuration = (12 + Math.random() * 20) + 's';
-        el.style.animationDelay = (Math.random() * 20) + 's';
-        el.style.opacity = 0.2 + Math.random() * 0.45;
+        el.style.fontSize = (1.4 + Math.random() * 2.6) + 'rem';
+        el.style.animationDuration = (14 + Math.random() * 24) + 's';
+        el.style.animationDelay = (Math.random() * 22) + 's';
+        el.style.opacity = 0.15 + Math.random() * 0.4;
         container.appendChild(el);
     }
 })();
@@ -42,7 +42,7 @@ revealBtn.addEventListener('click', function(e) {
 });
 
 // ============================================================
-//  3.  CONFETTIS (canvas + particules)
+//  3.  CONFETTIS (canvas)
 // ============================================================
 const canvas = document.getElementById('confetti-canvas');
 const ctx = canvas.getContext('2d');
@@ -63,7 +63,7 @@ class ConfettiParticle {
         this.y = y || Math.random() * H - H;
         this.w = 6 + Math.random() * 10;
         this.h = 4 + Math.random() * 8;
-        this.color = ['#ff8aa8', '#ffb6c9', '#9ed0a2', '#7bbf7e', '#ffd166', '#ff6b8a', '#a8d8ac'][Math.floor(Math.random() * 7)];
+        this.color = ['#ff8aa8', '#ffb6c9', '#9ed0a2', '#7bbf7e', '#ffd166', '#ff6b8a', '#a8d8ac', '#d9c9e6'][Math.floor(Math.random() * 8)];
         this.vx = (Math.random() - 0.5) * 6;
         this.vy = (Math.random() * 3 + 2);
         this.rotation = Math.random() * 360;
@@ -128,75 +128,72 @@ function animateConfetti() {
     }
 }
 
-// Bouton confettis
 document.getElementById('confettiBtn').addEventListener('click', function(e) {
     e.preventDefault();
     launchConfetti(100);
     for (let i = 0; i < 8; i++) {
-        setTimeout(() => spawnHeartAtCursor(e.clientX, e.clientY), i * 60);
+        setTimeout(() => spawnItemAtCursor(e.clientX, e.clientY, ['🧸', '💚', '💕', '🌺', '💗']), i * 60);
     }
 });
 
 // ============================================================
-//  4.  CŒURS AU CLIC (partout sur la page)
+//  4.  APPARTION D'ÉLÉMENTS AU CLIC (hibiscus inclus)
 // ============================================================
 const heartCountEl = document.getElementById('heartCount');
 let heartCount = 0;
 
-function spawnHeartAtCursor(x, y) {
-    const heart = document.createElement('span');
-    heart.textContent = ['💚', '💕', '💗', '🌸', '🌷'][Math.floor(Math.random() * 5)];
-    heart.style.position = 'fixed';
-    heart.style.left = (x - 16 + (Math.random() - 0.5) * 40) + 'px';
-    heart.style.top = (y - 16 + (Math.random() - 0.5) * 40) + 'px';
-    heart.style.fontSize = (1.6 + Math.random() * 2.2) + 'rem';
-    heart.style.pointerEvents = 'none';
-    heart.style.zIndex = '9998';
-    heart.style.transition = 'all 1.2s cubic-bezier(.34, 1.56, .64, 1)';
-    heart.style.opacity = '1';
-    heart.style.transform = 'scale(0.3) rotate(-20deg)';
-    document.body.appendChild(heart);
+function spawnItemAtCursor(x, y, items = ['💚', '💕', '💗', '🌺', '🧸']) {
+    const el = document.createElement('span');
+    el.textContent = items[Math.floor(Math.random() * items.length)];
+    el.style.position = 'fixed';
+    el.style.left = (x - 16 + (Math.random() - 0.5) * 40) + 'px';
+    el.style.top = (y - 16 + (Math.random() - 0.5) * 40) + 'px';
+    el.style.fontSize = (1.6 + Math.random() * 2.2) + 'rem';
+    el.style.pointerEvents = 'none';
+    el.style.zIndex = '9998';
+    el.style.transition = 'all 1.2s cubic-bezier(.34, 1.56, .64, 1)';
+    el.style.opacity = '1';
+    el.style.transform = 'scale(0.3) rotate(-20deg)';
+    document.body.appendChild(el);
 
     requestAnimationFrame(() => {
-        heart.style.transform = 'scale(1.4) rotate(10deg) translateY(-80px)';
-        heart.style.opacity = '0.8';
+        el.style.transform = 'scale(1.4) rotate(10deg) translateY(-80px)';
+        el.style.opacity = '0.8';
     });
 
     setTimeout(() => {
-        heart.style.transform = 'scale(0.6) rotate(30deg) translateY(-160px)';
-        heart.style.opacity = '0';
+        el.style.transform = 'scale(0.6) rotate(30deg) translateY(-160px)';
+        el.style.opacity = '0';
     }, 200);
 
     setTimeout(() => {
-        heart.remove();
+        el.remove();
     }, 1400);
 
-    heartCount += 1;
-    heartCountEl.textContent = heartCount;
-
-    heartCountEl.style.transform = 'scale(1.5)';
-    setTimeout(() => {
-        heartCountEl.style.transform = 'scale(1)';
-    }, 200);
+    // Incrémenter le compteur seulement si c'est un cœur
+    if (['💚', '💕', '💗'].includes(el.textContent)) {
+        heartCount += 1;
+        heartCountEl.textContent = heartCount;
+        heartCountEl.style.transform = 'scale(1.5)';
+        setTimeout(() => { heartCountEl.style.transform = 'scale(1)'; }, 200);
+    }
 }
 
-// Clic sur la page (sauf sur les boutons et la carte)
+// Clic sur la page (sauf boutons et carte)
 document.addEventListener('click', function(e) {
     if (e.target.closest('.btn') || e.target.closest('.card')) return;
-    spawnHeartAtCursor(e.clientX, e.clientY);
-    if (Math.random() < 0.15) {
-        launchConfetti(12);
-    }
+    spawnItemAtCursor(e.clientX, e.clientY);
+    if (Math.random() < 0.15) launchConfetti(12);
 });
 
-// Clic sur la carte (mais pas sur les boutons)
+// Clic sur la carte (hors boutons)
 document.querySelector('.card').addEventListener('click', function(e) {
     if (e.target.closest('.btn')) return;
-    spawnHeartAtCursor(e.clientX, e.clientY);
+    spawnItemAtCursor(e.clientX, e.clientY);
 });
 
 // ============================================================
-//  5.  BOUTON " +1 CŒUR "
+//  5.  BOUTON "+1 cœur"
 // ============================================================
 document.getElementById('heartBtn').addEventListener('click', function(e) {
     e.preventDefault();
@@ -208,7 +205,7 @@ document.getElementById('heartBtn').addEventListener('click', function(e) {
         const dist = 40 + Math.random() * 60;
         const x = cx + Math.cos(angle) * dist;
         const y = cy + Math.sin(angle) * dist - 20;
-        spawnHeartAtCursor(x, y);
+        spawnItemAtCursor(x, y, ['💚', '💕', '💗']);
     }
     launchConfetti(25);
     this.style.transform = 'scale(0.92)';
@@ -216,7 +213,7 @@ document.getElementById('heartBtn').addEventListener('click', function(e) {
 });
 
 // ============================================================
-//  6.  CONFETTIS AU CHARGEMENT (bonus)
+//  6.  CONFETTIS AU CHARGEMENT
 // ============================================================
 window.addEventListener('load', function() {
     setTimeout(() => launchConfetti(55), 400);
@@ -224,10 +221,10 @@ window.addEventListener('load', function() {
 });
 
 // ============================================================
-//  7.  TOOLTIPS ARIA (accessibilité)
+//  7.  ACCESSIBILITÉ
 // ============================================================
 document.querySelectorAll('.btn').forEach(btn => {
     btn.setAttribute('aria-label', btn.textContent.trim());
 });
 
-console.log('🌸 Joyeux anniversaire ! Plein de 💚 pour toi ! 🌸');
+console.log('🌺 Joyeux anniversaire ! Plein de 💚, de 🧸 et d\'🌺 ! 🌺');

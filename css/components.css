@@ -1,0 +1,194 @@
+/* ===== BADGE ===== */
+.badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--color-pink-soft), var(--color-pink-bright));
+    padding: 8px 28px;
+    border-radius: 60px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 16px rgba(255, 130, 160, 0.35);
+    margin-bottom: 20px;
+}
+
+/* ===== TITRE ===== */
+h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: var(--color-green-dark);
+    line-height: 1.1;
+    margin-bottom: 6px;
+}
+h1 .highlight {
+    background: linear-gradient(135deg, var(--color-pink-bright), var(--color-pink-soft), var(--color-lavender));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+h1 .heart-icon {
+    display: inline-block;
+    animation: heartBeat 1.6s ease-in-out infinite;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #4a7a4a;
+    background: rgba(160, 200, 160, 0.25);
+    padding: 6px 24px;
+    border-radius: 40px;
+    display: inline-block;
+    margin: 4px 0 20px;
+    backdrop-filter: blur(4px);
+}
+
+/* ===== MESSAGE ===== */
+.message-box {
+    background: rgba(230, 245, 230, 0.60);
+    border-radius: 32px;
+    padding: 30px 24px;
+    margin: 18px 0 22px;
+    border: 2px dashed var(--color-green-mid);
+    position: relative;
+    overflow: hidden;
+}
+.message-box::before {
+    content: '🧸';
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    font-size: 3rem;
+    opacity: 0.15;
+    transform: rotate(12deg);
+}
+.message-box p {
+    font-size: 1.25rem;
+    color: #1f3f1f;
+    line-height: 1.7;
+    font-weight: 600;
+}
+.message-box .small-note {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #4f7a4f;
+    opacity: 0.8;
+}
+
+.hidden-message {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.8s cubic-bezier(.34, 1.56, .64, 1),
+                opacity 0.6s ease,
+                margin 0.4s ease;
+    margin-top: 0;
+}
+.hidden-message.open {
+    max-height: 600px;
+    opacity: 1;
+    margin-top: 20px;
+}
+.hidden-message .msg-content {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 24px;
+    padding: 24px 20px;
+    border: 1px solid #c6e0c6;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #1d3a1d;
+}
+.hidden-message .msg-content .big-heart {
+    font-size: 2.2rem;
+    display: inline-block;
+    animation: heartBeat 1.8s ease-in-out infinite;
+}
+
+/* ===== BOUTONS ===== */
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin: 24px 0 12px;
+}
+
+.btn {
+    font-family: var(--font-main);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 60px;
+    background: linear-gradient(135deg, #9ed0a2, #7bbf7e);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(100, 170, 100, 0.30);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1 1 auto;
+    justify-content: center;
+    min-width: 150px;
+}
+.btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(100, 170, 100, 0.40);
+    background: linear-gradient(135deg, #a8d8ac, #82c986);
+}
+.btn:active {
+    transform: scale(0.96) translateY(0);
+}
+
+.btn-pink {
+    background: linear-gradient(135deg, #ffb0c6, #ff8aa8);
+    box-shadow: 0 6px 20px rgba(255, 130, 160, 0.30);
+}
+.btn-pink:hover {
+    background: linear-gradient(135deg, #ffbed2, #ff94b2);
+    box-shadow: 0 12px 32px rgba(255, 130, 160, 0.45);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2.5px solid #8fc992;
+    color: var(--color-green-dark);
+    box-shadow: none;
+}
+.btn-outline:hover {
+    background: #eaf5ea;
+    box-shadow: 0 6px 18px rgba(100, 170, 100, 0.15);
+    transform: translateY(-4px);
+}
+
+/* ===== COMPTEUR ===== */
+.counter-area {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-weight: 600;
+    color: #2f5a2f;
+    background: rgba(200, 225, 200, 0.35);
+    padding: 12px 24px;
+    border-radius: 60px;
+    backdrop-filter: blur(4px);
+}
+.counter-area span {
+    font-size: 1.3rem;
+}
+.counter-area .count {
+    background: #fff;
+    padding: 2px 18px;
+    border-radius: 40px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-pink-bright);
+    min-width: 55px;
+    display: inline-block;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+}

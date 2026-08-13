@@ -1,0 +1,49 @@
+/* ===== THÈME PRINCIPAL ===== */
+body {
+    background: linear-gradient(145deg, #f2faf2 0%, #dcefe0 50%, #f5e6f0 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease-in-out infinite alternate;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ===== SURCOUCHE DE FOND AVEC VAGUES ===== */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 182, 201, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(155, 203, 158, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 40% 40%, rgba(217, 201, 230, 0.10) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ===== CARTE : GLASSMORPHISM RENFORCÉ ===== */
+.card {
+    background: rgba(255, 255, 255, 0.70);
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 30px 80px rgba(90, 140, 90, 0.18),
+        0 10px 30px rgba(90, 140, 90, 0.06),
+        inset 0 1px 4px rgba(255, 255, 255, 0.9);
+}
+
+/* ===== DÉCOS EN COULEURS ===== */
+.deco {
+    color: var(--color-pink-soft);
+    text-shadow: 0 2px 10px rgba(255, 130, 160, 0.2);
+}
+.deco--bear { color: #c4a882; }
+.deco--balloon { color: #ffb347; }
+.deco--star { color: #f7e05e; }
+.deco--ribbon { color: var(--color-pink-bright); }

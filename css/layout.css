@@ -1,0 +1,67 @@
+/* ===== FONDS ANIMÉ (coeurs + nounours) ===== */
+.floating-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.floating-item {
+    position: absolute;
+    font-size: 2rem;
+    animation: floatUp linear infinite;
+    opacity: 0.3;
+    user-select: none;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.05));
+}
+
+/* ===== CARTE PRINCIPALE ===== */
+.card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 680px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px);
+    border-radius: 56px;
+    padding: 40px 35px 45px;
+    box-shadow:
+        0 30px 80px rgba(90, 140, 90, 0.20),
+        0 10px 30px rgba(90, 140, 90, 0.08),
+        inset 0 1px 2px rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    text-align: center;
+    transition: transform 0.4s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.card:hover {
+    transform: scale(1.01);
+}
+
+/* ===== DÉCORS AUTOUR ===== */
+.deco {
+    position: absolute;
+    font-size: 2.4rem;
+    opacity: 0.3;
+    pointer-events: none;
+    animation: gentlePulse 4s ease-in-out infinite alternate;
+}
+.deco--bear { top: -20px; left: -20px; animation-delay: 0s; }
+.deco--balloon { top: -15px; right: -15px; animation-delay: 0.8s; }
+.deco--star { bottom: -15px; left: -10px; animation-delay: 1.6s; }
+.deco--ribbon { bottom: -20px; right: -10px; animation-delay: 2.4s; }
+
+/* ===== CANVAS CONFETTIS ===== */
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
