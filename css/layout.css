@@ -39,8 +39,9 @@
 .deco {
     position: absolute;
     font-size: 2.6rem;
-    opacity: 0.5;
+    opacity: 0.55;
     pointer-events: none;
+    filter: drop-shadow(0 6px 16px rgba(80, 130, 90, 0.14));
     animation: gentlePulse 4.5s ease-in-out infinite alternate;
 }
 .deco--bear { top: -20px; left: -20px; animation-delay: 0s; }

@@ -34,7 +34,8 @@
     background:
         radial-gradient(circle at 50% 50%, rgba(255, 182, 201, 0.14) 0%, transparent 55%),
         radial-gradient(circle at 50% 50%, rgba(155, 203, 158, 0.16) 0%, transparent 70%),
-        radial-gradient(circle at 50% 50%, rgba(110, 180, 125, 0.10) 0%, transparent 80%);
+        radial-gradient(circle at 50% 50%, rgba(110, 180, 125, 0.10) 0%, transparent 80%),
+        radial-gradient(circle at 50% 50%, rgba(217, 201, 230, 0.10) 0%, transparent 85%);
     pointer-events: none;
     z-index: 1;
     animation: glowPulse 9s ease-in-out infinite alternate;
@@ -100,11 +101,25 @@
 }
 
 .lock-subtitle {
+    position: relative;
     font-size: 0.98rem;
     font-weight: 500;
     letter-spacing: 0.3px;
     color: #4a6f52;
     margin-bottom: 32px;
+    padding-bottom: 14px;
+}
+/* Filet dégradé discret sous le sous-titre */
+.lock-subtitle::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 138, 168, 0.55), rgba(123, 191, 126, 0.55), transparent);
 }
 
 /* ===== COMPTE À REBOURS ===== */
@@ -130,6 +145,18 @@
     perspective: 600px;
     animation: tileIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
+/* Reflet de verre sur le haut de chaque tuile */
+.countdown-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 14%;
+    right: 14%;
+    height: 2px;
+    border-radius: 0 0 3px 3px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
+    pointer-events: none;
+}
 .countdown-item:nth-of-type(1) { animation-delay: 0.05s; }
 .countdown-item:nth-of-type(2) { animation-delay: 0.15s; }
 .countdown-item:nth-of-type(3) { animation-delay: 0.25s; }
@@ -146,7 +173,7 @@
     inset: 0;
     border-radius: inherit;
     padding: 2px;
-    background: linear-gradient(90deg, rgba(255, 138, 168, 0.85), rgba(123, 191, 126, 0.85));
+    background: linear-gradient(120deg, rgba(255, 138, 168, 0.85), rgba(123, 191, 126, 0.85));
     clip-path: inset(0 0 0 0);
     transition: clip-path 0.95s linear;
     pointer-events: none;
@@ -231,6 +258,7 @@
     font-size: 1.4rem;
     letter-spacing: 10px;
     opacity: 0.45;
+    filter: drop-shadow(0 3px 10px rgba(80, 130, 90, 0.14));
 }
 
 /* ===== MOT DU MOMENT : message aléatoire cliquable sous les emojis ===== */

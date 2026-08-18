@@ -39,3 +39,15 @@
     0%   { transform: scale(0.85); opacity: 0.9; }
     100% { transform: scale(1.6); opacity: 0; }
 }
+
+/* ===== VOILE LUMINEUX SUR LA CARTE (balayage lent) ===== */
+@keyframes cardSheen {
+    0%       { transform: translateX(-130%) skewX(-15deg); }
+    55%, 100% { transform: translateX(230%) skewX(-15deg); }
+}
+
+/* ===== REFLET BALAYANT LE BADGE ===== */
+@keyframes badgeShine {
+    0%        { left: -60%; }
+    55%, 100% { left: 140%; }
+}
