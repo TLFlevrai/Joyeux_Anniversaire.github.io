@@ -1,27 +1,28 @@
-/* ===== FLOAT (coeurs / nounours) ===== */
+/* ===== FLOAT (cœurs / nounours) — boucle toujours visible ===== */
 @keyframes floatUp {
-    0% {
-        transform: translateY(100vh) rotate(0deg) scale(0.4);
-        opacity: 0.1;
-    }
-    10% { opacity: 0.5; }
-    90% { opacity: 0.5; }
-    100% {
-        transform: translateY(-10vh) rotate(720deg) scale(1.2);
-        opacity: 0;
-    }
+    0%   { transform: translate3d(0, 105vh, 0) rotate(0deg); }
+    20%  { transform: translate3d(4vw, 80vh, 0) rotate(80deg); }
+    50%  { transform: translate3d(-4vw, 45vh, 0) rotate(220deg); }
+    80%  { transform: translate3d(3vw, 15vh, 0) rotate(380deg); }
+    100% { transform: translate3d(0, -8vh, 0) rotate(520deg); }
+}
+
+/* ===== BULBES DE FOND (déplacement léger, GPU) ===== */
+@keyframes blobDrift {
+    0%   { transform: translate3d(-2%, -2%, 0) scale(1); }
+    100% { transform: translate3d(3%, 3%, 0) scale(1.15); }
+}
+
+/* ===== ENTRÉE DE LA CARTE ===== */
+@keyframes cardFloatIn {
+    0%   { opacity: 0; transform: translateY(34px) scale(0.97); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ===== PULSATION DOUCE (décos) ===== */
 @keyframes gentlePulse {
-    0% {
-        transform: scale(1) rotate(-2deg);
-        opacity: 0.25;
-    }
-    100% {
-        transform: scale(1.15) rotate(2deg);
-        opacity: 0.55;
-    }
+    0%   { transform: scale(1) rotate(-2deg); opacity: 0.3; }
+    100% { transform: scale(1.15) rotate(2deg); opacity: 0.65; }
 }
 
 /* ===== BATTEMENT DE CŒUR ===== */
@@ -31,4 +32,10 @@
     28% { transform: scale(1); }
     42% { transform: scale(1.2); }
     70% { transform: scale(1); }
+}
+
+/* ===== ANNEAU PULSANT (bouton musique en lecture) ===== */
+@keyframes pulseRing {
+    0%   { transform: scale(0.85); opacity: 0.9; }
+    100% { transform: scale(1.6); opacity: 0; }
 }

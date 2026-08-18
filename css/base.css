@@ -18,6 +18,10 @@
     --font-script: 'Dancing Script', cursive;
 }
 
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
 body {
     font-family: var(--font-main);
     min-height: 100vh;
@@ -27,5 +31,21 @@ body {
     padding: 20px;
     position: relative;
     overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="28" viewBox="0 0 24 28"><text y="20" font-size="22">🧸</text></svg>') 12 12, auto;
+}
+
+::selection {
+    background: rgba(255, 182, 201, 0.4);
+    color: #2a3d2a;
+}
+
+/* ===== ACCESSIBILITÉ : réduction des animations ===== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

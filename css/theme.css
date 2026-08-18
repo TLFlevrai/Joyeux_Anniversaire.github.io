@@ -1,49 +1,55 @@
 /* ===== THÈME PRINCIPAL ===== */
 body {
-    background: linear-gradient(145deg, #f2faf2 0%, #dcefe0 50%, #f5e6f0 100%);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease-in-out infinite alternate;
+    background:
+        radial-gradient(1100px 750px at 85% -10%, rgba(255, 182, 201, 0.30) 0%, transparent 60%),
+        radial-gradient(950px 700px at -10% 15%, rgba(155, 203, 158, 0.28) 0%, transparent 55%),
+        radial-gradient(900px 750px at 55% 115%, rgba(217, 201, 230, 0.28) 0%, transparent 60%),
+        linear-gradient(160deg, #f7fcf7 0%, #e2f1e6 45%, #f8eaf3 100%);
+    background-attachment: fixed;
 }
 
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* ===== SURCOUCHE DE FOND AVEC VAGUES ===== */
+/* ===== BULBES ANIMÉS (léger, compositor only) ===== */
 body::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(255, 182, 201, 0.15) 0%, transparent 60%),
-        radial-gradient(circle at 80% 20%, rgba(155, 203, 158, 0.15) 0%, transparent 60%),
-        radial-gradient(circle at 40% 40%, rgba(217, 201, 230, 0.10) 0%, transparent 50%);
-    pointer-events: none;
+    inset: -25%;
     z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 30% 35%, rgba(255, 182, 201, 0.20) 0%, transparent 42%),
+        radial-gradient(circle at 72% 62%, rgba(155, 203, 158, 0.20) 0%, transparent 45%);
+    animation: blobDrift 28s ease-in-out infinite alternate;
 }
 
-/* ===== CARTE : GLASSMORPHISM RENFORCÉ ===== */
+/* ===== VIGNETTE DOUCE ===== */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(80, 120, 90, 0.07) 100%);
+}
+
+/* ===== CARTE : GLASSMORPHISM ===== */
 .card {
-    background: rgba(255, 255, 255, 0.70);
-    backdrop-filter: blur(20px);
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 
-        0 30px 80px rgba(90, 140, 90, 0.18),
-        0 10px 30px rgba(90, 140, 90, 0.06),
-        inset 0 1px 4px rgba(255, 255, 255, 0.9);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.80) 100%);
+    backdrop-filter: blur(18px) saturate(1.15);
+    -webkit-backdrop-filter: blur(18px) saturate(1.15);
+    border: 1.5px solid rgba(255, 255, 255, 0.75);
+    box-shadow:
+        0 40px 90px rgba(80, 130, 90, 0.18),
+        0 12px 30px rgba(80, 130, 90, 0.08),
+        inset 0 1px 2px rgba(255, 255, 255, 0.95),
+        inset 0 -40px 80px rgba(255, 182, 201, 0.07);
 }
 
 /* ===== DÉCOS EN COULEURS ===== */
 .deco {
     color: var(--color-pink-soft);
-    text-shadow: 0 2px 10px rgba(255, 130, 160, 0.2);
+    text-shadow: 0 4px 14px rgba(255, 130, 160, 0.25);
 }
-.deco--bear { color: #c4a882; }
-.deco--balloon { color: #ffb347; }
-.deco--star { color: #f7e05e; }
-.deco--ribbon { color: var(--color-pink-bright); }
+.deco--bear { color: #c4a882; text-shadow: 0 4px 14px rgba(196, 168, 130, 0.30); }
+.deco--balloon { color: #ffb347; text-shadow: 0 4px 14px rgba(255, 179, 71, 0.30); }
+.deco--star { color: #f7e05e; text-shadow: 0 4px 14px rgba(247, 224, 94, 0.35); }
+.deco--ribbon { color: var(--color-pink-bright); text-shadow: 0 4px 14px rgba(255, 138, 168, 0.30); }
