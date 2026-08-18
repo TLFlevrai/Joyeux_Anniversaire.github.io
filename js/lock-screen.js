@@ -181,7 +181,16 @@ LV.lockScreen = {
             { emoji: '🕯️', text: "Savais-tu ? Les bougies sur les gâteaux viennent des Grecs, qui pensaient qu'elles portaient les vœux jusqu'aux dieux." },
             { emoji: '🎹', text: 'Le pianiste attend le 28 août pour jouer "Joyeux anniversaire". Il répète encore. Il revient le 28 août à 00:00:01.' },
             { emoji: '🌺', text: "Savais-tu ? Chaque fleur d'hibiscus ne vit qu'un jour : elle s'ouvre le matin et se fane le soir… mais une nouvelle repousse dès le lendemain." },
-            { emoji: '🌺', text: 'Savais-tu ? Il existe plus de 200 espèces d\'hibiscus dans le monde… mais aucune n\'est assez belle pour toi.' }
+            { emoji: '🌺', text: 'Savais-tu ? Il existe plus de 200 espèces d\'hibiscus dans le monde… mais aucune n\'est assez belle pour toi.' },
+            { emoji: '🌺', text: 'Savais-tu ? Il existe plus de 200 espèces d\'hibiscus dans le monde…' },
+            { emoji: '🎹', text: 'Savais-tu ? Le piano possède 88 touches : 52 blanches et 36 noires.' },
+            { emoji: '🎵', text: 'Savais-tu ? Le mot "musique" vient du grec "mousikē", l\'art des Muses.' },
+            { emoji: '📅', text: 'Savais-tu ? Le 28 août est la 240ᵉ journée de l\'année — un chiffre qui se lit "2-4-0", comme "2 fois 120", soit 240 raisons de fêter ton anniversaire.' },
+            { emoji: '🎹', text: 'La playlist d\'anniversaire est en préparation. Le piano a demandé à être prévenu avant de jouer.' },
+            { emoji: '⏳', text: 'Chaque seconde passée est une seconde de moins avant le 28 août. Le compte à rebours est officiellement lancé. Enfin, presque.' },
+            { emoji: '🕯️', text: 'Même les bougies savent quelle date approche.' },
+            { emoji: '🌌', text: 'Tous les éléments composant l\'univers, les galaxies, les amas de poussière, les astres, s\'éloignent les uns des autres inexorablement... un peu comme nous.' },
+            { emoji: '⭐', text: 'Et quand deux étoiles sont trop proches et que l\'une d\'entre elles explose, il arrive qu\'elle condamne l\'autre étoile à errer sans trajectoire dans l\'univers. On les appelle les étoiles vagabondes.' }
         ];
         let currentPick = LOCK_MESSAGES[Math.floor(Math.random() * LOCK_MESSAGES.length)];
         lockMessage.textContent = currentPick.emoji + '  ' + currentPick.text;
