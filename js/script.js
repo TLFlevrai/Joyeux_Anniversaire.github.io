@@ -302,6 +302,7 @@ function spawnItemAtCursor(x, y, items = ['💚', '💕', '💗', '🌺', '🧸'
 
 // Clic sur la page (sauf boutons, carte, et bouton musique)
 document.addEventListener('click', function(e) {
+    if (window.__pageLocked) return;
     if (e.target.closest('.btn') || e.target.closest('.card') || e.target.closest('.music-btn')) return;
     console.log('Page clicked at:', e.clientX, e.clientY);
     spawnItemAtCursor(e.clientX, e.clientY);
@@ -310,6 +311,7 @@ document.addEventListener('click', function(e) {
 
 // Clic sur la carte (hors boutons)
 document.querySelector('.card').addEventListener('click', function(e) {
+    if (window.__pageLocked) return;
     if (e.target.closest('.btn')) return;
     console.log('Card clicked at:', e.clientX, e.clientY);
     spawnItemAtCursor(e.clientX, e.clientY);
@@ -378,6 +380,7 @@ function spawnVisualOnly(x, y, items = ['💚', '💕', '💗']) {
 //  6.  CONFETTIS AU CHARGEMENT
 // ============================================================
 window.addEventListener('load', function() {
+    if (window.__pageLocked) return;
     setTimeout(() => launchConfetti(55), 400);
     setTimeout(() => launchConfetti(40), 900);
 });
@@ -390,7 +393,93 @@ document.querySelectorAll('.btn').forEach(btn => {
 });
 
 // ============================================================
-//  8.  LECTEUR DE MUSIQUE
+//  8.  ÉCRAN DE VERROUILLAGE : COMPTE À REBOURS
+//      Déblocage automatique le 28 août à 00:00:01
+//      Raccourci secret : Ctrl+G pour débloquer immédiatement
+// ============================================================
+window.__pageLocked = true;
+
+(function initLockScreen() {
+    const lockScreen = document.getElementById('lockScreen');
+    const cdDays = document.getElementById('cdDays');
+    const cdHours = document.getElementById('cdHours');
+    const cdMinutes = document.getElementById('cdMinutes');
+    const cdSeconds = document.getElementById('cdSeconds');
+
+    // Fin du compte à rebours : 28 août à 00:00:01
+    const UNLOCK_DATE = new Date(2026, 7, 28, 0, 0, 1);
+    let unlocked = false;
+
+    function pad(n) {
+        return String(n).padStart(2, '0');
+    }
+
+    function updateCountdown() {
+        const diff = Math.max(0, UNLOCK_DATE - Date.now());
+        const totalSeconds = Math.floor(diff / 1000);
+        cdDays.textContent = Math.floor(totalSeconds / 86400);
+        cdHours.textContent = pad(Math.floor((totalSeconds % 86400) / 3600));
+        cdMinutes.textContent = pad(Math.floor((totalSeconds % 3600) / 60));
+        cdSeconds.textContent = pad(totalSeconds % 60);
+
+        if (diff === 0 && !unlocked) unlockPage();
+    }
+
+    function unlockPage() {
+        if (unlocked) return;
+        unlocked = true;
+        window.__pageLocked = false;
+        document.body.style.overflow = '';
+
+        // Reprendre les animations du fond
+        document.querySelectorAll('.floating-item').forEach(el => {
+            el.style.animationPlayState = '';
+        });
+
+        lockScreen.classList.add('lock-screen--hidden');
+        lockScreen.setAttribute('aria-hidden', 'true');
+        setTimeout(() => {
+            lockScreen.style.display = 'none';
+            if (window.__startMusic) window.__startMusic();
+        }, 900);
+
+        // Petite pluie de célébration à l'ouverture
+        launchConfetti(120);
+        setTimeout(() => launchConfetti(80), 350);
+        const vw = window.innerWidth / 2;
+        const vh = window.innerHeight / 2;
+        for (let i = 0; i < 10; i++) {
+            setTimeout(() => {
+                spawnVisualOnly(
+                    vw + (Math.random() - 0.5) * 320,
+                    vh + (Math.random() - 0.5) * 320,
+                    ['💚', '💕', '💗', '🌺', '🧸']
+                );
+            }, i * 90);
+        }
+    }
+
+    // Raccourci secret : Ctrl+G débloque immédiatement
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'g' || e.key === 'G')) {
+            e.preventDefault();
+            unlockPage();
+        }
+    });
+
+    // Bloquer le scroll tant que le site est verrouillé
+    document.body.style.overflow = 'hidden';
+    // Pause des animations du fond derrière l'écran (perf)
+    document.querySelectorAll('.floating-item').forEach(el => {
+        el.style.animationPlayState = 'paused';
+    });
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+})();
+
+// ============================================================
+//  9.  LECTEUR DE MUSIQUE
 // ============================================================
 (function initMusicPlayer() {
     const audio = document.getElementById('bgMusic');
@@ -399,6 +488,7 @@ document.querySelectorAll('.btn').forEach(btn => {
     let hasUserInteracted = false;
 
     function tryAutoPlay() {
+        if (window.__pageLocked) return;
         const playPromise = audio.play();
         if (playPromise !== undefined) {
             playPromise.then(() => {
@@ -451,11 +541,19 @@ document.querySelectorAll('.btn').forEach(btn => {
         toggleMusic();
     });
 
+    // Démarre la musique au déblocage du site (appelé par l'écran de verrouillage)
+    window.__startMusic = function() {
+        if (!isPlaying && !window.__pageLocked) {
+            tryAutoPlay();
+        }
+    };
+
     // Attendre que l'audio soit prêt
     audio.addEventListener('canplaythrough', tryAutoPlay, { once: true });
     
     // Fallback: tenter au premier clic utilisateur n'importe où
     function handleFirstInteraction() {
+        if (window.__pageLocked) return;
         if (!hasUserInteracted) {
             hasUserInteracted = true;
             if (!isPlaying) {
@@ -466,7 +564,7 @@ document.querySelectorAll('.btn').forEach(btn => {
     
     // Écouter plusieurs types d'interactions pour maximiser les chances
     ['click', 'keydown', 'touchstart'].forEach(evt => {
-        document.addEventListener(evt, handleFirstInteraction, { once: true, passive: true });
+        document.addEventListener(evt, handleFirstInteraction, { passive: true });
     });
 
     // Log erreurs audio
