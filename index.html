@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🎀 Joyeux Anniversaire ! 🎀</title>
+    <title>Joyeux Anniversaire</title>
     <!-- Google Fonts (douce + script) -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
     <!-- CSS modulaire -->
@@ -59,6 +59,10 @@
                 </div>
             </div>
             <div class="lock-note" id="lockNote" aria-hidden="true">🎵 🧸 🎹</div>
+            <div class="lock-message-zone" id="lockMessageZone" aria-hidden="true">
+                <p class="lock-message-label">Le mot du moment :</p>
+                <p class="lock-message" id="lockMessage"></p>
+            </div>
         </div>
     </div>
 
@@ -157,9 +161,17 @@
         </div>
     </div>
 
-    <!-- Fichiers JavaScript -->
-    <script src="js/script.js"></script>
-    <!-- Nouveau : JS pour le collage photo -->
+    <!-- Fichiers JavaScript (modules : chaque fichier a un rôle) -->
+    <script src="js/title.js"></script>
+    <script src="js/debug.js"></script>
+    <script src="js/floating-bg.js"></script>
+    <script src="js/confetti.js"></script>
+    <script src="js/reveal.js"></script>
+    <script src="js/hearts.js"></script>
+    <script src="js/lock-screen.js"></script>
+    <script src="js/music.js"></script>
+    <script src="js/main.js"></script>
+    <!-- JS pour le collage photo -->
     <script src="js/collage.js"></script>
 </body>
 </html>

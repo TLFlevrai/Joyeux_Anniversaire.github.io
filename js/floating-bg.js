@@ -1,0 +1,25 @@
+// ============================================================
+//  FONDS FLOTTANT : CŒURS + NOUNOURS + HIBISCUS
+// ============================================================
+window.LV = window.LV || {};
+
+LV.floatingBg = {
+    init: function() {
+        const container = document.getElementById('floatingBg');
+        const symbols = ['💚', '💕', '🧸', '🌺', '💗', '🍀', '✨', '🎵', '🎶', '🎹', '🎼', '💜'];
+        const count = 26;
+
+        for (let i = 0; i < count; i++) {
+            const el = document.createElement('span');
+            el.className = 'floating-item';
+            el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            el.style.left = Math.random() * 100 + '%';
+            el.style.top = Math.random() * 100 + '%';
+            el.style.fontSize = (1.4 + Math.random() * 2.2) + 'rem';
+            el.style.animationDuration = (16 + Math.random() * 18) + 's';
+            el.style.animationDelay = (-Math.random() * 30) + 's';
+            el.style.opacity = 0.35 + Math.random() * 0.3;
+            container.appendChild(el);
+        }
+    }
+};
