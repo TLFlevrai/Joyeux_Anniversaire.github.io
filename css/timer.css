@@ -9,10 +9,10 @@
     padding: 20px;
     overflow: hidden;
     background:
-        radial-gradient(1100px 750px at 85% -10%, rgba(255, 182, 201, 0.35) 0%, transparent 60%),
-        radial-gradient(950px 700px at -10% 15%, rgba(155, 203, 158, 0.30) 0%, transparent 55%),
-        radial-gradient(900px 750px at 55% 115%, rgba(217, 201, 230, 0.30) 0%, transparent 60%),
-        linear-gradient(160deg, #f7fcf7 0%, #e2f1e6 45%, #f8eaf3 100%);
+        radial-gradient(1100px 750px at 85% -10%, rgba(255, 182, 201, 0.25) 0%, transparent 60%),
+        radial-gradient(950px 700px at -10% 15%, rgba(155, 203, 158, 0.22) 0%, transparent 55%),
+        radial-gradient(900px 750px at 55% 115%, rgba(217, 201, 230, 0.22) 0%, transparent 60%),
+        linear-gradient(160deg, #f7fcf7 0%, #e6f3e9 45%, #f8ecf4 100%);
     transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 .lock-screen--hidden {
@@ -21,48 +21,87 @@
     pointer-events: none;
 }
 
+/* ===== HALO LUMINEUX DERRIÈRE LE COMPTEUR ===== */
+.lock-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 900px;
+    height: 900px;
+    transform: translate(-50%, -50%);
+    background:
+        radial-gradient(circle at 50% 50%, rgba(255, 182, 201, 0.16) 0%, transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(155, 203, 158, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    animation: glowPulse 9s ease-in-out infinite alternate;
+}
+@keyframes glowPulse {
+    0%   { transform: translate(-50%, -50%) scale(0.96); opacity: 0.6; }
+    100% { transform: translate(-50%, -50%) scale(1.04); opacity: 1; }
+}
+
+/* ===== EMOJIS FLOTTANTS (discrets) ===== */
 .lock-floating {
     position: absolute;
     pointer-events: none;
     user-select: none;
-    font-size: 2.2rem;
-    opacity: 0.5;
+    font-size: 2rem;
+    opacity: 0.38;
     animation: floatUp linear infinite;
 }
 
 .lock-content {
     position: relative;
     z-index: 2;
-    max-width: 680px;
+    max-width: 640px;
     width: 100%;
     text-align: center;
 }
 
+/* ===== CACHET (🔒 → 🎉 au déblocage) ===== */
 .lock-icon {
     display: inline-block;
-    font-size: 3.4rem;
-    margin-bottom: 18px;
-    animation: heartBeat 1.8s ease-in-out infinite;
-    filter: drop-shadow(0 8px 24px rgba(255, 138, 168, 0.40));
+    font-size: 3rem;
+    margin-bottom: 16px;
+    animation: heartBeat 2.4s ease-in-out infinite;
+    filter: drop-shadow(0 6px 18px rgba(255, 138, 168, 0.25));
+}
+.lock-icon--pop {
+    animation: iconPop 0.7s cubic-bezier(.34, 1.56, .64, 1);
+}
+@keyframes iconPop {
+    0%   { transform: scale(1) rotate(0deg); }
+    40%  { transform: scale(1.35) rotate(-8deg); }
+    70%  { transform: scale(0.96) rotate(4deg); }
+    100% { transform: scale(1) rotate(0deg); }
 }
 
+/* ===== TITRE : SHIMMER DOUX ===== */
 .lock-title {
     font-family: var(--font-script);
-    font-size: clamp(2.4rem, 7vw, 3.6rem);
+    font-size: clamp(2.3rem, 6.5vw, 3.4rem);
     font-weight: 700;
-    background: linear-gradient(135deg, #ff6b9a 0%, #ffb6c9 45%, #b58fd6 100%);
+    background: linear-gradient(135deg, #e06d96 0%, #ffb6c9 30%, #a98fc9 55%, #ffb6c9 80%, #e06d96 100%);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     color: transparent;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    animation: shimmerText 6.5s linear infinite;
+}
+@keyframes shimmerText {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
 }
 
 .lock-subtitle {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: #3f6f3f;
-    margin-bottom: 34px;
+    font-size: 0.98rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    color: #4a6f52;
+    margin-bottom: 32px;
 }
 
 /* ===== COMPTE À REBOURS ===== */
@@ -70,79 +109,152 @@
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .countdown-item {
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1.5px solid rgba(255, 255, 255, 0.75);
-    border-radius: 22px;
-    padding: 18px 14px 14px;
-    min-width: 80px;
-    box-shadow: 0 12px 34px rgba(80, 130, 90, 0.14), inset 0 1px 2px rgba(255, 255, 255, 0.90);
+    position: relative;
+    min-width: 88px;
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(14px) saturate(1.05);
+    -webkit-backdrop-filter: blur(14px) saturate(1.05);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 18px;
+    padding: 22px 14px 18px;
+    box-shadow:
+        0 20px 50px rgba(80, 130, 90, 0.10),
+        inset 0 1px 1px rgba(255, 255, 255, 0.85);
+    perspective: 600px;
+    animation: tileIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.countdown-item:nth-of-type(1) { animation-delay: 0.05s; }
+.countdown-item:nth-of-type(2) { animation-delay: 0.15s; }
+.countdown-item:nth-of-type(3) { animation-delay: 0.25s; }
+.countdown-item:nth-of-type(4) { animation-delay: 0.35s; }
+
+@keyframes tileIn {
+    0%   { opacity: 0; transform: translateY(18px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* ===== PROGRESSION : fine bordure qui suit les contours de la tuile ===== */
+.tile-progress {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(90deg, rgba(255, 138, 168, 0.85), rgba(123, 191, 126, 0.85));
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 0.95s linear;
+    pointer-events: none;
+}
+@supports ((-webkit-mask-composite: xor) or (mask-composite: exclude)) {
+    .tile-progress {
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+    }
+}
+
+/* ===== CHIFFRES (flip 3D adouci) ===== */
 .countdown-num {
+    position: relative;
     display: block;
-    font-size: clamp(2rem, 6vw, 2.8rem);
-    font-weight: 700;
-    color: var(--color-green-dark);
+    font-size: clamp(1.9rem, 5.5vw, 2.6rem);
+    font-weight: 600;
+    color: #2f5a2f;
     font-variant-numeric: tabular-nums;
-    line-height: 1.1;
+    line-height: 1.2;
+    transform-style: preserve-3d;
+    transition: transform 0.35s cubic-bezier(0.45, 0, 0.25, 1);
+}
+.num-front,
+.num-back {
+    display: block;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.num-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: rotateX(180deg);
+}
+.countdown-num.flip {
+    transform: rotateX(180deg);
 }
 
 .countdown-label {
     display: block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 1.6px;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--color-pink-bright);
-    margin-top: 6px;
+    opacity: 0.75;
+    margin-top: 7px;
 }
 
+/* ===== SÉPARATEURS (pulsation discrète) ===== */
 .countdown-sep {
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: rgba(42, 90, 42, 0.45);
-    padding-top: 14px;
-    animation: gentlePulse 2s ease-in-out infinite alternate;
+    font-size: 2rem;
+    font-weight: 500;
+    color: rgba(42, 90, 42, 0.28);
+    padding-top: 20px;
+    animation: sepPulse 1s steps(1) infinite;
+}
+@keyframes sepPulse {
+    0%, 60% { opacity: 0.9; }
+    61%, 100% { opacity: 0.45; }
+}
+
+/* ===== DERNIÈRE MINUTE : accélération subtile ===== */
+.countdown--final .countdown-item {
+    animation: finalPulse 1s ease-in-out infinite;
+    border-color: rgba(255, 138, 168, 0.60);
+}
+.countdown--final .countdown-num {
+    color: #d65f8a;
+}
+@keyframes finalPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 20px 50px rgba(255, 138, 168, 0.12); }
+    50%      { transform: scale(1.02); box-shadow: 0 20px 56px rgba(255, 138, 168, 0.26); }
 }
 
 .lock-note {
-    margin-top: 30px;
-    font-size: 1.5rem;
+    margin-top: 28px;
+    font-size: 1.4rem;
     letter-spacing: 10px;
-    opacity: 0.70;
+    opacity: 0.45;
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 520px) {
     .countdown {
-        gap: 6px;
+        gap: 7px;
     }
     .countdown-item {
-        min-width: 62px;
-        padding: 14px 8px 12px;
-        border-radius: 16px;
+        min-width: 64px;
+        padding: 18px 8px 15px;
+        border-radius: 14px;
     }
     .countdown-num {
-        font-size: 1.7rem;
+        font-size: 1.55rem;
     }
     .countdown-label {
-        font-size: 0.6rem;
-        letter-spacing: 1px;
+        font-size: 0.58rem;
+        letter-spacing: 1.2px;
     }
     .countdown-sep {
-        font-size: 1.6rem;
-        padding-top: 10px;
+        font-size: 1.5rem;
+        padding-top: 14px;
     }
     .lock-icon {
-        font-size: 2.6rem;
+        font-size: 2.4rem;
     }
     .lock-floating {
-        font-size: 1.7rem;
+        font-size: 1.6rem;
     }
 }

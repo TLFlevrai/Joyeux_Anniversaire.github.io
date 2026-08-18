@@ -21,6 +21,7 @@
 
     <!-- ÉCRAN DE VERROUILLAGE : compte à rebours jusqu'au 28 août 00:00:01 -->
     <div class="lock-screen" id="lockScreen" role="dialog" aria-label="Compte à rebours">
+        <div class="lock-glow" aria-hidden="true"></div>
         <span class="lock-floating" style="left:8%; top:18%; animation-duration:20s; animation-delay:-3s;">💚</span>
         <span class="lock-floating" style="left:85%; top:14%; animation-duration:24s; animation-delay:-8s;">🧸</span>
         <span class="lock-floating" style="left:72%; top:78%; animation-duration:18s; animation-delay:-12s;">🌺</span>
@@ -28,28 +29,32 @@
         <span class="lock-floating" style="left:48%; top:90%; animation-duration:26s; animation-delay:-15s;">💗</span>
         <span class="lock-floating" style="left:42%; top:4%; animation-duration:19s; animation-delay:-10s;">🎀</span>
         <div class="lock-content">
-            <div class="lock-icon">🔒</div>
+            <div class="lock-icon" id="lockIcon">🔒</div>
             <h2 class="lock-title">Joyeux anniversaire</h2>
-            <p class="lock-subtitle">Ce site se débloque très bientôt…</p>
+            <p class="lock-subtitle" id="lockSubtitle">Ce site se débloque très bientôt…</p>
             <div class="countdown" id="countdown">
                 <div class="countdown-item">
-                    <span class="countdown-num" id="cdDays">0</span>
+                    <span class="countdown-num" id="cdDays"><span class="num-front">00</span><span class="num-back">00</span></span>
                     <span class="countdown-label">Jours</span>
+                    <div class="tile-progress progress-days" aria-hidden="true"></div>
                 </div>
                 <span class="countdown-sep">:</span>
                 <div class="countdown-item">
-                    <span class="countdown-num" id="cdHours">00</span>
+                    <span class="countdown-num" id="cdHours"><span class="num-front">00</span><span class="num-back">00</span></span>
                     <span class="countdown-label">Heures</span>
+                    <div class="tile-progress progress-hours" aria-hidden="true"></div>
                 </div>
                 <span class="countdown-sep">:</span>
                 <div class="countdown-item">
-                    <span class="countdown-num" id="cdMinutes">00</span>
+                    <span class="countdown-num" id="cdMinutes"><span class="num-front">00</span><span class="num-back">00</span></span>
                     <span class="countdown-label">Minutes</span>
+                    <div class="tile-progress progress-minutes" aria-hidden="true"></div>
                 </div>
                 <span class="countdown-sep">:</span>
                 <div class="countdown-item">
-                    <span class="countdown-num" id="cdSeconds">00</span>
+                    <span class="countdown-num" id="cdSeconds"><span class="num-front">00</span><span class="num-back">00</span></span>
                     <span class="countdown-label">Secondes</span>
+                    <div class="tile-progress progress-seconds" aria-hidden="true"></div>
                 </div>
             </div>
             <div class="lock-note" aria-hidden="true">💚 🧸 🌺</div>
