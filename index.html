@@ -23,6 +23,10 @@
     <!-- Canvas pour confettis -->
     <canvas id="confetti-canvas"></canvas>
 
+    <!-- Lecteur de musique -->
+    <audio id="bgMusic" src="assets/audio/universfield-calm-piano-background-352250.mp3" loop preload="auto"></audio>
+    <button class="music-btn" id="musicBtn" aria-label="Pause/Play music" title="Pause/Play music">⏸️</button>
+
     <!-- CARTE PRINCIPALE -->
     <div class="card" role="main" aria-label="Carte d'anniversaire">
 
@@ -99,7 +103,7 @@
             </div>
             <div class="carousel-controls">
                 <button class="carousel-btn" id="prevPhoto">❮</button>
-                <span id="photoCounter">1 / 5</span>
+                <span id="photoCounter">1 / 4</span>
                 <button class="carousel-btn" id="nextPhoto">❯</button>
             </div>
             <p style="margin-top: 10px; font-size:0.9rem; color: var(--color-green-dark); opacity:0.7;">
