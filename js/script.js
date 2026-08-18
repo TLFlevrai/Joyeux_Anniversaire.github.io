@@ -110,7 +110,7 @@ document.head.appendChild(style);
 //  1.  FONDS FLOTTANT : CŒURS + NOUNOURS + HIBISCUS
 // ============================================================
     const container = document.getElementById('floatingBg');
-    const symbols = ['💚', '💕', '🧸', '🌺', '💗', '🍀', '✨', '🌺', '💜'];
+    const symbols = ['💚', '💕', '🧸', '🌺', '💗', '🍀', '✨', '🎵', '🎶', '🎹', '🎼', '💜'];
     const count = 26;
 
     for (let i = 0; i < count; i++) {
@@ -404,6 +404,8 @@ window.__pageLocked = true;
     const countdownEl = document.getElementById('countdown');
     const lockIcon = document.getElementById('lockIcon');
     const lockSubtitle = document.getElementById('lockSubtitle');
+    const lockNote = document.getElementById('lockNote');
+    const lockCornerEmoji = document.getElementById('lockCornerEmoji');
     const cdDays = document.getElementById('cdDays');
     const cdHours = document.getElementById('cdHours');
     const cdMinutes = document.getElementById('cdMinutes');
@@ -536,7 +538,7 @@ window.__pageLocked = true;
     });
 
     // Mini-cœurs qui montent en continu derrière le compteur
-    const lockHearts = ['💚', '💕', '💗', '🧸'];
+    const lockHearts = ['💚', '💕', '💗', '🧸', '🎵', '🎹', '🎶'];
     const lockContent = lockScreen.querySelector('.lock-content');
     for (let i = 0; i < 8; i++) {
         const h = document.createElement('span');
@@ -550,6 +552,61 @@ window.__pageLocked = true;
         h.style.opacity = 0.35 + Math.random() * 0.25;
         lockScreen.insertBefore(h, lockContent);
     }
+
+    // Note du bas : 3 emojis tirés au sort parmi le fond, à chaque chargement
+    const BG_EMOJIS = ['💚', '💕', '🧸', '🌺', '💗', '🍀', '✨', '🎵', '🎶', '🎹', '🎼', '💜'];
+    const shuffledNote = [...BG_EMOJIS].sort(() => Math.random() - 0.5);
+    lockNote.textContent = shuffledNote.slice(0, 3).join(' ');
+
+    // Grand emoji en haut à gauche, aléatoire à chaque chargement
+    const CORNER_CHOICES = ['🧸', '🌺', '🎵', '🎹', '💚', '❤️'];
+    lockCornerEmoji.textContent = CORNER_CHOICES[Math.floor(Math.random() * CORNER_CHOICES.length)];
+    lockCornerEmoji.style.setProperty('--corner-rot', (Math.random() * 24 - 12) + 'deg');
+
+    // ===== EFFET DE CLIC (particules + emojis, différent du menu principal) =====
+    let activeBursts = 0;
+    const MAX_ACTIVE_BURSTS = 6;
+
+    function spawnLockBurst(x, y) {
+        if (activeBursts >= MAX_ACTIVE_BURSTS) return;
+        activeBursts++;
+        const colors = ['#ff8aa8', '#7bbf7e', '#ffd166', '#9bcb9e', '#ffb6c9', '#b58fd6'];
+        const burstEmojis = ['🎵', '🎶', '🎹', '🎼', '💚', '💕', '🧸', '🌺'];
+        const count = 14;
+        for (let i = 0; i < count; i++) {
+            const el = document.createElement('span');
+            const angle = (i / count) * Math.PI * 2 + Math.random() * 0.7;
+            const dist = 45 + Math.random() * 75;
+            const dx = Math.cos(angle) * dist;
+            const dy = Math.sin(angle) * dist;
+            if (Math.random() < 0.35) {
+                el.textContent = burstEmojis[Math.floor(Math.random() * burstEmojis.length)];
+                el.style.fontSize = (1 + Math.random() * 1.1) + 'rem';
+            } else {
+                el.style.width = (5 + Math.random() * 7) + 'px';
+                el.style.height = el.style.width;
+                el.style.borderRadius = '50%';
+                el.style.background = colors[Math.floor(Math.random() * colors.length)];
+            }
+            el.style.position = 'fixed';
+            el.style.left = (x - 8) + 'px';
+            el.style.top = (y - 8) + 'px';
+            el.style.pointerEvents = 'none';
+            el.style.zIndex = '5';
+            el.style.transition = 'transform 0.7s cubic-bezier(.15,.85,.35,1), opacity 0.7s ease';
+            lockScreen.appendChild(el);
+            requestAnimationFrame(() => {
+                el.style.transform = `translate(${dx}px, ${dy}px) rotate(${(Math.random() - 0.5) * 180}deg) scale(${0.5 + Math.random() * 0.9})`;
+                el.style.opacity = '0';
+            });
+            setTimeout(() => el.remove(), 750);
+        }
+        setTimeout(() => activeBursts--, 760);
+    }
+
+    lockScreen.addEventListener('click', function(e) {
+        if (!unlocked) spawnLockBurst(e.clientX, e.clientY);
+    });
 
     // Bloquer le scroll tant que le site est verrouillé
     document.body.style.overflow = 'hidden';

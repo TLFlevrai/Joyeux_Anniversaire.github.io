@@ -9,10 +9,12 @@
     padding: 20px;
     overflow: hidden;
     background:
-        radial-gradient(1100px 750px at 85% -10%, rgba(255, 182, 201, 0.25) 0%, transparent 60%),
-        radial-gradient(950px 700px at -10% 15%, rgba(155, 203, 158, 0.22) 0%, transparent 55%),
-        radial-gradient(900px 750px at 55% 115%, rgba(217, 201, 230, 0.22) 0%, transparent 60%),
-        linear-gradient(160deg, #f7fcf7 0%, #e6f3e9 45%, #f8ecf4 100%);
+        radial-gradient(1100px 750px at 85% -10%, rgba(255, 182, 201, 0.22) 0%, transparent 60%),
+        radial-gradient(950px 700px at -10% 15%, rgba(155, 203, 158, 0.26) 0%, transparent 55%),
+        radial-gradient(750px 600px at 12% 88%, rgba(110, 180, 125, 0.18) 0%, transparent 60%),
+        radial-gradient(850px 650px at 78% 72%, rgba(74, 150, 95, 0.12) 0%, transparent 55%),
+        radial-gradient(900px 750px at 55% 115%, rgba(217, 201, 230, 0.20) 0%, transparent 60%),
+        linear-gradient(160deg, #f9fdf9 0%, #e2f2e7 35%, #d2ead9 60%, #f7ecf4 100%);
     transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 .lock-screen--hidden {
@@ -30,8 +32,9 @@
     height: 900px;
     transform: translate(-50%, -50%);
     background:
-        radial-gradient(circle at 50% 50%, rgba(255, 182, 201, 0.16) 0%, transparent 55%),
-        radial-gradient(circle at 50% 50%, rgba(155, 203, 158, 0.12) 0%, transparent 70%);
+        radial-gradient(circle at 50% 50%, rgba(255, 182, 201, 0.14) 0%, transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(155, 203, 158, 0.16) 0%, transparent 70%),
+        radial-gradient(circle at 50% 50%, rgba(110, 180, 125, 0.10) 0%, transparent 80%);
     pointer-events: none;
     z-index: 1;
     animation: glowPulse 9s ease-in-out infinite alternate;
@@ -230,6 +233,25 @@
     opacity: 0.45;
 }
 
+/* ===== GRAND EMOJI EN HAUT À GAUCHE (aléatoire à chaque chargement) ===== */
+.lock-corner-emoji {
+    position: absolute;
+    top: 26px;
+    left: 26px;
+    font-size: 5rem;
+    line-height: 1;
+    z-index: 2;
+    opacity: 0.75;
+    pointer-events: none;
+    user-select: none;
+    filter: drop-shadow(0 10px 24px rgba(80, 130, 90, 0.18));
+    animation: cornerBob 5s ease-in-out infinite alternate;
+}
+@keyframes cornerBob {
+    0%   { transform: translateY(0) rotate(var(--corner-rot, 0deg)); }
+    100% { transform: translateY(-10px) rotate(var(--corner-rot, 0deg)); }
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 520px) {
     .countdown {
@@ -256,5 +278,10 @@
     }
     .lock-floating {
         font-size: 1.6rem;
+    }
+    .lock-corner-emoji {
+        top: 16px;
+        left: 16px;
+        font-size: 3.4rem;
     }
 }

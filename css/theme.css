@@ -1,10 +1,12 @@
 /* ===== THÈME PRINCIPAL ===== */
 body {
     background:
-        radial-gradient(1100px 750px at 85% -10%, rgba(255, 182, 201, 0.30) 0%, transparent 60%),
-        radial-gradient(950px 700px at -10% 15%, rgba(155, 203, 158, 0.28) 0%, transparent 55%),
-        radial-gradient(900px 750px at 55% 115%, rgba(217, 201, 230, 0.28) 0%, transparent 60%),
-        linear-gradient(160deg, #f7fcf7 0%, #e2f1e6 45%, #f8eaf3 100%);
+        radial-gradient(1100px 750px at 85% -10%, rgba(255, 182, 201, 0.26) 0%, transparent 60%),
+        radial-gradient(950px 700px at -10% 15%, rgba(155, 203, 158, 0.30) 0%, transparent 55%),
+        radial-gradient(750px 600px at 12% 88%, rgba(110, 180, 125, 0.20) 0%, transparent 60%),
+        radial-gradient(850px 650px at 78% 72%, rgba(74, 150, 95, 0.14) 0%, transparent 55%),
+        radial-gradient(900px 750px at 55% 115%, rgba(217, 201, 230, 0.22) 0%, transparent 60%),
+        linear-gradient(160deg, #f9fdf9 0%, #e4f3e8 35%, #d6ecdc 60%, #f7ecf4 100%);
     background-attachment: fixed;
 }
 
@@ -16,8 +18,9 @@ body::before {
     z-index: 0;
     pointer-events: none;
     background:
-        radial-gradient(circle at 30% 35%, rgba(255, 182, 201, 0.20) 0%, transparent 42%),
-        radial-gradient(circle at 72% 62%, rgba(155, 203, 158, 0.20) 0%, transparent 45%);
+        radial-gradient(circle at 25% 30%, rgba(123, 191, 126, 0.16) 0%, transparent 45%),
+        radial-gradient(circle at 72% 62%, rgba(155, 203, 158, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 30% 35%, rgba(255, 182, 201, 0.14) 0%, transparent 42%);
     animation: blobDrift 28s ease-in-out infinite alternate;
 }
 
