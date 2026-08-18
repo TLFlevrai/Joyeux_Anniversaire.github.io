@@ -88,9 +88,146 @@ LV.hearts = {
             }, 1400);
         }
 
+        // ============================================================
+        //  EFFETS DE CLIC VARIÉS : chaque clic pioche un style au hasard
+        // ============================================================
+        const CLICK_ITEMS = ['💚', '💕', '💗', '🌺', '🧸'];
+
+        function makeParticle(x, y, size) {
+            const el = document.createElement('span');
+            el.textContent = CLICK_ITEMS[Math.floor(Math.random() * CLICK_ITEMS.length)];
+            el.style.position = 'fixed';
+            el.style.left = (x - size * 8) + 'px';
+            el.style.top = (y - size * 8) + 'px';
+            el.style.fontSize = size + 'rem';
+            el.style.pointerEvents = 'none';
+            el.style.zIndex = '9998';
+            el.style.opacity = '1';
+            return el;
+        }
+
+        // 1. Pop unique (effet d'origine) : un emoji bondit puis s'élève
+        //    (spawnItemAtCursor existant, compteur +1 inclus)
+
+        // 2. Explosion : emojis projetés dans toutes les directions
+        function spawnBurstEffect(x, y) {
+            if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
+            activeSpawns++;
+            const n = 9;
+            for (let i = 0; i < n; i++) {
+                const el = makeParticle(x, y, 1.1 + Math.random() * 1.3);
+                const angle = (i / n) * Math.PI * 2 + Math.random() * 0.6;
+                const dist = 55 + Math.random() * 85;
+                el.style.transition = 'transform 0.8s cubic-bezier(.17,.89,.32,1.15), opacity 0.8s ease';
+                document.body.appendChild(el);
+                requestAnimationFrame(() => {
+                    el.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) rotate(${(Math.random() - 0.5) * 180}deg) scale(${0.5 + Math.random() * 0.8})`;
+                    el.style.opacity = '0';
+                });
+                setTimeout(() => el.remove(), 830);
+            }
+            setTimeout(() => activeSpawns--, 840);
+        }
+
+        // 3. Fontaine : petits emojis qui jaillissent vers le haut en cascade
+        function spawnFountainEffect(x, y) {
+            if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
+            activeSpawns++;
+            const n = 7;
+            for (let i = 0; i < n; i++) {
+                setTimeout(() => {
+                    const el = makeParticle(x + (Math.random() - 0.5) * 26, y, 0.8 + Math.random() * 0.7);
+                    el.style.transition = 'transform 1.3s cubic-bezier(.25,.46,.45,.94), opacity 1.3s ease';
+                    document.body.appendChild(el);
+                    requestAnimationFrame(() => {
+                        el.style.transform = `translate(${(Math.random() - 0.5) * 120}px, ${-55 - Math.random() * 140}px) rotate(${(Math.random() - 0.5) * 140}deg) scale(${0.35 + Math.random() * 0.55})`;
+                        el.style.opacity = '0';
+                    });
+                    setTimeout(() => el.remove(), 1350);
+                }, i * 70);
+            }
+            setTimeout(() => activeSpawns--, 950);
+        }
+
+        // 4. Anneau : cœur éclatent en cercle autour du curseur
+        function spawnRingEffect(x, y) {
+            if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
+            activeSpawns++;
+            const n = 10;
+            for (let i = 0; i < n; i++) {
+                const el = makeParticle(x, y, 0.85);
+                const angle = (i / n) * Math.PI * 2;
+                const radius = 70 + Math.random() * 30;
+                el.style.transition = 'transform 0.7s cubic-bezier(.17,.89,.32,1.12), opacity 0.7s ease';
+                document.body.appendChild(el);
+                requestAnimationFrame(() => {
+                    el.style.transform = `translate(${Math.cos(angle) * radius}px, ${Math.sin(angle) * radius}px) rotate(${(Math.random() - 0.5) * 90}deg)`;
+                    el.style.opacity = '0';
+                });
+                setTimeout(() => el.remove(), 750);
+            }
+            setTimeout(() => activeSpawns--, 760);
+        }
+
+        // 5. Onde : anneaux d'eau + cœur central qui monte
+        function spawnRippleEffect(x, y) {
+            if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
+            activeSpawns++;
+            const ringColors = ['#ff8aa8', '#7bbf7e', '#ffd166'];
+            for (let i = 0; i < 2; i++) {
+                const ring = document.createElement('div');
+                ring.style.position = 'fixed';
+                ring.style.left = (x - 10) + 'px';
+                ring.style.top = (y - 10) + 'px';
+                ring.style.width = '20px';
+                ring.style.height = '20px';
+                ring.style.borderRadius = '50%';
+                ring.style.border = '2px solid ' + ringColors[i];
+                ring.style.pointerEvents = 'none';
+                ring.style.zIndex = '9997';
+                ring.style.transition = 'transform 0.85s cubic-bezier(.22,1,.36,1), opacity 0.85s ease';
+                document.body.appendChild(ring);
+                requestAnimationFrame(() => {
+                    ring.style.transform = 'scale(' + (4.5 + i * 2.5) + ')';
+                    ring.style.opacity = '0';
+                });
+                setTimeout(() => ring.remove(), 880);
+            }
+            const heart = makeParticle(x, y, 1.6);
+            heart.textContent = '💗';
+            heart.style.transition = 'transform 0.6s cubic-bezier(.34,1.56,.64,1), opacity 0.6s ease';
+            document.body.appendChild(heart);
+            requestAnimationFrame(() => {
+                heart.style.transform = 'translateY(-48px) scale(1.5)';
+                heart.style.opacity = '0';
+            });
+            setTimeout(() => heart.remove(), 650);
+            setTimeout(() => activeSpawns--, 890);
+        }
+
+        // Pioche aléatoire parmi les styles (compteur +1 à chaque clic)
+        function spawnClickEffect(x, y) {
+            addOne();
+            const r = Math.random();
+            if (r < 0.30) {
+                // Pop unique : même mouvement que l'effet d'origine,
+                // sans re-compter (le compteur est déjà incrémenté)
+                spawnVisualOnly(x, y, CLICK_ITEMS);
+            } else if (r < 0.55) {
+                spawnBurstEffect(x, y);
+            } else if (r < 0.78) {
+                spawnFountainEffect(x, y);
+            } else if (r < 0.92) {
+                spawnRingEffect(x, y);
+            } else {
+                spawnRippleEffect(x, y);
+            }
+        }
+
         // API partagée (utilisée par confetti et lock-screen)
         LV.hearts.spawnItemAtCursor = spawnItemAtCursor;
         LV.hearts.spawnVisualOnly = spawnVisualOnly;
+        LV.hearts.spawnClickEffect = spawnClickEffect;
         LV.hearts.addOne = addOne;
 
         // Clic sur la page (sauf boutons, carte, et bouton musique)
@@ -98,7 +235,7 @@ LV.hearts = {
             if (window.__pageLocked) return;
             if (e.target.closest('.btn') || e.target.closest('.card') || e.target.closest('.music-btn')) return;
             console.log('Page clicked at:', e.clientX, e.clientY);
-            spawnItemAtCursor(e.clientX, e.clientY);
+            spawnClickEffect(e.clientX, e.clientY);
             if (Math.random() < 0.15) LV.confetti.launch(12);
         });
 
@@ -107,7 +244,7 @@ LV.hearts = {
             if (window.__pageLocked) return;
             if (e.target.closest('.btn')) return;
             console.log('Card clicked at:', e.clientX, e.clientY);
-            spawnItemAtCursor(e.clientX, e.clientY);
+            spawnClickEffect(e.clientX, e.clientY);
         });
 
         // Bouton "+1 cœur"
