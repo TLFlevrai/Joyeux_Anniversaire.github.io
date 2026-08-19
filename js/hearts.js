@@ -113,7 +113,7 @@ LV.hearts = {
         function spawnBurstEffect(x, y) {
             if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
             activeSpawns++;
-            const n = 9;
+            const n = Math.max(4, Math.round(9 * (window.__graphDensity || 1)));
             for (let i = 0; i < n; i++) {
                 const el = makeParticle(x, y, 1.1 + Math.random() * 1.3);
                 const angle = (i / n) * Math.PI * 2 + Math.random() * 0.6;
@@ -133,7 +133,7 @@ LV.hearts = {
         function spawnFountainEffect(x, y) {
             if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
             activeSpawns++;
-            const n = 7;
+            const n = Math.max(3, Math.round(7 * (window.__graphDensity || 1)));
             for (let i = 0; i < n; i++) {
                 setTimeout(() => {
                     const el = makeParticle(x + (Math.random() - 0.5) * 26, y, 0.8 + Math.random() * 0.7);
@@ -149,11 +149,11 @@ LV.hearts = {
             setTimeout(() => activeSpawns--, 950);
         }
 
-        // 4. Anneau : cœur éclatent en cercle autour du curseur
+        // 4. Anneau : cœurs éclatent en cercle autour du curseur
         function spawnRingEffect(x, y) {
             if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
             activeSpawns++;
-            const n = 10;
+            const n = Math.max(5, Math.round(10 * (window.__graphDensity || 1)));
             for (let i = 0; i < n; i++) {
                 const el = makeParticle(x, y, 0.85);
                 const angle = (i / n) * Math.PI * 2;
@@ -234,7 +234,6 @@ LV.hearts = {
         document.addEventListener('click', function(e) {
             if (window.__pageLocked) return;
             if (e.target.closest('.btn') || e.target.closest('.card') || e.target.closest('.music-btn')) return;
-            console.log('Page clicked at:', e.clientX, e.clientY);
             spawnClickEffect(e.clientX, e.clientY);
             if (Math.random() < 0.15) LV.confetti.launch(12);
         });
@@ -243,7 +242,6 @@ LV.hearts = {
         document.querySelector('.card').addEventListener('click', function(e) {
             if (window.__pageLocked) return;
             if (e.target.closest('.btn')) return;
-            console.log('Card clicked at:', e.clientX, e.clientY);
             spawnClickEffect(e.clientX, e.clientY);
         });
 

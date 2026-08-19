@@ -4,6 +4,8 @@
 
 // Liste des URLs des photos locales (assets/images)
 const photoUrls = [
+    'assets/images/gateau.png',
+    'assets/images/gateau2.png',
     'assets/images/images.jpg',
     'assets/images/images (1).jpg',
     'assets/images/images (2).jpg',
@@ -31,6 +33,8 @@ function renderCollage() {
         img.src = url;
         img.alt = `Photo ${index+1}`;
         img.className = 'collage-photo';
+        img.decoding = 'async';
+        img.loading = 'lazy';
         img.dataset.index = index;
         // Rotation et décalage aléatoires pour l'effet collage (mais gérés via CSS)
         const rot = (Math.random() - 0.5) * 12; // -6deg à +6deg
@@ -130,4 +134,3 @@ document.addEventListener('keydown', function(e) {
 });
 
 // Initialisation silencieuse
-console.log('📸 Collage photo prêt !');

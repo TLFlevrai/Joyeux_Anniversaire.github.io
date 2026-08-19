@@ -65,6 +65,7 @@
     user-select: none;
     font-size: 2rem;
     opacity: 0.38;
+    will-change: transform;
     animation: floatUp linear infinite;
 }
 

@@ -7,7 +7,8 @@ LV.floatingBg = {
     init: function() {
         const container = document.getElementById('floatingBg');
         const symbols = ['💚', '💕', '🧸', '🌺', '💗', '🍀', '✨', '🎵', '🎶', '🎹', '🎼', '💜'];
-        const count = 26;
+        const density = window.__graphDensity || 1;
+        const count = Math.round(26 * density);
 
         for (let i = 0; i < count; i++) {
             const el = document.createElement('span');

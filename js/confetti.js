@@ -12,8 +12,10 @@ LV.confetti = {
         let animId = null;
 
         function resizeCanvas() {
-            W = canvas.width = window.innerWidth;
-            H = canvas.height = window.innerHeight;
+            const dpr = (window.__graphPreset === 'max_graph') ? (window.devicePixelRatio || 1) : 1;
+            W = canvas.width = Math.round(window.innerWidth * dpr);
+            H = canvas.height = Math.round(window.innerHeight * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
@@ -52,13 +54,16 @@ LV.confetti = {
                 ctx.globalAlpha = this.life * 0.9;
                 ctx.fillStyle = this.color;
                 ctx.shadowColor = 'rgba(0,0,0,0.05)';
-                ctx.shadowBlur = 8;
+                // Ombres canvas = très coûteux : réservées au preset max_graph
+                ctx.shadowBlur = (window.__graphPreset === 'max_graph') ? 8 : 0;
                 ctx.fillRect(-this.w / 2, -this.h / 2, this.w, this.h);
                 ctx.restore();
             }
         }
 
         function launchConfetti(count = 80) {
+            // Densité du preset graphique (legacy = moitié, max_graph = 1,5×)
+            count = Math.round(count * (window.__graphDensity || 1));
             // Plafond de particules simultanées (perf)
             count = Math.min(count, Math.max(0, 260 - particles.length));
             if (count <= 0) return;

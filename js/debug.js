@@ -6,26 +6,105 @@ window.LV = window.LV || {};
 LV.debug = {
     init: function() {
         let debugMode = false;
-        const debugIndicator = document.createElement('div');
-        debugIndicator.id = 'debug-indicator';
-        debugIndicator.textContent = 'DEBUG_MODE';
-        debugIndicator.style.cssText = `
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background: rgba(255, 0, 0, 0.8);
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-family: monospace;
-            z-index: 10001;
-            pointer-events: none;
-            display: none;
-            font-weight: bold;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        `;
-        document.body.appendChild(debugIndicator);
+
+        // Styles du panneau debug (injectés une seule fois)
+        if (!document.getElementById('debug-styles')) {
+            const st = document.createElement('style');
+            st.id = 'debug-styles';
+            st.textContent = `
+                #debug-panel {
+                    position: fixed; top: 10px; left: 10px; z-index: 10001; pointer-events: none; display: none;
+                    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 12px; line-height: 1.6;
+                    background: rgba(13, 26, 18, 0.95); color: #e6f2e8; padding: 13px 15px; border-radius: 14px;
+                    min-width: 268px; box-shadow: 0 10px 34px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+                    border: 1px solid rgba(255, 255, 255, 0.09); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+                }
+                #debug-panel .dbg-head {
+                    font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+                    color: #9fd8a8; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+                }
+                #debug-panel .dbg-head::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #7be58a; box-shadow: 0 0 8px #7be58a; }
+                #debug-panel .dbg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 16px; }
+                #debug-panel .dbg-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+                #debug-panel .dbg-label { color: #8fb99a; font-size: 11px; }
+                #debug-panel .dbg-value { font-weight: 600; color: #f2fbf4; font-variant-numeric: tabular-nums; }
+                #debug-panel .dbg-chip { font-weight: 700; font-size: 10px; letter-spacing: 1px; padding: 2px 9px; border-radius: 30px; color: #fff; }
+                #debug-panel .dbg-chip.legacy { background: #5d7268; }
+                #debug-panel .dbg-chip.normal { background: linear-gradient(135deg, #4c9a55, #2f7a3c); }
+                #debug-panel .dbg-chip.max_graph { background: linear-gradient(135deg, #e06d96, #b58fd6); }
+                #debug-panel .dbg-fps { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 12px; }
+                #debug-panel .dbg-fps.good { color: #7be58a; }
+                #debug-panel .dbg-fps.mid  { color: #ffd166; }
+                #debug-panel .dbg-fps.low  { color: #ff7b7b; }
+                #debug-panel .dbg-sep { height: 1px; background: rgba(255, 255, 255, 0.10); margin: 9px 0; }
+            `;
+            document.head.appendChild(st);
+        }
+        const debugPanel = document.createElement('div');
+        debugPanel.id = 'debug-panel';
+        debugPanel.innerHTML = `
+            <div class="dbg-head">Debug — Ctrl+V pour quitter</div>
+            <div class="dbg-grid">
+                <div class="dbg-item"><span class="dbg-label">Catégorie</span><span class="dbg-chip" id="dbgPreset">—</span></div>
+                <div class="dbg-item"><span class="dbg-label">Mode</span><span class="dbg-value" id="dbgMode">—</span></div>
+                <div class="dbg-item"><span class="dbg-label">FPS</span><span class="dbg-fps" id="dbgFps">—</span></div>
+                <div class="dbg-item"><span class="dbg-label">Densité</span><span class="dbg-value" id="dbgDensity">—</span></div>
+            </div>
+            <div class="dbg-sep"></div>
+            <div class="dbg-grid">
+                <div class="dbg-item"><span class="dbg-label">Cœurs</span><span class="dbg-value" id="dbgCores">—</span></div>
+                <div class="dbg-item"><span class="dbg-label">RAM</span><span class="dbg-value" id="dbgRam">—</span></div>
+                <div class="dbg-item"><span class="dbg-label">DPR</span><span class="dbg-value" id="dbgDpr">—</span></div>
+                <div class="dbg-item"><span class="dbg-label">Écran</span><span class="dbg-value" id="dbgScreen">—</span></div>
+            </div>`;
+        document.body.appendChild(debugPanel);
+
+        // ===== Compteur FPS (actif seulement en mode debug) =====
+        let frameCount = 0;
+        let fps = 0;
+        let rafId = null;
+        function fpsFrame() {
+            frameCount++;
+            rafId = requestAnimationFrame(fpsFrame);
+        }
+        function fpsStart() {
+            if (rafId) return;
+            frameCount = 0;
+            fps = 0;
+            fpsFrame();
+        }
+        function fpsStop() {
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+        }
+        let statsTimer = null;
+
+        function updateDebugPanel() {
+            if (!debugMode) return;
+            const now = performance.now();
+            if (!updateDebugPanel._last) updateDebugPanel._last = now;
+            const elapsed = now - updateDebugPanel._last;
+            fps = Math.round((frameCount * 1000) / Math.max(16, elapsed));
+            frameCount = 0;
+            updateDebugPanel._last = now;
+
+            const nav = navigator;
+            const preset = window.__graphPreset || 'normal';
+            const chip = document.getElementById('dbgPreset');
+            chip.textContent = preset.toUpperCase();
+            chip.className = 'dbg-chip ' + preset;
+            document.getElementById('dbgMode').textContent = window.__isMobile ? '📱 Mobile' : '💻 Desktop';
+            const fpsEl = document.getElementById('dbgFps');
+            fpsEl.textContent = fps;
+            fpsEl.className = 'dbg-fps ' + (fps >= 50 ? 'good' : (fps >= 30 ? 'mid' : 'low'));
+            document.getElementById('dbgDensity').textContent = '×' + (window.__graphDensity || 1);
+            document.getElementById('dbgCores').textContent = nav.hardwareConcurrency || '?';
+            document.getElementById('dbgRam').textContent = nav.deviceMemory ? nav.deviceMemory + ' Go' : '?';
+            document.getElementById('dbgDpr').textContent = window.devicePixelRatio || 1;
+            document.getElementById('dbgScreen').textContent = (screen.width || 0) + '×' + (screen.height || 0);
+        }
         
         function getDeviceType() {
             const ua = navigator.userAgent;
@@ -37,15 +116,19 @@ LV.debug = {
         
         function toggleDebugMode() {
             debugMode = !debugMode;
-            debugIndicator.style.display = debugMode ? 'block' : 'none';
             if (debugMode) {
                 document.addEventListener('click', debugClick, true);
-                const deviceType = getDeviceType();
-                debugIndicator.textContent = `DEBUG_MODE | ${deviceType}`;
-                console.log('Debug mode: ON | Device:', deviceType);
+                fpsStart();
+                debugPanel.style.display = 'block';
+                updateDebugPanel._last = null;
+                updateDebugPanel();
+                statsTimer = setInterval(updateDebugPanel, 1000);
+                console.log('Debug mode: ON');
             } else {
                 document.removeEventListener('click', debugClick, true);
-                debugIndicator.textContent = 'DEBUG_MODE';
+                fpsStop();
+                if (statsTimer) { clearInterval(statsTimer); statsTimer = null; }
+                debugPanel.style.display = 'none';
                 console.log('Debug mode: OFF');
             }
         }
@@ -67,6 +150,17 @@ document.addEventListener('keydown', function(e) {
                 console.log('Mode téléphone : ' + (nowMobile ? 'ACTIVÉ' : 'désactivé'));
             }
         });
+
+        // Rafraîchit le panneau immédiatement quand l'utilisateur change de preset
+        document.addEventListener('click', function(e) {
+            if (!debugMode) return;
+            if (e.target.closest('.preset-option')) {
+                setTimeout(function() {
+                    updateDebugPanel._last = null;
+                    updateDebugPanel();
+                }, 0);
+            }
+        }, true);
         
         // ============================================================
         //  DEBUG: DÃ©tection de tous les clics (seulement si debugMode = true)

@@ -1,0 +1,214 @@
+/* ============================================================
+   PRESETS GRAPHIQUES
+   pastille discrète en haut à droite + menu de choix
+   + effets legacy / normal / max_graph
+   ============================================================ */
+
+/* ===== INDICATEUR (discret, verre) ===== */
+.preset-indicator {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 21000;
+    font-family: var(--font-main);
+}
+.preset-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #3a5d3a;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(80, 130, 90, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.80);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.preset-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(80, 130, 90, 0.22);
+}
+.preset-badge:active {
+    transform: scale(0.95);
+}
+
+/* ===== MENU ===== */
+.preset-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 232px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.90);
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow: 0 20px 50px rgba(60, 100, 70, 0.25);
+    text-align: left;
+}
+.preset-menu.open {
+    display: block;
+    animation: presetMenuIn 0.25s cubic-bezier(.34, 1.56, .64, 1);
+}
+@keyframes presetMenuIn {
+    from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.preset-menu-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #3f6f3f;
+    margin-bottom: 8px;
+    text-align: center;
+}
+.preset-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 9px 12px;
+    border-radius: 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2f5a2f;
+    transition: background 0.15s ease;
+}
+.preset-option em {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 400;
+    font-style: normal;
+    opacity: 0.6;
+    margin-top: 1px;
+}
+.preset-option:hover {
+    background: rgba(226, 240, 226, 0.70);
+}
+.preset-option.active {
+    background: linear-gradient(135deg, rgba(226, 240, 226, 0.90), rgba(255, 236, 242, 0.90));
+    box-shadow: inset 0 0 0 1.5px rgba(123, 191, 126, 0.60);
+}
+.preset-menu-note {
+    font-size: 0.68rem;
+    opacity: 0.55;
+    text-align: center;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(60, 100, 70, 0.12);
+}
+
+/* ============================================================
+   PRESET LEGACY : compatibilité & performances maximales
+   (réduit animations, flous et effets coûteux)
+   ============================================================ */
+html.preset-legacy body::before,
+html.preset-legacy .card::after,
+html.preset-legacy .badge::after {
+    animation: none;
+}
+html.preset-legacy .lock-glow {
+    display: none;
+}
+html.preset-legacy .lock-title,
+html.preset-legacy .lock-icon {
+    animation: none;
+}
+html.preset-legacy .lock-floating,
+html.preset-legacy .floating-item {
+    animation-duration: 26s;
+    animation-timing-function: linear;
+}
+html.preset-legacy .countdown-item,
+html.preset-legacy .lock-subtitle,
+html.preset-legacy .lock-message-zone,
+html.preset-legacy .message-box,
+html.preset-legacy .card,
+html.preset-legacy .preset-badge {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+html.preset-legacy .tile-progress {
+    transition: none;
+}
+html.preset-legacy .music-btn:not(.paused)::before,
+html.preset-legacy .music-btn:not(.paused)::after {
+    display: none;
+}
+html.preset-legacy .modal-overlay,
+html.preset-legacy .modal-content,
+html.preset-legacy .lock-comments-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* ============================================================
+   PRESET MAX GRAPH : beauté poussée au maximum
+   (réactive les effets désactivés en mode mobile, ajoute du luxe)
+   ============================================================ */
+html.preset-max_graph .lock-glow {
+    display: block;
+    animation-duration: 6s;
+}
+html.preset-max_graph .lock-title {
+    animation: shimmerText 4.5s linear infinite;
+}
+html.preset-max_graph body::before {
+    animation: blobDrift 18s ease-in-out infinite alternate;
+}
+html.preset-max_graph .lock-icon {
+    animation-duration: 1.6s;
+}
+/* Effet max : voile arc-en-ciel très doux qui tourne lentement sur le fond */
+html.preset-max_graph .lock-screen::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 160vmax;
+    height: 160vmax;
+    transform: translate(-50%, -50%);
+    background:
+        radial-gradient(circle at 50% 50%, rgba(255, 182, 201, 0.10) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(155, 203, 158, 0.10) 0%, transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(217, 201, 230, 0.10) 0%, transparent 62%);
+    animation: maxGraphSpin 60s linear infinite;
+    pointer-events: none;
+}
+@keyframes maxGraphSpin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+html.preset-max_graph .tile-progress {
+    transition: clip-path 0.55s linear;
+}
+html.preset-max_graph .lock-floating {
+    animation-duration: 14s;
+}
+/* En mode téléphone + max graph : on restaure le flou et les tuiles translucides */
+html.mobile.preset-max_graph .countdown-item,
+html.mobile.preset-max_graph .lock-subtitle,
+html.mobile.preset-max_graph .lock-message-zone {
+    backdrop-filter: blur(14px) saturate(1.05);
+    -webkit-backdrop-filter: blur(14px) saturate(1.05);
+    background: rgba(255, 255, 255, 0.62);
+}
+html.mobile.preset-max_graph .tile-progress {
+    transition: clip-path 0.55s linear;
+}
+html.mobile.preset-max_graph .lock-title {
+    animation: shimmerText 4.5s linear infinite;
+}
+html.mobile.preset-max_graph .lock-glow {
+    display: block;
+}

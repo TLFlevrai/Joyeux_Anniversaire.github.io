@@ -46,8 +46,8 @@
     55%, 100% { transform: translateX(230%) skewX(-15deg); }
 }
 
-/* ===== REFLET BALAYANT LE BADGE ===== */
+/* ===== REFLET BALAYANT LE BADGE (transform, GPU-only) ===== */
 @keyframes badgeShine {
-    0%        { left: -60%; }
-    55%, 100% { left: 140%; }
+    0%        { transform: translateX(-150%) skewX(-20deg); }
+    55%, 100% { transform: translateX(350%) skewX(-20deg); }
 }

@@ -196,9 +196,11 @@ LV.lockScreen = {
         });
 
         // Mini-cœurs qui montent en continu derrière le compteur
-        const lockHearts = ['💚', '💕', '💗', '🧸', '🎵', '🎹', '🎶'];
         const lockContent = lockScreen.querySelector('.lock-content');
-        for (let i = 0; i < (IS_MOBILE ? 6 : 8); i++) {
+        const lockDensity = window.__graphDensity || 1;
+        const lockHearts = ['💚', '💕', '💗', '🧸', '🎵', '🎹', '🎶'];
+        const lockFloatingCount = Math.max(2, Math.round((IS_MOBILE ? 6 : 8) * lockDensity));
+        for (let i = 0; i < lockFloatingCount; i++) {
             const h = document.createElement('span');
             h.className = 'lock-floating';
             h.textContent = lockHearts[Math.floor(Math.random() * lockHearts.length)];
@@ -237,7 +239,9 @@ LV.lockScreen = {
             { emoji: '⏳', text: 'Chaque seconde passée est une seconde de moins avant le 28 août. Le compte à rebours est officiellement lancé. Enfin, presque.' },
             { emoji: '🕯️', text: 'Même les bougies savent quelle date approche.' },
             { emoji: '🌌', text: 'Tous les éléments composant l\'univers, les galaxies, les amas de poussière, les astres, s\'éloignent les uns des autres inexorablement... un peu comme nous.' },
-            { emoji: '⭐', text: 'Et quand deux étoiles sont trop proches et que l\'une d\'entre elles explose, il arrive qu\'elle condamne l\'autre étoile à errer sans trajectoire dans l\'univers. On les appelle les étoiles vagabondes.' }
+            { emoji: '⭐', text: 'Et quand deux étoiles sont trop proches et que l\'une d\'entre elles explose, il arrive qu\'elle condamne l\'autre étoile à errer sans trajectoire dans l\'univers. On les appelle les étoiles vagabondes.' },
+            { emoji: '🦇', text: 'Batman est passé par là.' },
+            { emoji: '💻', text: 'Pour une expérience optimale, veuillez lancer le site avec un ordinateur.' }
         ];
         let currentPick = LOCK_MESSAGES[Math.floor(Math.random() * LOCK_MESSAGES.length)];
         lockMessage.textContent = currentPick.emoji + '  ' + currentPick.text;
@@ -373,7 +377,8 @@ LV.lockScreen = {
             activeBursts++;
             const colors = ['#ff8aa8', '#7bbf7e', '#ffd166', '#9bcb9e', '#ffb6c9', '#b58fd6'];
             const burstEmojis = ['🎵', '🎶', '🎹', '🎼', '💚', '💕', '🧸', '🌺'];
-            const count = IS_MOBILE ? 10 : 14;
+            const burstDensity = window.__graphDensity || 1;
+            const count = Math.max(5, Math.round((IS_MOBILE ? 10 : 14) * burstDensity));
             for (let i = 0; i < count; i++) {
                 const el = document.createElement('span');
                 const angle = (i / count) * Math.PI * 2 + Math.random() * 0.7;
