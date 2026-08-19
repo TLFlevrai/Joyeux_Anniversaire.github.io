@@ -52,25 +52,29 @@ h1 .heart-icon {
     font-size: clamp(1rem, 3vw, 1.25rem);
     font-weight: 600;
     color: #3f6f3f;
-    background: linear-gradient(90deg, rgba(160, 200, 160, 0.28), rgba(255, 182, 201, 0.28));
+    background: linear-gradient(90deg, rgba(160, 200, 160, 0.30), rgba(255, 182, 201, 0.30));
     padding: 7px 26px;
     border-radius: 40px;
     display: inline-block;
     margin: 4px 0 22px;
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.70);
+    box-shadow: 0 8px 24px rgba(90, 140, 90, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.70);
 }
 
 /* ===== MESSAGE ===== */
 .message-box {
     background: linear-gradient(160deg, rgba(235, 248, 235, 0.72), rgba(250, 240, 247, 0.72));
-    border-radius: 32px;
+    border-radius: 36px;
     padding: 32px 26px;
     margin: 20px 0 24px;
-    border: 2px dashed rgba(120, 180, 125, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.90);
     position: relative;
     overflow: hidden;
-    box-shadow: inset 0 2px 12px rgba(255, 255, 255, 0.60), 0 8px 30px rgba(90, 140, 90, 0.08);
+    backdrop-filter: blur(12px) saturate(1.05);
+    -webkit-backdrop-filter: blur(12px) saturate(1.05);
+    box-shadow: inset 0 2px 12px rgba(255, 255, 255, 0.60), 0 24px 60px rgba(90, 140, 90, 0.12);
 }
 .message-box::before {
     content: '🧸';
@@ -119,19 +123,31 @@ h1 .heart-icon {
     margin-top: 20px;
 }
 .hidden-message .msg-content {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 245, 250, 0.85));
-    border-radius: 24px;
-    padding: 26px 22px;
-    border: 1px solid rgba(198, 224, 198, 0.9);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 245, 250, 0.92));
+    border-radius: 26px;
+    padding: 28px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.95);
     font-size: 1.1rem;
     line-height: 1.85;
     color: #1d3a1d;
-    box-shadow: 0 10px 30px rgba(255, 138, 168, 0.10);
+    box-shadow: 0 18px 50px rgba(255, 138, 168, 0.10), 0 4px 16px rgba(90, 140, 90, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.90);
 }
 .hidden-message .msg-content .big-heart {
-    font-size: 2.2rem;
+    font-size: 2rem;
     display: inline-block;
-    animation: heartBeat 1.8s ease-in-out infinite;
+    opacity: 0.85;
+    animation: heartBeat 2.4s ease-in-out infinite;
+}
+/* Signature de fin, sobre et élégante */
+.hidden-message .msg-signature {
+    display: inline-block;
+    font-family: var(--font-script);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #3f6f3f;
+    padding-top: 2px;
+    border-top: 1px solid rgba(123, 191, 126, 0.35);
+    margin-top: 6px;
 }
 
 /* ===== BOUTONS ===== */
@@ -228,8 +244,10 @@ h1 .heart-icon {
     background: linear-gradient(90deg, rgba(200, 225, 200, 0.40), rgba(255, 220, 232, 0.40));
     padding: 13px 26px;
     border-radius: 60px;
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.70);
+    backdrop-filter: blur(10px) saturate(1.1);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1);
+    border: 1px solid rgba(255, 255, 255, 0.80);
+    box-shadow: 0 10px 30px rgba(90, 140, 90, 0.10), inset 0 1px 1px rgba(255, 255, 255, 0.75);
 }
 .counter-area span {
     font-size: 1.3rem;

@@ -73,6 +73,9 @@
                     <input type="range" class="lock-volume" id="lockVolume" min="0" max="100" value="30" aria-label="Volume" title="Volume" />
                 </div>
             </div>
+
+            <!-- Signature discrète -->
+            <p class="lock-signature" aria-hidden="true">-by TLF</p>
         </div>
 
         <!-- Pop-up : tous les messages du mot du moment -->
@@ -97,6 +100,11 @@
 
     <!-- Musique de l'écran de verrouillage (Best Part - piano acoustique) -->
     <audio id="lockMusic" src="assets/audio/Best%20Part%20-%20Daniel%20Caesar%20ft.%20H.E.R.%20%28Acoustic%20Instrumental%29.m4a" loop preload="auto"></audio>
+
+    <!-- SFX : clic sur boutons -->
+    <audio id="clickSfx" src="assets/audio/click.wav" preload="auto"></audio>
+    <!-- SFX : transition (fin du compte à rebours) -->
+    <audio id="transitionSfx" src="assets/audio/transition.wav" preload="auto"></audio>
 
     <!-- CARTE PRINCIPALE -->
     <div class="card" role="main" aria-label="Carte d'anniversaire">
@@ -132,13 +140,13 @@
             <!-- Message caché (révélé au clic) -->
             <div class="hidden-message" id="hiddenMessage">
                 <div class="msg-content">
-                    <span class="big-heart">🧸💖</span><br />
-                    Tu es une personne tellement spéciale, lumineuse et unique.<br />
-                    Chaque jour qui passe, tu rends le monde plus doux, plus vert,<br />
-                    plus rempli de <strong>💚 coeurs 💚</strong> et de <strong>🧸 nounours 🧸</strong>.<br /><br />
-                    Profite de cette journée comme tu le mérites :<br />
-                    avec <strong>amour</strong>, <strong>rires</strong> et tout ce qui te fait briller.<br /><br />
-                    <span style="font-size:1.6rem;">🎀 Bisous infiniment 🎀</span>
+                    <span class="big-heart">🌺</span><br />
+                    Un jour de plus pour toi,<br />
+                    et le monde, lui, gagne un peu de douceur.<br />
+                    Prends le temps de respirer, de sourire,<br />
+                    de profiter de ceux qui t'aiment.<br />
+                    Tu le mérites.<br /><br />
+                    <span class="msg-signature">De la part de Tiaray 🧸</span>
                 </div>
             </div>
         </div>

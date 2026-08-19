@@ -109,6 +109,10 @@ LV.lockScreen = {
             window.__pageLocked = false;
             document.body.style.overflow = '';
 
+            // Son de transition
+            const transSfx = document.getElementById('transitionSfx');
+            if (transSfx) { transSfx.currentTime = 0; transSfx.play().catch(function() {}); }
+
             // Le cadenas devient une fête
             lockIcon.textContent = '🎉';
             lockIcon.classList.add('lock-icon--pop');
@@ -149,11 +153,45 @@ LV.lockScreen = {
             }
         }
 
-        // Raccourci secret : Ctrl+G débloque immédiatement
+        // ===== BASCULE Ctrl+G : compte à rebours ⇄ carte principale =====
+        function setLockScreenVisible(visible) {
+            if (visible) {
+                lockScreen.classList.remove('lock-screen--hidden');
+                lockScreen.setAttribute('aria-hidden', 'false');
+            } else {
+                lockScreen.classList.add('lock-screen--hidden');
+                lockScreen.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        function showMainView() {
+            setLockScreenVisible(false);
+            window.__pageLocked = false;
+            document.body.style.overflow = '';
+            stopLockMusic();
+            if (window.__startMusic) window.__startMusic();
+        }
+
+        function showLockView() {
+            const bg = document.getElementById('bgMusic');
+            if (bg && !bg.paused) bg.pause();
+            setLockScreenVisible(true);
+            window.__pageLocked = true;
+            document.body.style.overflow = 'hidden';
+            startLockMusic();
+        }
+
+        function toggleLockView() {
+            if (unlocked) return;
+            if (lockScreen.classList.contains('lock-screen--hidden')) showLockView();
+            else showMainView();
+        }
+
+        // Raccourci secret : Ctrl+G bascule entre le compte à rebours et la carte
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && (e.key === 'g' || e.key === 'G')) {
                 e.preventDefault();
-                unlockPage();
+                toggleLockView();
             }
         });
 
@@ -234,8 +272,43 @@ LV.lockScreen = {
             lockMusicBtn.setAttribute('aria-label', lockMusicPlaying ? 'Pause musique' : 'Lecture musique');
         }
 
+        function startLockMusic() {
+            if (lockMusicPlaying) return;
+            const p = lockMusic.play();
+            if (p && p.catch) {
+                p.then(function() {
+                    lockMusicPlaying = true;
+                    updateLockMusicBtn();
+                }).catch(function() {
+                    // Autoplay bloqué : sera lancée au premier geste utilisateur
+                });
+            } else {
+                lockMusicPlaying = true;
+                updateLockMusicBtn();
+            }
+        }
+
+        function stopLockMusic() {
+            if (lockMusicPlaying || !lockMusic.paused) {
+                lockMusic.pause();
+                lockMusicPlaying = false;
+                updateLockMusicBtn();
+            }
+        }
+
         lockMusic.volume = 0.30;
         lockVolume.value = 30;
+
+        // Lancement automatique sur l'écran du compte à rebours
+        startLockMusic();
+        // Si le navigateur bloque l'autoplay : premier geste utilisateur = la chanson démarre
+        ['pointerdown', 'keydown', 'touchstart'].forEach(function(evtName) {
+            document.addEventListener(evtName, function() {
+                if (!lockMusicPlaying && !lockScreen.classList.contains('lock-screen--hidden')) {
+                    startLockMusic();
+                }
+            }, { passive: true, once: true });
+        });
 
         lockMusicBtn.addEventListener('click', function(e) {
             e.stopPropagation();

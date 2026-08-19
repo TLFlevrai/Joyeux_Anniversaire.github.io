@@ -18,5 +18,16 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.setAttribute('aria-label', btn.textContent.trim());
     });
 
+    // Son de clic sur tous les boutons
+    const clickSfx = document.getElementById('clickSfx');
+    if (clickSfx) {
+        document.querySelectorAll('.btn, .lock-ctrl-btn, .carousel-btn, .modal-close').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                clickSfx.currentTime = 0;
+                clickSfx.play().catch(function() {});
+            });
+        });
+    }
+
     console.log('🌺 Joyeux anniversaire ! Plein de 💚, de 🧸 et d\'🌺 ! 🌺');
 });

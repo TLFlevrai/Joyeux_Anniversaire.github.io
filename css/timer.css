@@ -513,6 +513,18 @@
     line-height: 1.5;
 }
 
+/* ===== SIGNATURE DISCÈTE (sobre & premium) ===== */
+.lock-signature {
+    margin-top: 20px;
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 5px;
+    text-transform: lowercase;
+    color: rgba(42, 90, 42, 0.32);
+    user-select: none;
+    pointer-events: none;
+}
+
 /* ===== GRAND EMOJI EN HAUT À GAUCHE (aléatoire à chaque chargement) ===== */
 
 /* ============================================================
