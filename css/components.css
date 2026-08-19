@@ -331,7 +331,7 @@ h1 .heart-icon {
     }
 }
 
-/* ===== PILULE MUSIQUE PRINCIPALE (progression + play + skip + volume) ===== */
+/* ===== PILULE MUSIQUE PRINCIPALE (mini-player premium : titre + play + skip + volume) ===== */
 .main-music-ctrl {
     position: fixed;
     bottom: 24px;
@@ -339,35 +339,51 @@ h1 .heart-icon {
     z-index: 1000;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.80);
-    border-radius: 24px;
-    padding: 12px 14px 10px;
+    gap: 8px;
+    padding: 7px 12px 9px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(10px) saturate(1.1);
     -webkit-backdrop-filter: blur(10px) saturate(1.1);
-    box-shadow: 0 10px 28px rgba(100, 170, 100, 0.16), inset 0 1px 1px rgba(255, 255, 255, 0.85);
+    box-shadow: 0 10px 28px rgba(100, 170, 100, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.85);
+    opacity: 0.78;
+    transition: opacity 0.3s ease, box-shadow 0.3s ease;
+}
+.main-music-ctrl:hover {
+    opacity: 1;
+    box-shadow: 0 14px 34px rgba(100, 170, 100, 0.20), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+/* Progression fine le long du bord bas de la pilule */
+.main-music-ctrl .main-progress {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 6px;
+    width: auto;
 }
 .main-music-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 .main-music-ctrl .music-btn {
     position: relative;
     bottom: auto;
     right: auto;
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
     box-shadow: 0 6px 18px rgba(100, 170, 100, 0.30), inset 0 1px 1px rgba(255, 255, 255, 0.30);
 }
 .main-music-ctrl .music-skip-btn {
-    width: 44px;
-    height: 44px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.85);
     background: rgba(255, 255, 255, 0.60);
     color: #3f6f3f;
-    font-size: 1.1rem;
+    font-size: 1rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -383,7 +399,11 @@ h1 .heart-icon {
     transform: scale(0.92);
 }
 .main-music-ctrl .main-volume {
-    width: 110px;
+    width: 96px;
+}
+.main-music-row .now-playing {
+    flex: 1;
+    min-width: 0;
 }
 .main-song-list {
     left: auto;
@@ -392,22 +412,25 @@ h1 .heart-icon {
 }
 @media (max-width: 520px) {
     .main-music-ctrl {
-        bottom: 16px;
-        right: 16px;
-        padding: 9px 10px 8px;
-        gap: 8px;
+        padding: 6px 10px 8px;
+        gap: 6px;
+        opacity: 1;
     }
     .main-music-ctrl .music-skip-btn {
-        width: 42px;
-        height: 42px;
+        width: 36px;
+        height: 36px;
     }
     .main-music-ctrl .main-volume {
-        width: 92px;
+        width: 84px;
+    }
+    .main-music-row .now-playing {
+        display: none;
     }
 }
 html.mobile .main-music-ctrl {
     bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
     right: 14px;
+    opacity: 1;
 }
 
 /* ===== MOT DU MOMENT DANS LA CARTE PRINCIPALE ===== */

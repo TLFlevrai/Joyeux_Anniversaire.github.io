@@ -1,5 +1,5 @@
 // ============================================================
-//  LECTEUR DE MUSIQUE (3 titres, aléatoire sans répétition)
+//  LECTEUR DE MUSIQUE (5 titres, aléatoire sans répétition)
 // ============================================================
 window.LV = window.LV || {};
 
@@ -12,14 +12,18 @@ LV.music = {
         const mainProgress = document.getElementById('mainProgress');
         const mainProgressFill = document.getElementById('mainProgressFill');
         const mainSongList = document.getElementById('mainSongList');
+        const mainNowPlaying = document.getElementById('mainNowPlaying');
         let isPlaying = false;
         let hasUserInteracted = false;
         let currentIdx = null;
 
         const MAIN_SONGS = [
             { src: 'assets/audio/universfield-calm-piano-background-352250.mp3', name: 'Universfield', emoji: '🎹' },
-            { src: 'assets/audio/Who%20Knows%20Instrumental.m4a', name: 'Who Knows', emoji: '🎶' },
-            { src: 'assets/audio/MONDE%20Instrumental.m4a', name: 'MONDE', emoji: '🌍' }
+            { src: 'assets/audio/Best%20Part%20Instrumental.m4a', name: 'Best Part INSTRU', emoji: '🎹' },
+            { src: 'assets/audio/Who%20Knows%20Instrumental.m4a', name: 'Who Knows INSTRU', emoji: '🎶' },
+            { src: 'assets/audio/MONDE%20Instrumental.m4a', name: 'MONDE INSTRU', emoji: '🌍' },
+            { src: 'assets/audio/ROTOROTO%20-%20REKO.m4a', name: 'Rotoroto', emoji: '🎧' },
+            { src: 'assets/audio/Rotoroto%20instrumentale.m4a', name: 'Rotoroto INSTRU', emoji: '🎵' }
         ];
         let songPool = [];
 
@@ -49,6 +53,7 @@ LV.music = {
             if (playPromise !== undefined) {
                 playPromise.then(() => {
                     isPlaying = true;
+                    updateButton();
                 }).catch(err => {
                     isPlaying = false;
                     // Titre non entendu : il reste à jouer plus tard
@@ -72,6 +77,7 @@ LV.music = {
                 musicBtn.title = 'Play music';
             }
             updateSongList();
+            updateNowPlaying();
         }
 
         function toggleMusic() {
@@ -83,6 +89,7 @@ LV.music = {
                 if (playPromise !== undefined) {
                     playPromise.then(() => {
                         isPlaying = true;
+                        updateButton();
                     }).catch(err => {
                         isPlaying = false;
                         console.log('Audio play failed:', err.name);
@@ -90,6 +97,12 @@ LV.music = {
                 }
             }
             updateButton();
+        }
+
+        function updateNowPlaying() {
+            const name = (currentIdx !== null) ? MAIN_SONGS[currentIdx].name : 'Prêt à jouer';
+            mainNowPlaying.querySelector('.now-playing-name').textContent = name;
+            mainNowPlaying.querySelector('.eq').classList.toggle('eq-on', isPlaying);
         }
 
         // ===== BARRE DE PROGRESSION (état d'avancement du titre) =====
@@ -103,7 +116,32 @@ LV.music = {
         audio.addEventListener('timeupdate', updateProgress);
         audio.addEventListener('loadedmetadata', updateProgress);
 
-        // ===== LISTE DES CHANSONS (sélection directe au clic sur la barre) =====
+        // ===== BARRE DE PROGRESSION : clic / glisser pour se déplacer dans le morceau =====
+        let mainSeeking = false;
+        function mainSeekTo(e) {
+            const rect = mainProgress.getBoundingClientRect();
+            const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+            const dur = audio.duration;
+            if (dur && isFinite(dur) && dur > 0) {
+                audio.currentTime = ratio * dur;
+                updateProgress();
+            }
+        }
+        mainProgress.addEventListener('pointerdown', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            mainSeeking = true;
+            try { mainProgress.setPointerCapture(e.pointerId); } catch (err) {}
+            mainSeekTo(e);
+        });
+        mainProgress.addEventListener('pointermove', function(e) {
+            if (mainSeeking) mainSeekTo(e);
+        });
+        function mainStopSeek() { mainSeeking = false; }
+        mainProgress.addEventListener('pointerup', mainStopSeek);
+        mainProgress.addEventListener('pointercancel', mainStopSeek);
+
+        // ===== LISTE DES CHANSONS (sélection directe au clic sur le titre) =====
         function buildSongList() {
             mainSongList.innerHTML = '';
             MAIN_SONGS.forEach(function(song, i) {
@@ -143,7 +181,7 @@ LV.music = {
             mainSongList.setAttribute('aria-hidden', 'true');
         }
 
-        mainProgress.addEventListener('click', function(e) {
+        mainNowPlaying.addEventListener('click', function(e) {
             e.stopPropagation();
             if (mainSongList.classList.contains('open')) {
                 closeSongList();
@@ -161,6 +199,7 @@ LV.music = {
         });
 
         buildSongList();
+        updateNowPlaying();
 
         musicBtn.addEventListener('click', function(e) {
             e.stopPropagation();

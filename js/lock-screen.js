@@ -276,11 +276,13 @@ LV.lockScreen = {
         lockMessageZone.addEventListener('click', cycleLockMessage);
         if (mainMessageZone) mainMessageZone.addEventListener('click', cycleLockMessage);
 
-        // ===== MUSIQUE DU TIMER (3 titres, aléatoire sans répétition) =====
+        // ===== MUSIQUE DU TIMER (5 titres, aléatoire sans répétition) =====
         const LOCK_SONGS = [
-            { src: 'assets/audio/Best%20Part%20Instrumental.m4a', name: 'Best Part', emoji: '🎹' },
-            { src: 'assets/audio/Who%20Knows%20Instrumental.m4a', name: 'Who Knows', emoji: '🎶' },
-            { src: 'assets/audio/MONDE%20Instrumental.m4a', name: 'MONDE', emoji: '🌍' }
+            { src: 'assets/audio/Best%20Part%20Instrumental.m4a', name: 'Best Part INSTRU', emoji: '🎹' },
+            { src: 'assets/audio/Who%20Knows%20Instrumental.m4a', name: 'Who Knows INSTRU', emoji: '🎶' },
+            { src: 'assets/audio/MONDE%20Instrumental.m4a', name: 'MONDE', emoji: '🌍' },
+            { src: 'assets/audio/ROTOROTO%20-%20REKO.m4a', name: 'Rotoroto', emoji: '🎧' },
+            { src: 'assets/audio/Rotoroto%20instrumentale.m4a', name: 'Rotoroto INSTRU', emoji: '🎵' }
         ];
         const lockMusic = document.getElementById('lockMusic');
         const lockMusicBtn = document.getElementById('lockMusicBtn');
@@ -289,6 +291,7 @@ LV.lockScreen = {
         const lockProgress = document.getElementById('lockProgress');
         const lockProgressFill = document.getElementById('lockProgressFill');
         const lockSongList = document.getElementById('lockSongList');
+        const lockNowPlaying = document.getElementById('lockNowPlaying');
         let lockMusicPlaying = false;
         let lockSongPool = [];
         let lockCurrentIdx = null;
@@ -335,6 +338,13 @@ LV.lockScreen = {
             lockMusicBtn.textContent = lockMusicPlaying ? '⏸️' : '▶️';
             lockMusicBtn.setAttribute('aria-label', lockMusicPlaying ? 'Pause musique' : 'Lecture musique');
             updateLockSongList();
+            updateLockNowPlaying();
+        }
+
+        function updateLockNowPlaying() {
+            const name = (lockCurrentIdx !== null) ? LOCK_SONGS[lockCurrentIdx].name : 'Prêt à jouer';
+            lockNowPlaying.querySelector('.now-playing-name').textContent = name;
+            lockNowPlaying.querySelector('.eq').classList.toggle('eq-on', lockMusicPlaying);
         }
 
         function startLockMusic() {
@@ -361,7 +371,32 @@ LV.lockScreen = {
         lockMusic.addEventListener('timeupdate', updateLockProgress);
         lockMusic.addEventListener('loadedmetadata', updateLockProgress);
 
-        // ===== LISTE DES CHANSONS (sélection directe au clic sur la barre) =====
+        // ===== BARRE DE PROGRESSION : clic / glisser pour se déplacer dans le morceau =====
+        let lockSeeking = false;
+        function lockSeekTo(e) {
+            const rect = lockProgress.getBoundingClientRect();
+            const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+            const dur = lockMusic.duration;
+            if (dur && isFinite(dur) && dur > 0) {
+                lockMusic.currentTime = ratio * dur;
+                updateLockProgress();
+            }
+        }
+        lockProgress.addEventListener('pointerdown', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            lockSeeking = true;
+            try { lockProgress.setPointerCapture(e.pointerId); } catch (err) {}
+            lockSeekTo(e);
+        });
+        lockProgress.addEventListener('pointermove', function(e) {
+            if (lockSeeking) lockSeekTo(e);
+        });
+        function lockStopSeek() { lockSeeking = false; }
+        lockProgress.addEventListener('pointerup', lockStopSeek);
+        lockProgress.addEventListener('pointercancel', lockStopSeek);
+
+        // ===== LISTE DES CHANSONS (sélection directe au clic sur le titre) =====
         function buildLockSongList() {
             lockSongList.innerHTML = '';
             LOCK_SONGS.forEach(function(song, i) {
@@ -400,7 +435,7 @@ LV.lockScreen = {
             lockSongList.setAttribute('aria-hidden', 'true');
         }
 
-        lockProgress.addEventListener('click', function(e) {
+        lockNowPlaying.addEventListener('click', function(e) {
             e.stopPropagation();
             if (lockSongList.classList.contains('open')) {
                 closeLockSongList();
@@ -409,12 +444,13 @@ LV.lockScreen = {
             }
         });
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.lock-song-list') && !e.target.closest('.lock-progress-wrap')) {
+            if (!e.target.closest('.lock-song-list') && !e.target.closest('.lock-now-playing')) {
                 closeLockSongList();
             }
         });
 
         buildLockSongList();
+        updateLockNowPlaying();
 
         lockMusic.volume = 0.30;
         lockVolume.value = 30;
@@ -559,7 +595,8 @@ LV.lockScreen = {
                 !e.target.closest('.lock-controls') &&
                 !e.target.closest('.lock-comments-modal') &&
                 !e.target.closest('.lock-progress-wrap') &&
-                !e.target.closest('.lock-song-list')) spawnLockBurst(e.clientX, e.clientY);
+                !e.target.closest('.lock-song-list') &&
+                !e.target.closest('.lock-now-playing')) spawnLockBurst(e.clientX, e.clientY);
         });
 
         // Bloquer le scroll tant que le site est verrouillé

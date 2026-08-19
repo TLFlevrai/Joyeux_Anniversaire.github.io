@@ -69,9 +69,14 @@
                 <p class="lock-message" id="lockMessage"></p>
             </div>
 
-            <!-- Barre de progression musicale (cliquer pour choisir une chanson) -->
+            <!-- Titre en lecture (cliquer = changer de musique) + barre de progression (cliquer/glisser = déplacer la lecture) -->
+            <p class="now-playing lock-now-playing" id="lockNowPlaying" role="button" aria-haspopup="menu" aria-label="Changer de musique" title="Changer de musique">
+                <span class="eq" aria-hidden="true"><span></span><span></span><span></span></span>
+                <span class="now-playing-name">Prêt à jouer</span>
+                <span class="now-playing-caret" aria-hidden="true">▾</span>
+            </p>
             <div class="lock-progress-wrap">
-                <div class="lock-progress" id="lockProgress" role="button" aria-label="Choisir une musique" title="Choisir une musique">
+                <div class="lock-progress" id="lockProgress" role="slider" aria-label="Barre de progression" title="Cliquer ou glisser pour se déplacer dans le morceau">
                     <div class="lock-progress-fill" id="lockProgressFill"></div>
                 </div>
                 <div class="lock-song-list" id="lockSongList" role="menu" aria-hidden="true"></div>
@@ -107,13 +112,18 @@
     <!-- Canvas pour confettis -->
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- Lecteur de musique (3 titres, choix aléatoire sans répétition) -->
+    <!-- Lecteur de musique (5 titres, choix aléatoire sans répétition) -->
     <audio id="bgMusic" src="assets/audio/universfield-calm-piano-background-352250.mp3" preload="auto"></audio>
     <div class="main-music-ctrl">
-        <div class="main-progress" id="mainProgress" role="button" aria-label="Choisir une musique" title="Choisir une musique">
+        <div class="main-progress" id="mainProgress" role="slider" aria-label="Barre de progression" title="Cliquer ou glisser pour se déplacer dans le morceau">
             <div class="lock-progress-fill" id="mainProgressFill"></div>
         </div>
         <div class="main-music-row">
+            <span class="now-playing" id="mainNowPlaying" role="button" aria-haspopup="menu" aria-label="Changer de musique" title="Changer de musique">
+                <span class="eq" aria-hidden="true"><span></span><span></span><span></span></span>
+                <span class="now-playing-name">Prêt à jouer</span>
+                <span class="now-playing-caret" aria-hidden="true">▾</span>
+            </span>
             <button class="music-btn" id="musicBtn" aria-label="Pause/Play music" title="Pause/Play music">⏸️</button>
             <button class="music-skip-btn" id="musicSkipBtn" aria-label="Musique suivante" title="Musique suivante">⏭️</button>
             <input type="range" class="lock-volume main-volume" id="mainVolume" min="0" max="100" value="100" aria-label="Volume musique" title="Volume" />
@@ -121,7 +131,7 @@
         <div class="main-song-list" id="mainSongList" role="menu" aria-hidden="true"></div>
     </div>
 
-    <!-- Musique de l'écran de verrouillage (3 titres, choix aléatoire sans répétition) -->
+    <!-- Musique de l'écran de verrouillage (5 titres, choix aléatoire sans répétition) -->
     <audio id="lockMusic" src="assets/audio/Best%20Part%20Instrumental.m4a" preload="auto"></audio>
 
     <!-- SFX : clic sur boutons -->
