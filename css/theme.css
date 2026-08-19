@@ -8,6 +8,7 @@ body {
         radial-gradient(900px 750px at 55% 115%, rgba(217, 201, 230, 0.22) 0%, transparent 60%),
         radial-gradient(500px 300px at 50% -5%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
         linear-gradient(160deg, #f9fdf9 0%, #e4f3e8 35%, #d6ecdc 60%, #f7ecf4 100%);
+    background-color: #eaf6ee;
     background-attachment: fixed;
 }
 
@@ -15,7 +16,10 @@ body {
 body::before {
     content: '';
     position: fixed;
-    inset: -25%;
+    top: -25%;
+    left: -25%;
+    width: 150%;
+    height: 150%;
     z-index: 0;
     pointer-events: none;
     background:
@@ -29,7 +33,10 @@ body::before {
 body::after {
     content: '';
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: 0;
     pointer-events: none;
     background: radial-gradient(ellipse at center, transparent 55%, rgba(80, 120, 90, 0.07) 100%);

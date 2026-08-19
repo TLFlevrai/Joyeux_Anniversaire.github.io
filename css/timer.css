@@ -1,7 +1,10 @@
 /* ===== ÉCRAN DE VERROUILLAGE (compte à rebours) ===== */
 .lock-screen {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: 20000;
     display: flex;
     align-items: center;
@@ -15,6 +18,9 @@
         radial-gradient(850px 650px at 78% 72%, rgba(74, 150, 95, 0.12) 0%, transparent 55%),
         radial-gradient(900px 750px at 55% 115%, rgba(217, 201, 230, 0.20) 0%, transparent 60%),
         linear-gradient(160deg, #f9fdf9 0%, #e2f2e7 35%, #d2ead9 60%, #f7ecf4 100%);
+    /* Fond de secours opaque si les dégradés ne sont pas supportés
+       (évite que la page principale apparaisse derrière le timer) */
+    background-color: #eef7f0;
     transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 .lock-screen--hidden {
@@ -170,7 +176,10 @@
 /* ===== PROGRESSION : fine bordure qui suit les contours de la tuile ===== */
 .tile-progress {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     border-radius: inherit;
     padding: 2px;
     background: linear-gradient(120deg, rgba(255, 138, 168, 0.85), rgba(123, 191, 126, 0.85));
