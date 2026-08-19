@@ -777,21 +777,21 @@ html.mobile .lock-floating {
     opacity: 0.30;
 }
 
-/* -- CACHET + TITRE -- */
+/* -- CACHET + TITRE (compact) -- */
 html.mobile .lock-icon {
-    font-size: 2.4rem;
-    margin-bottom: 10px;
+    font-size: 2.2rem;
+    margin-bottom: 6px;
 }
 html.mobile .lock-title {
     font-size: clamp(2rem, 8vw, 2.6rem);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 /* Sous-titre en pilule */
 html.mobile .lock-subtitle {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    margin-bottom: 22px;
-    padding: 9px 18px;
+    margin-bottom: 16px;
+    padding: 8px 16px;
     background: rgba(255, 255, 255, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.80);
     border-radius: 60px;
@@ -803,18 +803,18 @@ html.mobile .lock-subtitle::after {
     display: none;
 }
 
-/* -- COMPTEUR : GRILLE 2×2 -- */
+/* -- COMPTEUR : GRILLE 2×2 (compacte) -- */
 html.mobile .countdown {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
     max-width: 360px;
 }
 html.mobile .countdown-item {
     min-width: 0;
-    padding: 20px 10px 16px;
-    border-radius: 22px;
+    padding: 16px 8px 14px;
+    border-radius: 20px;
 }
 html.mobile .countdown-item::before {
     border-radius: 22px 22px 0 0;
@@ -833,66 +833,58 @@ html.mobile .tile-progress {
     border-radius: 22px;
 }
 
-/* -- NOTE -- */
+/* -- NOTE : masquée sur mobile (allègement visuel) -- */
 html.mobile .lock-note {
-    margin-top: 6px;
-    font-size: 1.05rem;
-    letter-spacing: 8px;
+    display: none;
 }
 
-/* -- MOT DU MOMENT : carte pleine largeur -- */
+/* -- MOT DU MOMENT : carte pleine largeur, compacte -- */
 html.mobile .lock-message-zone {
     width: 100%;
     max-width: 380px;
-    margin-top: 14px;
-    padding: 13px 15px;
+    margin-top: 10px;
+    padding: 10px 14px;
     background: rgba(255, 255, 255, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.80);
-    border-radius: 20px;
+    border-radius: 18px;
     box-shadow: 0 12px 34px rgba(80, 130, 90, 0.10), inset 0 1px 1px rgba(255, 255, 255, 0.90);
     backdrop-filter: blur(10px) saturate(1.05);
     -webkit-backdrop-filter: blur(10px) saturate(1.05);
 }
 html.mobile .lock-message-label {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     letter-spacing: 1.5px;
 }
 html.mobile .lock-message {
-    font-size: 0.83rem;
+    font-size: 0.8rem;
+    padding: 8px 14px;
 }
 
-/* -- DOCK DE CONTRÔLES FIXÉ EN BAS -- */
+/* -- DOCK DE CONTRÔLES FIXÉ EN BAS (compact) -- */
 html.mobile .lock-controls {
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
     margin-top: 0;
-    padding: 18px 20px 16px;
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    padding: 14px 16px 12px;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.72) 35%);
     z-index: 4;
     gap: 0;
 }
 html.mobile .lock-music-ctrl {
-    margin-left: 14px;
-    padding: 8px 18px 8px 8px;
+    margin-left: 12px;
+    padding: 6px 14px 6px 6px;
     background: rgba(255, 255, 255, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.85);
     box-shadow: 0 10px 28px rgba(80, 130, 90, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.90);
     opacity: 1;
 }
-html.mobile .lock-now-playing {
-    margin-bottom: 8px;
-    font-size: 0.56rem;
-}
-html.mobile .lock-progress-wrap {
-    margin-bottom: 2px;
-}
 html.mobile .lock-ctrl-btn {
-    width: 52px;
-    height: 52px;
-    font-size: 1.3rem;
+    width: 46px;
+    height: 46px;
+    font-size: 1.15rem;
     border: 1px solid rgba(255, 255, 255, 0.90);
     background: rgba(255, 255, 255, 0.62);
     box-shadow: 0 10px 28px rgba(80, 130, 90, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.95);
@@ -901,22 +893,29 @@ html.mobile .lock-ctrl-btn:active {
     transform: scale(0.92);
 }
 html.mobile .lock-volume {
-    width: 128px;
-    height: 7px;
+    width: 100px;
+    height: 6px;
 }
 html.mobile .lock-volume::-webkit-slider-thumb {
-    width: 20px;
-    height: 20px;
-    border-width: 2.5px;
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
 }
 html.mobile .lock-volume::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
+}
+html.mobile .lock-now-playing {
+    margin-bottom: 6px;
+    font-size: 0.52rem;
+    letter-spacing: 2px;
+    padding: 4px 8px;
 }
 html.mobile .lock-progress-wrap {
     width: 100%;
     max-width: 380px;
-    margin-top: 14px;
+    margin-top: 10px;
+    margin-bottom: 2px;
 }
 html.mobile .lock-song-list {
     width: 260px;
@@ -1023,6 +1022,14 @@ html.mobile .lock-ctrl-btn:active {
 @keyframes cornerBob {
     0%   { transform: translateY(0) rotate(var(--corner-rot, 0deg)); }
     100% { transform: translateY(-10px) rotate(var(--corner-rot, 0deg)); }
+}
+
+/* Décors purement visuels masqués sur mobile (allègement) */
+html.mobile .lock-signature {
+    display: none;
+}
+html.mobile .lock-corner-emoji {
+    display: none;
 }
 
 /* ===== RESPONSIVE ===== */

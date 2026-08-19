@@ -276,13 +276,17 @@ LV.lockScreen = {
         lockMessageZone.addEventListener('click', cycleLockMessage);
         if (mainMessageZone) mainMessageZone.addEventListener('click', cycleLockMessage);
 
-        // ===== MUSIQUE DU TIMER (5 titres, aléatoire sans répétition) =====
+// ===== MUSIQUE DU TIMER (9 titres, aléatoire sans répétition) =====
         const LOCK_SONGS = [
-            { src: 'assets/audio/Best%20Part%20Instrumental.m4a', name: 'Best Part INSTRU', emoji: '🎹' },
-            { src: 'assets/audio/Who%20Knows%20Instrumental.m4a', name: 'Who Knows INSTRU', emoji: '🎶' },
-            { src: 'assets/audio/MONDE%20Instrumental.m4a', name: 'MONDE', emoji: '🌍' },
-            { src: 'assets/audio/ROTOROTO%20-%20REKO.m4a', name: 'Rotoroto', emoji: '🎧' },
-            { src: 'assets/audio/Rotoroto%20instrumentale.m4a', name: 'Rotoroto INSTRU', emoji: '🎵' }
+            { src: 'assets/audio/music/Best%20Part%20Instrumental.m4a', name: 'Best Part', emoji: '🎹' },
+            { src: 'assets/audio/music/Who%20Knows%20Instrumental.m4a', name: 'Who Knows', emoji: '🎶' },
+            { src: 'assets/audio/music/MONDE%20Instrumental.m4a', name: 'MONDE', emoji: '🌍' },
+            { src: 'assets/audio/music/ROTOROTO%20-%20REKO.m4a', name: 'REKO', emoji: '🎧' },
+            { src: 'assets/audio/music/Rotoroto%20instrumentale.m4a', name: 'Rotoroto', emoji: '🎵' },
+            { src: 'assets/audio/music/Best%20Part.m4a', name: 'Best Part (Original)', emoji: '🎤' },
+            { src: 'assets/audio/music/Who%20Knows.m4a', name: 'Who Knows (Original)', emoji: '🎙️' },
+            { src: 'assets/audio/music/MONDE.m4a', name: 'MONDE (Original)', emoji: '💜' },
+            { src: 'assets/audio/music/HATRAIZA_AZA%20AVELA.m4a', name: 'Hatraiza Az Avela', emoji: '🌟' }
         ];
         const lockMusic = document.getElementById('lockMusic');
         const lockMusicBtn = document.getElementById('lockMusicBtn');
@@ -409,6 +413,8 @@ LV.lockScreen = {
                     '</span><span class="song-state"></span>';
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
+                    var sfx = document.getElementById('clickMusicSfx');
+                    if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
                     playLockSong(i);
                     closeLockSongList();
                 });
@@ -437,6 +443,8 @@ LV.lockScreen = {
 
         lockNowPlaying.addEventListener('click', function(e) {
             e.stopPropagation();
+            var sfx = document.getElementById('clickMusicSfx');
+            if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
             if (lockSongList.classList.contains('open')) {
                 closeLockSongList();
             } else {

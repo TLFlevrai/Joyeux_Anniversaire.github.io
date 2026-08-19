@@ -1,5 +1,5 @@
 // ============================================================
-//  LECTEUR DE MUSIQUE (5 titres, aléatoire sans répétition)
+//  LECTEUR DE MUSIQUE (9 titres, aléatoire sans répétition)
 // ============================================================
 window.LV = window.LV || {};
 
@@ -17,13 +17,16 @@ LV.music = {
         let hasUserInteracted = false;
         let currentIdx = null;
 
-        const MAIN_SONGS = [
-            { src: 'assets/audio/universfield-calm-piano-background-352250.mp3', name: 'Universfield', emoji: '🎹' },
-            { src: 'assets/audio/Best%20Part%20Instrumental.m4a', name: 'Best Part INSTRU', emoji: '🎹' },
-            { src: 'assets/audio/Who%20Knows%20Instrumental.m4a', name: 'Who Knows INSTRU', emoji: '🎶' },
-            { src: 'assets/audio/MONDE%20Instrumental.m4a', name: 'MONDE INSTRU', emoji: '🌍' },
-            { src: 'assets/audio/ROTOROTO%20-%20REKO.m4a', name: 'Rotoroto', emoji: '🎧' },
-            { src: 'assets/audio/Rotoroto%20instrumentale.m4a', name: 'Rotoroto INSTRU', emoji: '🎵' }
+const MAIN_SONGS = [
+            { src: 'assets/audio/music/universfield-calm-piano-background-352250.mp3', name: 'Universfield', emoji: '🎹' },
+            { src: 'assets/audio/music/Who%20Knows%20Instrumental.m4a', name: 'Who Knows', emoji: '🎶' },
+            { src: 'assets/audio/music/MONDE%20Instrumental.m4a', name: 'MONDE', emoji: '🌍' },
+            { src: 'assets/audio/music/ROTOROTO%20-%20REKO.m4a', name: 'REKO', emoji: '🎧' },
+            { src: 'assets/audio/music/Rotoroto%20instrumentale.m4a', name: 'Rotoroto', emoji: '🎵' },
+            { src: 'assets/audio/music/Best%20Part.m4a', name: 'Best Part (Original)', emoji: '🎤' },
+            { src: 'assets/audio/music/Who%20Knows.m4a', name: 'Who Knows (Original)', emoji: '🎙️' },
+            { src: 'assets/audio/music/MONDE.m4a', name: 'MONDE (Original)', emoji: '💜' },
+            { src: 'assets/audio/music/HATRAIZA_AZA%20AVELA.m4a', name: 'Hatraiza Az Avela', emoji: '🌟' }
         ];
         let songPool = [];
 
@@ -154,6 +157,8 @@ LV.music = {
                     '</span><span class="song-state"></span>';
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
+                    var sfx = document.getElementById('clickMusicSfx');
+                    if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
                     hasUserInteracted = true;
                     playSongFromPool(i);
                     closeSongList();
@@ -183,6 +188,8 @@ LV.music = {
 
         mainNowPlaying.addEventListener('click', function(e) {
             e.stopPropagation();
+            var sfx = document.getElementById('clickMusicSfx');
+            if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
             if (mainSongList.classList.contains('open')) {
                 closeSongList();
             } else {

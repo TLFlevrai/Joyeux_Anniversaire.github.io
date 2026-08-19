@@ -412,16 +412,22 @@ h1 .heart-icon {
 }
 @media (max-width: 520px) {
     .main-music-ctrl {
-        padding: 6px 10px 8px;
-        gap: 6px;
+        padding: 5px 8px 7px;
+        gap: 5px;
         opacity: 1;
     }
+    .main-music-ctrl .music-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 0.95rem;
+    }
     .main-music-ctrl .music-skip-btn {
-        width: 36px;
-        height: 36px;
+        width: 34px;
+        height: 34px;
+        font-size: 0.95rem;
     }
     .main-music-ctrl .main-volume {
-        width: 84px;
+        width: 72px;
     }
     .main-music-row .now-playing {
         display: none;
