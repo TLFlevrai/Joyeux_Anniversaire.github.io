@@ -64,6 +64,24 @@
                 <p class="lock-message-label">Le mot du moment :</p>
                 <p class="lock-message" id="lockMessage"></p>
             </div>
+
+            <!-- Barre de contrôles du timer : commentaires + musique -->
+            <div class="lock-controls">
+                <button class="lock-ctrl-btn" id="lockCommentsBtn" aria-label="Voir tous les messages" title="Tous les messages">💬</button>
+                <div class="lock-music-ctrl">
+                    <button class="lock-ctrl-btn" id="lockMusicBtn" aria-label="Lecture musique" title="Play / Pause">▶️</button>
+                    <input type="range" class="lock-volume" id="lockVolume" min="0" max="100" value="30" aria-label="Volume" title="Volume" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Pop-up : tous les messages du mot du moment -->
+        <div class="lock-comments-modal" id="lockCommentsModal" aria-hidden="true">
+            <div class="lock-comments-card">
+                <button class="lock-comments-close" id="lockCommentsClose" aria-label="Fermer">&times;</button>
+                <h3>Tous les messages</h3>
+                <ul class="lock-comments-list" id="lockCommentsList"></ul>
+            </div>
         </div>
     </div>
 
@@ -76,6 +94,9 @@
     <!-- Lecteur de musique -->
     <audio id="bgMusic" src="assets/audio/universfield-calm-piano-background-352250.mp3" loop preload="auto"></audio>
     <button class="music-btn" id="musicBtn" aria-label="Pause/Play music" title="Pause/Play music">⏸️</button>
+
+    <!-- Musique de l'écran de verrouillage (Best Part - piano acoustique) -->
+    <audio id="lockMusic" src="assets/audio/Best%20Part%20-%20Daniel%20Caesar%20ft.%20H.E.R.%20%28Acoustic%20Instrumental%29.m4a" loop preload="auto"></audio>
 
     <!-- CARTE PRINCIPALE -->
     <div class="card" role="main" aria-label="Carte d'anniversaire">

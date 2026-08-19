@@ -51,10 +51,20 @@ LV.debug = {
         }
         
         // Ctrl+V pour activer/dÃ©sactiver le debug mode
-        document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 'v') {
                 e.preventDefault();
                 toggleDebugMode();
+            }
+        });
+
+        // Ctrl+Y : bascule le mode téléphone (interface mobile sur ordinateur)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === 'y' || e.key === 'Y')) {
+                e.preventDefault();
+                const nowMobile = document.documentElement.classList.toggle('mobile');
+                window.__isMobile = nowMobile;
+                console.log('Mode téléphone : ' + (nowMobile ? 'ACTIVÉ' : 'désactivé'));
             }
         });
         
@@ -103,6 +113,19 @@ LV.debug = {
                 100% { opacity: 0; transform: translateY(-20px); }
             }
         `;
-        document.head.appendChild(style);
+document.head.appendChild(style);
     }
 };
+
+// ============================================================
+//  DÉTECTION MOBILE PARTAGÉE (utilisée par l'interface mobile)
+// ============================================================
+LV.debug.isMobile = function() {
+    const ua = navigator.userAgent;
+    const strong = /(android|iphone|ipod|ipad|iemobile|opera mini|windows phone|blackberry|bb10|kindle|silk|playbook)/i.test(ua);
+    const weak = /(mobi|mobile)/i.test(ua);
+    const coarse = !!(navigator.maxTouchPoints > 1 && window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    return strong || weak || coarse;
+};
+window.__isMobile = LV.debug.isMobile();
+document.documentElement.classList.toggle('mobile', window.__isMobile);

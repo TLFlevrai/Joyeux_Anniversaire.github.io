@@ -8,6 +8,7 @@ window.LV = window.LV || {};
 LV.lockScreen = {
     init: function() {
         window.__pageLocked = true;
+        const IS_MOBILE = !!(window.__isMobile);
 
         const lockScreen = document.getElementById('lockScreen');
         const countdownEl = document.getElementById('countdown');
@@ -112,6 +113,14 @@ LV.lockScreen = {
             lockIcon.textContent = '🎉';
             lockIcon.classList.add('lock-icon--pop');
 
+            // Couper la musique du timer à l'ouverture (la carte joue la sienne)
+            const lm = document.getElementById('lockMusic');
+            if (lm && !lm.paused) {
+                lm.pause();
+                lockMusicPlaying = false;
+                updateLockMusicBtn();
+            }
+
             // Reprendre les animations du fond
             document.querySelectorAll('.floating-item').forEach(el => {
                 el.style.animationPlayState = '';
@@ -151,7 +160,7 @@ LV.lockScreen = {
         // Mini-cœurs qui montent en continu derrière le compteur
         const lockHearts = ['💚', '💕', '💗', '🧸', '🎵', '🎹', '🎶'];
         const lockContent = lockScreen.querySelector('.lock-content');
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < (IS_MOBILE ? 6 : 8); i++) {
             const h = document.createElement('span');
             h.className = 'lock-floating';
             h.textContent = lockHearts[Math.floor(Math.random() * lockHearts.length)];
@@ -214,6 +223,74 @@ LV.lockScreen = {
         }
         lockMessageZone.addEventListener('click', cycleLockMessage);
 
+        // ===== MUSIQUE DU TIMER (Best Part - piano acoustique, discret) =====
+        const lockMusic = document.getElementById('lockMusic');
+        const lockMusicBtn = document.getElementById('lockMusicBtn');
+        const lockVolume = document.getElementById('lockVolume');
+        let lockMusicPlaying = false;
+
+        function updateLockMusicBtn() {
+            lockMusicBtn.textContent = lockMusicPlaying ? '⏸️' : '▶️';
+            lockMusicBtn.setAttribute('aria-label', lockMusicPlaying ? 'Pause musique' : 'Lecture musique');
+        }
+
+        lockMusic.volume = 0.30;
+        lockVolume.value = 30;
+
+        lockMusicBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (lockMusicPlaying) {
+                lockMusic.pause();
+            } else {
+                const p = lockMusic.play();
+                if (p && p.catch) p.catch(function() {});
+            }
+            lockMusicPlaying = !lockMusicPlaying;
+            updateLockMusicBtn();
+        });
+
+        lockVolume.addEventListener('input', function() {
+            lockMusic.volume = lockVolume.value / 100;
+        });
+        lockVolume.addEventListener('change', function() {
+            lockMusic.volume = lockVolume.value / 100;
+        });
+
+        // ===== POP-UP : TOUS LES MESSAGES DU MOT DU MOMENT =====
+        const lockCommentsBtn = document.getElementById('lockCommentsBtn');
+        const lockCommentsModal = document.getElementById('lockCommentsModal');
+        const lockCommentsList = document.getElementById('lockCommentsList');
+        const lockCommentsClose = document.getElementById('lockCommentsClose');
+
+        LOCK_MESSAGES.forEach(function(m) {
+            const li = document.createElement('li');
+            li.textContent = m.emoji + '  ' + m.text;
+            lockCommentsList.appendChild(li);
+        });
+
+        function openComments() {
+            lockCommentsModal.classList.add('open');
+            lockCommentsModal.setAttribute('aria-hidden', 'false');
+        }
+        function closeComments() {
+            lockCommentsModal.classList.remove('open');
+            lockCommentsModal.setAttribute('aria-hidden', 'true');
+        }
+        lockCommentsBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            openComments();
+        });
+        lockCommentsClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeComments();
+        });
+        lockCommentsModal.addEventListener('click', function(e) {
+            if (e.target === lockCommentsModal) closeComments();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lockCommentsModal.classList.contains('open')) closeComments();
+        });
+
         // ===== EFFET DE CLIC (particules + emojis, différent du menu principal) =====
         let activeBursts = 0;
         const MAX_ACTIVE_BURSTS = 6;
@@ -223,11 +300,11 @@ LV.lockScreen = {
             activeBursts++;
             const colors = ['#ff8aa8', '#7bbf7e', '#ffd166', '#9bcb9e', '#ffb6c9', '#b58fd6'];
             const burstEmojis = ['🎵', '🎶', '🎹', '🎼', '💚', '💕', '🧸', '🌺'];
-            const count = 14;
+            const count = IS_MOBILE ? 10 : 14;
             for (let i = 0; i < count; i++) {
                 const el = document.createElement('span');
                 const angle = (i / count) * Math.PI * 2 + Math.random() * 0.7;
-                const dist = 45 + Math.random() * 75;
+                const dist = (IS_MOBILE ? 34 : 45) + Math.random() * (IS_MOBILE ? 55 : 75);
                 const dx = Math.cos(angle) * dist;
                 const dy = Math.sin(angle) * dist;
                 if (Math.random() < 0.35) {
@@ -256,7 +333,10 @@ LV.lockScreen = {
         }
 
         lockScreen.addEventListener('click', function(e) {
-            if (!unlocked && !e.target.closest('.lock-message-zone')) spawnLockBurst(e.clientX, e.clientY);
+            if (!unlocked &&
+                !e.target.closest('.lock-message-zone') &&
+                !e.target.closest('.lock-controls') &&
+                !e.target.closest('.lock-comments-modal')) spawnLockBurst(e.clientX, e.clientY);
         });
 
         // Bloquer le scroll tant que le site est verrouillé
