@@ -9,7 +9,6 @@ body {
         radial-gradient(500px 300px at 50% -5%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
         linear-gradient(160deg, #f9fdf9 0%, #e4f3e8 35%, #d6ecdc 60%, #f7ecf4 100%);
     background-color: #eaf6ee;
-    background-attachment: fixed;
 }
 
 /* ===== BULBES ANIMÉS (léger, compositor only) ===== */

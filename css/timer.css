@@ -11,6 +11,13 @@
     justify-content: center;
     padding: 20px;
     overflow: hidden;
+    /* Anti-zoom mobile : pas de double-tap, pas de loupe de sélection,
+       pas de rebond de défilement */
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
     background:
         radial-gradient(1100px 750px at 85% -10%, rgba(255, 182, 201, 0.22) 0%, transparent 60%),
         radial-gradient(950px 700px at -10% 15%, rgba(155, 203, 158, 0.26) 0%, transparent 55%),
@@ -148,7 +155,6 @@
     box-shadow:
         0 20px 50px rgba(80, 130, 90, 0.10),
         inset 0 1px 1px rgba(255, 255, 255, 0.85);
-    perspective: 600px;
     animation: tileIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 /* Reflet de verre sur le haut de chaque tuile */
@@ -196,7 +202,7 @@
     }
 }
 
-/* ===== CHIFFRES (flip 3D adouci) ===== */
+/* ===== CHIFFRES (glissement 2D fluide — fiable sur mobile, sans 3D) ===== */
 .countdown-num {
     position: relative;
     display: block;
@@ -205,24 +211,27 @@
     color: #2f5a2f;
     font-variant-numeric: tabular-nums;
     line-height: 1.2;
-    transform-style: preserve-3d;
-    transition: transform 0.35s cubic-bezier(0.45, 0, 0.25, 1);
 }
 .num-front,
 .num-back {
     display: block;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    transition: transform 0.32s cubic-bezier(0.45, 0, 0.25, 1), opacity 0.32s ease;
 }
 .num-back {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    transform: rotateX(180deg);
+    transform: translateY(100%);
+    opacity: 0;
 }
-.countdown-num.flip {
-    transform: rotateX(180deg);
+.countdown-num.flip .num-front {
+    transform: translateY(-100%);
+    opacity: 0;
+}
+.countdown-num.flip .num-back {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .countdown-label {
@@ -728,6 +737,48 @@ html.mobile .lock-comments-close {
 html.mobile .lock-comments-list li {
     font-size: 0.81rem;
     padding: 12px 14px;
+}
+
+/* ============================================================
+   PERF & ANTI-GLITCH MOBILE
+   Réduit les repaints et bloque tout geste de zoom sur les
+   zones interactives (Android : touch-action:none bloque le
+   pincement ; iOS : maximum-scale du viewport le bloque).
+   ============================================================ */
+html.mobile body::before {
+    animation: none;
+}
+html.mobile .lock-glow {
+    display: none;
+}
+html.mobile .lock-title {
+    animation: none;
+}
+html.mobile .countdown-item,
+html.mobile .lock-subtitle,
+html.mobile .lock-message-zone {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.88);
+}
+html.mobile .tile-progress {
+    transition: none;
+}
+html.mobile .lock-icon,
+html.mobile .lock-title,
+html.mobile .lock-subtitle,
+html.mobile .countdown,
+html.mobile .lock-note,
+html.mobile .lock-message-zone {
+    touch-action: none;
+}
+/* Évite les états :hover collants sur écran tactile */
+html.mobile .lock-ctrl-btn:hover,
+html.mobile .lock-ctrl-btn:active {
+    transform: none;
+}
+html.mobile .lock-ctrl-btn:active {
+    transform: scale(0.92);
 }
 .lock-corner-emoji {
     position: absolute;
