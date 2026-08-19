@@ -8,6 +8,8 @@
     pointer-events: none;
     z-index: 0;
     overflow: hidden;
+    /* Isole les repaints des éléments animés du reste de la page */
+    contain: paint;
 }
 
 .floating-item {

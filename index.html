@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Joyeux Anniversaire</title>
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico" />
-    <!-- Google Fonts (douce + script) -->
+    <!-- Google Fonts (douce + script) : préconnexion pour un chargement rapide -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
     <!-- CSS modulaire -->
     <link rel="stylesheet" href="css/base.css" />
@@ -67,11 +69,20 @@
                 <p class="lock-message" id="lockMessage"></p>
             </div>
 
+            <!-- Barre de progression musicale (cliquer pour choisir une chanson) -->
+            <div class="lock-progress-wrap">
+                <div class="lock-progress" id="lockProgress" role="button" aria-label="Choisir une musique" title="Choisir une musique">
+                    <div class="lock-progress-fill" id="lockProgressFill"></div>
+                </div>
+                <div class="lock-song-list" id="lockSongList" role="menu" aria-hidden="true"></div>
+            </div>
+
             <!-- Barre de contrôles du timer : commentaires + musique -->
             <div class="lock-controls">
                 <button class="lock-ctrl-btn" id="lockCommentsBtn" aria-label="Voir tous les messages" title="Tous les messages">💬</button>
                 <div class="lock-music-ctrl">
                     <button class="lock-ctrl-btn" id="lockMusicBtn" aria-label="Lecture musique" title="Play / Pause">▶️</button>
+                    <button class="lock-ctrl-btn" id="lockSkipBtn" aria-label="Musique suivante" title="Musique suivante">⏭️</button>
                     <input type="range" class="lock-volume" id="lockVolume" min="0" max="100" value="30" aria-label="Volume" title="Volume" />
                 </div>
             </div>
@@ -79,14 +90,14 @@
             <!-- Signature discrète -->
             <p class="lock-signature" aria-hidden="true">-by TLF</p>
         </div>
+    </div>
 
-        <!-- Pop-up : tous les messages du mot du moment -->
-        <div class="lock-comments-modal" id="lockCommentsModal" aria-hidden="true">
-            <div class="lock-comments-card">
-                <button class="lock-comments-close" id="lockCommentsClose" aria-label="Fermer">&times;</button>
-                <h3>Tous les messages</h3>
-                <ul class="lock-comments-list" id="lockCommentsList"></ul>
-            </div>
+    <!-- Pop-up : tous les messages du mot du moment (partagée : verrouillage + carte) -->
+    <div class="lock-comments-modal" id="lockCommentsModal" aria-hidden="true">
+        <div class="lock-comments-card">
+            <button class="lock-comments-close" id="lockCommentsClose" aria-label="Fermer">&times;</button>
+            <h3>Tous les messages</h3>
+            <ul class="lock-comments-list" id="lockCommentsList"></ul>
         </div>
     </div>
 
@@ -96,15 +107,27 @@
     <!-- Canvas pour confettis -->
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- Lecteur de musique -->
-    <audio id="bgMusic" src="assets/audio/universfield-calm-piano-background-352250.mp3" loop preload="auto"></audio>
-    <button class="music-btn" id="musicBtn" aria-label="Pause/Play music" title="Pause/Play music">⏸️</button>
+    <!-- Lecteur de musique (3 titres, choix aléatoire sans répétition) -->
+    <audio id="bgMusic" src="assets/audio/universfield-calm-piano-background-352250.mp3" preload="auto"></audio>
+    <div class="main-music-ctrl">
+        <div class="main-progress" id="mainProgress" role="button" aria-label="Choisir une musique" title="Choisir une musique">
+            <div class="lock-progress-fill" id="mainProgressFill"></div>
+        </div>
+        <div class="main-music-row">
+            <button class="music-btn" id="musicBtn" aria-label="Pause/Play music" title="Pause/Play music">⏸️</button>
+            <button class="music-skip-btn" id="musicSkipBtn" aria-label="Musique suivante" title="Musique suivante">⏭️</button>
+            <input type="range" class="lock-volume main-volume" id="mainVolume" min="0" max="100" value="100" aria-label="Volume musique" title="Volume" />
+        </div>
+        <div class="main-song-list" id="mainSongList" role="menu" aria-hidden="true"></div>
+    </div>
 
-    <!-- Musique de l'écran de verrouillage (Best Part - piano acoustique) -->
-    <audio id="lockMusic" src="assets/audio/Best%20Part%20-%20Daniel%20Caesar%20ft.%20H.E.R.%20%28Acoustic%20Instrumental%29.m4a" loop preload="auto"></audio>
+    <!-- Musique de l'écran de verrouillage (3 titres, choix aléatoire sans répétition) -->
+    <audio id="lockMusic" src="assets/audio/Best%20Part%20Instrumental.m4a" preload="auto"></audio>
 
     <!-- SFX : clic sur boutons -->
     <audio id="clickSfx" src="assets/audio/click.wav" preload="auto"></audio>
+    <!-- SFX : clic musique (note premium) -->
+    <audio id="clickMusicSfx" src="assets/audio/click-music.wav" preload="auto"></audio>
     <!-- SFX : transition (fin du compte à rebours) -->
     <audio id="transitionSfx" src="assets/audio/transition.wav" preload="auto"></audio>
 
@@ -171,6 +194,15 @@
 
         <div style="margin-top:16px; font-size:0.85rem; color:#5f8a5f; opacity:0.7;">
             🌺 clique partout pour faire apparaître des cœurs, des nounours et des hibiscus 🌺
+        </div>
+
+        <!-- Mot du moment + bouton tous les messages (comme l'écran de verrouillage) -->
+        <div class="main-msg-zone">
+            <button class="lock-ctrl-btn" id="mainCommentsBtn" aria-label="Voir tous les messages" title="Tous les messages">💬</button>
+            <div class="lock-message-zone" id="mainMessageZone">
+                <p class="lock-message-label">Le mot du moment :</p>
+                <p class="lock-message" id="mainMessage"></p>
+            </div>
         </div>
     </div>
 

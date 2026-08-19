@@ -28,6 +28,4 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-
-    console.log('🌺 Joyeux anniversaire ! Plein de 💚, de 🧸 et d\'🌺 ! 🌺');
 });

@@ -330,3 +330,101 @@ h1 .heart-icon {
         font-size: 1.3rem;
     }
 }
+
+/* ===== PILULE MUSIQUE PRINCIPALE (progression + play + skip + volume) ===== */
+.main-music-ctrl {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.80);
+    border-radius: 24px;
+    padding: 12px 14px 10px;
+    backdrop-filter: blur(10px) saturate(1.1);
+    -webkit-backdrop-filter: blur(10px) saturate(1.1);
+    box-shadow: 0 10px 28px rgba(100, 170, 100, 0.16), inset 0 1px 1px rgba(255, 255, 255, 0.85);
+}
+.main-music-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.main-music-ctrl .music-btn {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    box-shadow: 0 6px 18px rgba(100, 170, 100, 0.30), inset 0 1px 1px rgba(255, 255, 255, 0.30);
+}
+.main-music-ctrl .music-skip-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.60);
+    color: #3f6f3f;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+.main-music-ctrl .music-skip-btn:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 8px 20px rgba(80, 130, 90, 0.20);
+}
+.main-music-ctrl .music-skip-btn:active {
+    transform: scale(0.92);
+}
+.main-music-ctrl .main-volume {
+    width: 110px;
+}
+.main-song-list {
+    left: auto;
+    right: 0;
+    transform: none;
+}
+@media (max-width: 520px) {
+    .main-music-ctrl {
+        bottom: 16px;
+        right: 16px;
+        padding: 9px 10px 8px;
+        gap: 8px;
+    }
+    .main-music-ctrl .music-skip-btn {
+        width: 42px;
+        height: 42px;
+    }
+    .main-music-ctrl .main-volume {
+        width: 92px;
+    }
+}
+html.mobile .main-music-ctrl {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+    right: 14px;
+}
+
+/* ===== MOT DU MOMENT DANS LA CARTE PRINCIPALE ===== */
+.main-msg-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+.main-msg-zone .lock-message-zone {
+    margin-top: 0;
+}
+.main-msg-zone .lock-message {
+    text-align: left;
+}
+html.mobile .main-msg-zone {
+    width: 100%;
+}

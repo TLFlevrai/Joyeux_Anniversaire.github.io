@@ -4,8 +4,8 @@
 
 // Liste des URLs des photos locales (assets/images)
 const photoUrls = [
-    'assets/images/gateau.png',
-    'assets/images/gateau2.png',
+    'assets/images/gateau.jpg',
+    'assets/images/gateau2.jpg',
     'assets/images/images.jpg',
     'assets/images/images (1).jpg',
     'assets/images/images (2).jpg',

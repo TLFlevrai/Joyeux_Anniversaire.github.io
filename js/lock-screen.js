@@ -244,7 +244,17 @@ LV.lockScreen = {
             { emoji: '💻', text: 'Pour une expérience optimale, veuillez lancer le site avec un ordinateur.' }
         ];
         let currentPick = LOCK_MESSAGES[Math.floor(Math.random() * LOCK_MESSAGES.length)];
-        lockMessage.textContent = currentPick.emoji + '  ' + currentPick.text;
+        const mainMessage = document.getElementById('mainMessage');
+        const mainMessageZone = document.getElementById('mainMessageZone');
+        const mainCommentsBtn = document.getElementById('mainCommentsBtn');
+
+        // Affiche le mot du moment sur les deux écrans (verrouillage + carte)
+        function renderMessage() {
+            const text = currentPick.emoji + '  ' + currentPick.text;
+            lockMessage.textContent = text;
+            if (mainMessage) mainMessage.textContent = text;
+        }
+        renderMessage();
 
         function cycleLockMessage() {
             let next;
@@ -257,39 +267,79 @@ LV.lockScreen = {
             lockMessage.classList.remove('lock-message--in');
             lockMessage.classList.add('lock-message--out');
             setTimeout(() => {
-                lockMessage.textContent = next.emoji + '  ' + next.text;
+                renderMessage();
                 lockMessage.classList.remove('lock-message--out');
                 void lockMessage.offsetWidth;
                 lockMessage.classList.add('lock-message--in');
             }, 260);
         }
         lockMessageZone.addEventListener('click', cycleLockMessage);
+        if (mainMessageZone) mainMessageZone.addEventListener('click', cycleLockMessage);
 
-        // ===== MUSIQUE DU TIMER (Best Part - piano acoustique, discret) =====
+        // ===== MUSIQUE DU TIMER (3 titres, aléatoire sans répétition) =====
+        const LOCK_SONGS = [
+            { src: 'assets/audio/Best%20Part%20Instrumental.m4a', name: 'Best Part', emoji: '🎹' },
+            { src: 'assets/audio/Who%20Knows%20Instrumental.m4a', name: 'Who Knows', emoji: '🎶' },
+            { src: 'assets/audio/MONDE%20Instrumental.m4a', name: 'MONDE', emoji: '🌍' }
+        ];
         const lockMusic = document.getElementById('lockMusic');
         const lockMusicBtn = document.getElementById('lockMusicBtn');
+        const lockSkipBtn = document.getElementById('lockSkipBtn');
         const lockVolume = document.getElementById('lockVolume');
+        const lockProgress = document.getElementById('lockProgress');
+        const lockProgressFill = document.getElementById('lockProgressFill');
+        const lockSongList = document.getElementById('lockSongList');
         let lockMusicPlaying = false;
+        let lockSongPool = [];
+        let lockCurrentIdx = null;
 
-        function updateLockMusicBtn() {
-            lockMusicBtn.textContent = lockMusicPlaying ? '⏸️' : '▶️';
-            lockMusicBtn.setAttribute('aria-label', lockMusicPlaying ? 'Pause musique' : 'Lecture musique');
+        // Pioche aléatoire sans rejouer un titre déjà passé tant que
+        // tous les titres n'ont pas été entendus
+        function pickLockSong() {
+            if (lockSongPool.length === 0) {
+                lockSongPool = LOCK_SONGS.map(function(_, i) { return i; });
+            }
+            const i = Math.floor(Math.random() * lockSongPool.length);
+            return lockSongPool.splice(i, 1)[0];
         }
 
-        function startLockMusic() {
-            if (lockMusicPlaying) return;
+        function playLockSong(forcedIdx) {
+            let idx = forcedIdx;
+            if (idx === undefined) {
+                idx = pickLockSong();
+            } else {
+                // Choix direct dans la liste : le titre compte comme entendu
+                const pi = lockSongPool.indexOf(idx);
+                if (pi !== -1) lockSongPool.splice(pi, 1);
+            }
+            lockCurrentIdx = idx;
+            const abs = new URL(LOCK_SONGS[idx].src, window.location.href).href;
+            if (lockMusic.src !== abs) lockMusic.src = abs;
             const p = lockMusic.play();
             if (p && p.catch) {
                 p.then(function() {
                     lockMusicPlaying = true;
                     updateLockMusicBtn();
                 }).catch(function() {
-                    // Autoplay bloqué : sera lancée au premier geste utilisateur
+                    lockMusicPlaying = false;
+                    // Titre non entendu (autoplay bloqué) : il reste à jouer plus tard
+                    if (forcedIdx === undefined) lockSongPool.push(idx);
                 });
             } else {
                 lockMusicPlaying = true;
                 updateLockMusicBtn();
             }
+        }
+
+        function updateLockMusicBtn() {
+            lockMusicBtn.textContent = lockMusicPlaying ? '⏸️' : '▶️';
+            lockMusicBtn.setAttribute('aria-label', lockMusicPlaying ? 'Pause musique' : 'Lecture musique');
+            updateLockSongList();
+        }
+
+        function startLockMusic() {
+            if (lockMusicPlaying) return;
+            playLockSong();
         }
 
         function stopLockMusic() {
@@ -299,6 +349,72 @@ LV.lockScreen = {
                 updateLockMusicBtn();
             }
         }
+
+        // ===== BARRE DE PROGRESSION (état d'avancement du titre) =====
+        function updateLockProgress() {
+            const dur = lockMusic.duration;
+            const cur = lockMusic.currentTime;
+            const pct = (dur && isFinite(dur) && dur > 0 && cur > 0) ? Math.min(100, (cur / dur) * 100) : 0;
+            lockProgressFill.style.width = pct + '%';
+            lockProgress.style.setProperty('--pct', pct + '%');
+        }
+        lockMusic.addEventListener('timeupdate', updateLockProgress);
+        lockMusic.addEventListener('loadedmetadata', updateLockProgress);
+
+        // ===== LISTE DES CHANSONS (sélection directe au clic sur la barre) =====
+        function buildLockSongList() {
+            lockSongList.innerHTML = '';
+            LOCK_SONGS.forEach(function(song, i) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'lock-song-item';
+                btn.setAttribute('role', 'menuitem');
+                btn.innerHTML = '<span class="song-emoji">' + song.emoji +
+                    '</span><span class="song-name">' + song.name +
+                    '</span><span class="song-state"></span>';
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    playLockSong(i);
+                    closeLockSongList();
+                });
+                lockSongList.appendChild(btn);
+            });
+        }
+
+        function updateLockSongList() {
+            lockSongList.querySelectorAll('.lock-song-item').forEach(function(btn, i) {
+                const isCurrent = (i === lockCurrentIdx);
+                btn.classList.toggle('active', isCurrent);
+                btn.querySelector('.song-state').textContent = isCurrent ? (lockMusicPlaying ? 'en cours' : 'pause') : '';
+            });
+        }
+
+        function openLockSongList() {
+            lockSongList.classList.add('open');
+            lockSongList.setAttribute('aria-hidden', 'false');
+            updateLockSongList();
+        }
+
+        function closeLockSongList() {
+            lockSongList.classList.remove('open');
+            lockSongList.setAttribute('aria-hidden', 'true');
+        }
+
+        lockProgress.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (lockSongList.classList.contains('open')) {
+                closeLockSongList();
+            } else {
+                openLockSongList();
+            }
+        });
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.lock-song-list') && !e.target.closest('.lock-progress-wrap')) {
+                closeLockSongList();
+            }
+        });
+
+        buildLockSongList();
 
         lockMusic.volume = 0.30;
         lockVolume.value = 30;
@@ -316,14 +432,34 @@ LV.lockScreen = {
 
         lockMusicBtn.addEventListener('click', function(e) {
             e.stopPropagation();
+            var sfx = document.getElementById('clickMusicSfx');
+            if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
             if (lockMusicPlaying) {
                 lockMusic.pause();
+                lockMusicPlaying = false;
+                updateLockMusicBtn();
             } else {
                 const p = lockMusic.play();
                 if (p && p.catch) p.catch(function() {});
+                lockMusicPlaying = true;
+                updateLockMusicBtn();
             }
-            lockMusicPlaying = !lockMusicPlaying;
-            updateLockMusicBtn();
+        });
+
+        // Skip : titre suivant (aléatoire, sans répétition tant que tout n'a pas été entendu)
+        lockSkipBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var sfx = document.getElementById('clickMusicSfx');
+            if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
+            playLockSong();
+        });
+
+        // Fin naturelle d'un titre : on enchaîne sur le suivant de la rotation
+        lockMusic.addEventListener('ended', function() {
+            if (lockMusicPlaying) {
+                lockMusicPlaying = false;
+                playLockSong();
+            }
         });
 
         lockVolume.addEventListener('input', function() {
@@ -357,6 +493,12 @@ LV.lockScreen = {
             e.stopPropagation();
             openComments();
         });
+        if (mainCommentsBtn) {
+            mainCommentsBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                openComments();
+            });
+        }
         lockCommentsClose.addEventListener('click', function(e) {
             e.stopPropagation();
             closeComments();
@@ -366,6 +508,7 @@ LV.lockScreen = {
         });
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && lockCommentsModal.classList.contains('open')) closeComments();
+            if (e.key === 'Escape' && lockSongList.classList.contains('open')) closeLockSongList();
         });
 
         // ===== EFFET DE CLIC (particules + emojis, différent du menu principal) =====
@@ -414,7 +557,9 @@ LV.lockScreen = {
             if (!unlocked &&
                 !e.target.closest('.lock-message-zone') &&
                 !e.target.closest('.lock-controls') &&
-                !e.target.closest('.lock-comments-modal')) spawnLockBurst(e.clientX, e.clientY);
+                !e.target.closest('.lock-comments-modal') &&
+                !e.target.closest('.lock-progress-wrap') &&
+                !e.target.closest('.lock-song-list')) spawnLockBurst(e.clientX, e.clientY);
         });
 
         // Bloquer le scroll tant que le site est verrouillé

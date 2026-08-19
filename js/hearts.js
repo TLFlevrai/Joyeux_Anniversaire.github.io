@@ -233,7 +233,8 @@ LV.hearts = {
         // Clic sur la page (sauf boutons, carte, et bouton musique)
         document.addEventListener('click', function(e) {
             if (window.__pageLocked) return;
-            if (e.target.closest('.btn') || e.target.closest('.card') || e.target.closest('.music-btn')) return;
+            if (e.target.closest('.btn') || e.target.closest('.card') || e.target.closest('.music-btn') ||
+                e.target.closest('.main-music-ctrl') || e.target.closest('.main-msg-zone')) return;
             spawnClickEffect(e.clientX, e.clientY);
             if (Math.random() < 0.15) LV.confetti.launch(12);
         });
@@ -241,7 +242,7 @@ LV.hearts = {
         // Clic sur la carte (hors boutons)
         document.querySelector('.card').addEventListener('click', function(e) {
             if (window.__pageLocked) return;
-            if (e.target.closest('.btn')) return;
+            if (e.target.closest('.btn') || e.target.closest('.main-msg-zone')) return;
             spawnClickEffect(e.clientX, e.clientY);
         });
 

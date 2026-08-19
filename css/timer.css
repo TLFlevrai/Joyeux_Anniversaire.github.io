@@ -107,6 +107,8 @@
     background-clip: text;
     color: transparent;
     margin-bottom: 8px;
+    /* Couche dédiée : le repaint du shimmer reste isolé au titre */
+    transform: translateZ(0);
     animation: shimmerText 6.5s linear infinite;
 }
 @keyframes shimmerText {
@@ -397,6 +399,131 @@
     box-shadow: 0 8px 24px rgba(80, 130, 90, 0.10), inset 0 1px 1px rgba(255, 255, 255, 0.80);
 }
 
+/* ===== BARRE DE PROGRESSION MUSICALE (cliquer = choisir une chanson) ===== */
+.lock-progress-wrap {
+    position: relative;
+    width: min(360px, 100%);
+    margin: 20px auto 4px;
+}
+.lock-progress,
+.main-progress {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    margin: 0;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.80);
+    box-shadow: inset 0 1px 3px rgba(60, 100, 70, 0.14);
+    cursor: pointer;
+    touch-action: manipulation;
+    overflow: visible;
+}
+.lock-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #7bbf7e, #ffb6c9, #ff8aa8);
+    background-size: 200% 100%;
+    animation: progressFlow 4s linear infinite;
+}
+@keyframes progressFlow {
+    0%   { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+}
+/* Point lumineux en tête de remplissage (caché tant que rien ne joue) */
+.lock-progress::after,
+.main-progress::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: var(--pct, -20px);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 35%, #ffb6c9 100%);
+    border: 2px solid #7bbf7e;
+    box-shadow: 0 2px 8px rgba(80, 130, 90, 0.35);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+/* ===== LISTE DES CHANSONS (sélection directe) ===== */
+.lock-song-list,
+.main-song-list {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.90);
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(60, 100, 70, 0.25);
+    z-index: 5;
+    touch-action: manipulation;
+}
+.lock-song-list.open,
+.main-song-list.open {
+    display: flex;
+    animation: presetMenuIn 0.25s cubic-bezier(.34, 1.56, .64, 1) backwards;
+}
+.lock-song-item,
+.main-song-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2f5a2f;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+.lock-song-item:hover,
+.main-song-item:hover {
+    background: rgba(226, 240, 226, 0.70);
+}
+.lock-song-item:active,
+.main-song-item:active {
+    transform: scale(0.98);
+}
+.lock-song-item.active,
+.main-song-item.active {
+    background: linear-gradient(135deg, rgba(226, 240, 226, 0.90), rgba(255, 236, 242, 0.90));
+    box-shadow: inset 0 0 0 1.5px rgba(123, 191, 126, 0.60);
+}
+.lock-song-item .song-emoji,
+.main-song-item .song-emoji {
+    font-size: 1.1rem;
+    filter: drop-shadow(0 1px 2px rgba(80, 130, 90, 0.15));
+}
+.lock-song-item .song-name,
+.main-song-item .song-name {
+    flex: 1;
+}
+.lock-song-item .song-state,
+.main-song-item .song-state {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(63, 111, 63, 0.55);
+}
+
 /* Slider de volume premium */
 .lock-volume {
     -webkit-appearance: none;
@@ -445,7 +572,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 6;
+    z-index: 30000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -694,6 +821,14 @@ html.mobile .lock-volume::-webkit-slider-thumb {
 html.mobile .lock-volume::-moz-range-thumb {
     width: 18px;
     height: 18px;
+}
+html.mobile .lock-progress-wrap {
+    width: 100%;
+    max-width: 380px;
+    margin-top: 14px;
+}
+html.mobile .lock-song-list {
+    width: 260px;
 }
 
 /* -- POP-UP : SHEET QUI MONTE DEPUIS LE BAS (iOS-style) -- */
