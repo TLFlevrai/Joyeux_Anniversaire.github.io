@@ -246,28 +246,6 @@ LV.hearts = {
             spawnClickEffect(e.clientX, e.clientY);
         });
 
-        // Bouton "+1 cœur"
-        document.getElementById('heartBtn').addEventListener('click', function(e) {
-            e.preventDefault();
-            const rect = this.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-
-            // Spawn a single heart at button center (matching "+1 cœur")
-            spawnItemAtCursor(cx, cy, ['💚', '💕', '💗']);
-
-            // Also spawn a few more around for visual effect (but don't increment counter extra)
-            for (let i = 0; i < 5; i++) {
-                const angle = (i / 5) * Math.PI * 2 + Math.random() * 0.5;
-                const dist = 40 + Math.random() * 60;
-                const x = cx + Math.cos(angle) * dist;
-                const y = cy + Math.sin(angle) * dist - 20;
-                spawnVisualOnly(x, y, ['💚', '💕', '💗']);
-            }
-
-            LV.confetti.launch(25);
-            this.style.transform = 'scale(0.92)';
-            setTimeout(() => { this.style.transform = ''; }, 150);
-        });
+        // Bouton "+1 cœur" fusionné avec les confettis (bouton "Célébrer" dans confetti.js)
     }
 };

@@ -133,8 +133,11 @@ LV.debug = {
             }
         }
         
-        // Ctrl+V pour activer/dÃ©sactiver le debug mode
-document.addEventListener('keydown', function(e) {
+// Exposition globale : permet d'ouvrir le panneau depuis l'écran de verrouillage
+        window.__toggleDebug = toggleDebugMode;
+
+        // Ctrl+V pour activer/désactiver le debug mode
+        document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 'v') {
                 e.preventDefault();
                 toggleDebugMode();

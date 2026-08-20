@@ -100,16 +100,21 @@ LV.confetti = {
         // API partagée (utilisée par reveal, hearts, lock-screen)
         LV.confetti.launch = launchConfetti;
 
-        // Bouton confettis
-        document.getElementById('confettiBtn').addEventListener('click', function(e) {
+        // Bouton célébrer (confettis + compteur de cœurs, fusionné)
+        document.getElementById('celebrateBtn').addEventListener('click', function(e) {
             e.preventDefault();
+            const rect = this.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
             launchConfetti(100);
+            // spawnItemAtCursor incrémente le compteur (+1 cœur)
+            LV.hearts.spawnItemAtCursor(cx, cy, ['💚', '💕', '💗']);
             // Spawn visual hearts only (don't increment counter multiple times)
             for (let i = 0; i < 8; i++) {
-                setTimeout(() => LV.hearts.spawnVisualOnly(e.clientX, e.clientY, ['🧸', '💚', '💕', '🌺', '💗']), i * 60);
+                setTimeout(() => LV.hearts.spawnVisualOnly(cx, cy, ['🧸', '💚', '💕', '🌺', '💗']), i * 60);
             }
-            // Increment counter once for the confetti button click
-            LV.hearts.addOne();
+            this.style.transform = 'scale(0.92)';
+            setTimeout(() => { this.style.transform = ''; }, 150);
         });
 
         // Confettis au chargement (si le site n'est pas verrouillé)

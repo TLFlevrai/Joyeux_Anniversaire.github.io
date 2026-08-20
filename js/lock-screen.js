@@ -278,14 +278,14 @@ LV.lockScreen = {
 
 // ===== MUSIQUE DU TIMER (9 titres, aléatoire sans répétition) =====
         const LOCK_SONGS = [
-            { src: 'assets/audio/music/Best%20Part%20Instrumental.m4a', name: 'Best Part', emoji: '🎹' },
-            { src: 'assets/audio/music/Who%20Knows%20Instrumental.m4a', name: 'Who Knows', emoji: '🎶' },
-            { src: 'assets/audio/music/MONDE%20Instrumental.m4a', name: 'MONDE', emoji: '🌍' },
-            { src: 'assets/audio/music/ROTOROTO%20-%20REKO.m4a', name: 'REKO', emoji: '🎧' },
+            { src: 'assets/audio/music/Best%20Part%20Instrumental.m4a', name: 'Best Part - INSTRU', emoji: '🎹' },
+            { src: 'assets/audio/music/Who%20Knows%20Instrumental.m4a', name: 'Who Knows - INSTRU', emoji: '🎶' },
+            { src: 'assets/audio/music/MONDE%20Instrumental.m4a', name: 'MONDE - INSTRU', emoji: '🌍' },
+            { src: 'assets/audio/music/ROTOROTO%20-%20REKO.m4a', name: 'Rotoroto - INSTRU', emoji: '🎧' },
             { src: 'assets/audio/music/Rotoroto%20instrumentale.m4a', name: 'Rotoroto', emoji: '🎵' },
-            { src: 'assets/audio/music/Best%20Part.m4a', name: 'Best Part (Original)', emoji: '🎤' },
-            { src: 'assets/audio/music/Who%20Knows.m4a', name: 'Who Knows (Original)', emoji: '🎙️' },
-            { src: 'assets/audio/music/MONDE.m4a', name: 'MONDE (Original)', emoji: '💜' },
+            { src: 'assets/audio/music/Best%20Part.m4a', name: 'Best Part', emoji: '🎤' },
+            { src: 'assets/audio/music/Who%20Knows.m4a', name: 'Who Knows', emoji: '🎙️' },
+            { src: 'assets/audio/music/MONDE.m4a', name: 'MONDE', emoji: '💜' },
             { src: 'assets/audio/music/HATRAIZA_AZA%20AVELA.m4a', name: 'Hatraiza Az Avela', emoji: '🌟' }
         ];
         const lockMusic = document.getElementById('lockMusic');
@@ -401,13 +401,18 @@ LV.lockScreen = {
         lockProgress.addEventListener('pointercancel', lockStopSeek);
 
         // ===== LISTE DES CHANSONS (sélection directe au clic sur le titre) =====
+        const lockSongItems = document.getElementById('lockSongItems');
+        const lockSongSearch = document.getElementById('lockSongSearch');
+        const lockSongEmpty = lockSongList.querySelector('.song-search-empty');
+
         function buildLockSongList() {
-            lockSongList.innerHTML = '';
+            lockSongItems.innerHTML = '';
             LOCK_SONGS.forEach(function(song, i) {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'lock-song-item';
                 btn.setAttribute('role', 'menuitem');
+                btn.dataset.name = song.name.toLowerCase();
                 btn.innerHTML = '<span class="song-emoji">' + song.emoji +
                     '</span><span class="song-name">' + song.name +
                     '</span><span class="song-state"></span>';
@@ -418,12 +423,23 @@ LV.lockScreen = {
                     playLockSong(i);
                     closeLockSongList();
                 });
-                lockSongList.appendChild(btn);
+                lockSongItems.appendChild(btn);
             });
         }
 
+        function filterLockSongList() {
+            const q = lockSongSearch.value.trim().toLowerCase();
+            let shown = 0;
+            lockSongItems.querySelectorAll('.lock-song-item').forEach(function(btn) {
+                const match = !q || btn.dataset.name.indexOf(q) !== -1;
+                btn.style.display = match ? '' : 'none';
+                if (match) shown++;
+            });
+            lockSongEmpty.hidden = shown > 0;
+        }
+
         function updateLockSongList() {
-            lockSongList.querySelectorAll('.lock-song-item').forEach(function(btn, i) {
+            lockSongItems.querySelectorAll('.lock-song-item').forEach(function(btn, i) {
                 const isCurrent = (i === lockCurrentIdx);
                 btn.classList.toggle('active', isCurrent);
                 btn.querySelector('.song-state').textContent = isCurrent ? (lockMusicPlaying ? 'en cours' : 'pause') : '';
@@ -433,8 +449,15 @@ LV.lockScreen = {
         function openLockSongList() {
             lockSongList.classList.add('open');
             lockSongList.setAttribute('aria-hidden', 'false');
+            lockSongSearch.value = '';
+            lockSongEmpty.hidden = true;
+            lockSongItems.querySelectorAll('.lock-song-item').forEach(function(btn) { btn.style.display = ''; });
             updateLockSongList();
+            lockSongSearch.focus();
         }
+
+        lockSongSearch.addEventListener('input', filterLockSongList);
+        lockSongSearch.addEventListener('click', function(e) { e.stopPropagation(); });
 
         function closeLockSongList() {
             lockSongList.classList.remove('open');
@@ -559,6 +582,14 @@ LV.lockScreen = {
         let activeBursts = 0;
         const MAX_ACTIVE_BURSTS = 6;
 
+        // Debug : le panneau s'ouvre aussi via le cadenas du compte à rebours
+        if (lockIcon && window.__toggleDebug) {
+            lockIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                window.__toggleDebug();
+            });
+        }
+
         function spawnLockBurst(x, y) {
             if (activeBursts >= MAX_ACTIVE_BURSTS) return;
             activeBursts++;
@@ -604,7 +635,8 @@ LV.lockScreen = {
                 !e.target.closest('.lock-comments-modal') &&
                 !e.target.closest('.lock-progress-wrap') &&
                 !e.target.closest('.lock-song-list') &&
-                !e.target.closest('.lock-now-playing')) spawnLockBurst(e.clientX, e.clientY);
+                !e.target.closest('.lock-now-playing') &&
+                !e.target.closest('.lock-icon')) spawnLockBurst(e.clientX, e.clientY);
         });
 
         // Bloquer le scroll tant que le site est verrouillé

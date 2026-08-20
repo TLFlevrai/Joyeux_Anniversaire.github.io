@@ -19,13 +19,13 @@ LV.music = {
 
 const MAIN_SONGS = [
             { src: 'assets/audio/music/universfield-calm-piano-background-352250.mp3', name: 'Universfield', emoji: '🎹' },
-            { src: 'assets/audio/music/Who%20Knows%20Instrumental.m4a', name: 'Who Knows', emoji: '🎶' },
-            { src: 'assets/audio/music/MONDE%20Instrumental.m4a', name: 'MONDE', emoji: '🌍' },
-            { src: 'assets/audio/music/ROTOROTO%20-%20REKO.m4a', name: 'REKO', emoji: '🎧' },
+            { src: 'assets/audio/music/Who%20Knows%20Instrumental.m4a', name: 'Who Knows - INSTRU', emoji: '🎶' },
+            { src: 'assets/audio/music/MONDE%20Instrumental.m4a', name: 'MONDE - INSTRU', emoji: '🌍' },
+            { src: 'assets/audio/music/ROTOROTO%20-%20REKO.m4a', name: 'Rotoroto - INSTRU', emoji: '🎧' },
             { src: 'assets/audio/music/Rotoroto%20instrumentale.m4a', name: 'Rotoroto', emoji: '🎵' },
-            { src: 'assets/audio/music/Best%20Part.m4a', name: 'Best Part (Original)', emoji: '🎤' },
-            { src: 'assets/audio/music/Who%20Knows.m4a', name: 'Who Knows (Original)', emoji: '🎙️' },
-            { src: 'assets/audio/music/MONDE.m4a', name: 'MONDE (Original)', emoji: '💜' },
+            { src: 'assets/audio/music/Best%20Part.m4a', name: 'Best Part', emoji: '🎤' },
+            { src: 'assets/audio/music/Who%20Knows.m4a', name: 'Who Knows', emoji: '🎙️' },
+            { src: 'assets/audio/music/MONDE.m4a', name: 'MONDE', emoji: '💜' },
             { src: 'assets/audio/music/HATRAIZA_AZA%20AVELA.m4a', name: 'Hatraiza Az Avela', emoji: '🌟' }
         ];
         let songPool = [];
@@ -144,14 +144,19 @@ const MAIN_SONGS = [
         mainProgress.addEventListener('pointerup', mainStopSeek);
         mainProgress.addEventListener('pointercancel', mainStopSeek);
 
+        const mainSongItems = document.getElementById('mainSongItems');
+        const mainSongSearch = document.getElementById('mainSongSearch');
+        const mainSongEmpty = mainSongList.querySelector('.song-search-empty');
+
         // ===== LISTE DES CHANSONS (sélection directe au clic sur le titre) =====
         function buildSongList() {
-            mainSongList.innerHTML = '';
+            mainSongItems.innerHTML = '';
             MAIN_SONGS.forEach(function(song, i) {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'main-song-item';
                 btn.setAttribute('role', 'menuitem');
+                btn.dataset.name = song.name.toLowerCase();
                 btn.innerHTML = '<span class="song-emoji">' + song.emoji +
                     '</span><span class="song-name">' + song.name +
                     '</span><span class="song-state"></span>';
@@ -163,12 +168,23 @@ const MAIN_SONGS = [
                     playSongFromPool(i);
                     closeSongList();
                 });
-                mainSongList.appendChild(btn);
+                mainSongItems.appendChild(btn);
             });
         }
 
+        function filterSongList() {
+            const q = mainSongSearch.value.trim().toLowerCase();
+            let shown = 0;
+            mainSongItems.querySelectorAll('.main-song-item').forEach(function(btn) {
+                const match = !q || btn.dataset.name.indexOf(q) !== -1;
+                btn.style.display = match ? '' : 'none';
+                if (match) shown++;
+            });
+            mainSongEmpty.hidden = shown > 0;
+        }
+
         function updateSongList() {
-            mainSongList.querySelectorAll('.main-song-item').forEach(function(btn, i) {
+            mainSongItems.querySelectorAll('.main-song-item').forEach(function(btn, i) {
                 const isCurrent = (i === currentIdx);
                 btn.classList.toggle('active', isCurrent);
                 btn.querySelector('.song-state').textContent = isCurrent ? (isPlaying ? 'en cours' : 'pause') : '';
@@ -178,8 +194,15 @@ const MAIN_SONGS = [
         function openSongList() {
             mainSongList.classList.add('open');
             mainSongList.setAttribute('aria-hidden', 'false');
+            mainSongSearch.value = '';
+            mainSongEmpty.hidden = true;
+            mainSongItems.querySelectorAll('.main-song-item').forEach(function(btn) { btn.style.display = ''; });
             updateSongList();
+            mainSongSearch.focus();
         }
+
+        mainSongSearch.addEventListener('input', filterSongList);
+        mainSongSearch.addEventListener('click', function(e) { e.stopPropagation(); });
 
         function closeSongList() {
             mainSongList.classList.remove('open');

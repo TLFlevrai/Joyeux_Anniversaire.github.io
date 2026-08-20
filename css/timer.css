@@ -607,6 +607,43 @@
     color: rgba(63, 111, 63, 0.55);
 }
 
+/* ===== BARRE DE RECHERCHE DANS LA LISTE DES CHANSONS ===== */
+.song-search {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    background: rgba(240, 250, 240, 0.75);
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-family: var(--font-main);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #2f5a2f;
+    outline: none;
+    margin-bottom: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.song-search::placeholder {
+    color: rgba(63, 111, 63, 0.45);
+}
+.song-search:focus {
+    border-color: rgba(123, 191, 126, 0.80);
+    box-shadow: 0 0 0 3px rgba(123, 191, 126, 0.15);
+    background: rgba(250, 253, 250, 0.95);
+}
+.song-list-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.song-search-empty {
+    margin: 4px 0 2px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    color: rgba(63, 111, 63, 0.5);
+}
+
 /* Slider de volume premium (fin et discret) */
 .lock-volume {
     -webkit-appearance: none;

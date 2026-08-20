@@ -79,7 +79,11 @@
                 <div class="lock-progress" id="lockProgress" role="slider" aria-label="Barre de progression" title="Cliquer ou glisser pour se déplacer dans le morceau">
                     <div class="lock-progress-fill" id="lockProgressFill"></div>
                 </div>
-                <div class="lock-song-list" id="lockSongList" role="menu" aria-hidden="true"></div>
+                <div class="lock-song-list" id="lockSongList" role="menu" aria-hidden="true">
+                    <input type="search" class="song-search" id="lockSongSearch" placeholder="Rechercher une musique…" aria-label="Rechercher une musique" />
+                    <div class="song-list-items" id="lockSongItems"></div>
+                    <p class="song-search-empty" hidden>Aucun titre trouvé</p>
+                </div>
             </div>
 
             <!-- Barre de contrôles du timer : commentaires + musique -->
@@ -128,7 +132,11 @@
             <button class="music-skip-btn" id="musicSkipBtn" aria-label="Musique suivante" title="Musique suivante">⏭️</button>
             <input type="range" class="lock-volume main-volume" id="mainVolume" min="0" max="100" value="100" aria-label="Volume musique" title="Volume" />
         </div>
-        <div class="main-song-list" id="mainSongList" role="menu" aria-hidden="true"></div>
+        <div class="main-song-list" id="mainSongList" role="menu" aria-hidden="true">
+            <input type="search" class="song-search" id="mainSongSearch" placeholder="Rechercher une musique…" aria-label="Rechercher une musique" />
+            <div class="song-list-items" id="mainSongItems"></div>
+            <p class="song-search-empty" hidden>Aucun titre trouvé</p>
+        </div>
     </div>
 
     <!-- Musique de l'écran de verrouillage (9 titres, choix aléatoire sans répétition) -->
@@ -189,8 +197,7 @@
         <!-- Boutons interactifs -->
         <div class="btn-group">
             <button class="btn" id="revealBtn">💌 Lire le message secret</button>
-            <button class="btn btn-pink" id="confettiBtn">🎉 Lancer des confettis !</button>
-            <button class="btn btn-outline" id="heartBtn">🧸 +1 cœur</button>
+            <button class="btn btn-pink" id="celebrateBtn">💖 Célébrer</button>
             <!-- NOUVEAU BOUTON PHOTOS -->
             <button class="btn btn-outline" id="photosBtn">📸 Photos</button>
         </div>
