@@ -541,7 +541,7 @@
     bottom: calc(100% + 10px);
     left: 50%;
     transform: translateX(-50%);
-    width: 400px;
+    width: 403px;
     display: none;
     flex-direction: column;
     gap: 4px;
@@ -568,7 +568,7 @@
     padding: 8px;
     border-left: 1px solid rgba(99, 114, 104, 0.18);
     padding-left: 16px;
-    min-width: 360px;
+    min-width: 363px;
 }
 .song-list-items > div {
     display: flex;
@@ -967,7 +967,7 @@ html.mobile .lock-progress-wrap {
     margin-bottom: 2px;
 }
 html.mobile .lock-song-list {
-    width: 260px;
+    width: 263px;
 }
 
 /* -- POP-UP : SHEET QUI MONTE DEPUIS LE BAS (iOS-style) -- */

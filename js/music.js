@@ -197,14 +197,20 @@ const MAIN_SONGS = [
         }
         function currentSong() { return currentIdx !== null ? MAIN_SONGS[currentIdx] : null; }
 
+        function getArtist(song) {
+            // Heuristique simple : si INSTRU -> Instrumental, sinon on garde l'emoji comme signature
+            if (song.name.includes('INSTRU')) return 'Instrumental';
+            // Pour les versions vocales, on peut extraire un "artiste" du nom
+            return song.emoji + ' Artiste';
+        }
+
         function updateMiniPlayer(lockedOverride) {
             const song = currentSong();
             if (!song) { miniPlayer.hidden = true; return; }
-            // La barre appartient à la carte : masquée derrière le verrouillage
             const locked = (lockedOverride !== undefined) ? lockedOverride : !!window.__pageLocked;
             miniPlayer.hidden = locked;
             miniTitle.textContent = song.name;
-            miniCover.textContent = song.emoji;
+            miniArtist.textContent = getArtist(song);
             miniPlayBtn.textContent = isPlaying ? '⏸️' : '▶️';
             miniPlayBtn.classList.toggle('playing', isPlaying);
         }
@@ -212,8 +218,8 @@ const MAIN_SONGS = [
         function updateMobilePlayer() {
             const song = currentSong();
             if (!song) return;
-            mpCover.textContent = song.emoji;
             mpName.textContent = song.name;
+            mpArtist.textContent = getArtist(song);
             mpPlayBtn.textContent = isPlaying ? '❚❚' : '▶';
             mpPlayBtn.classList.toggle('playing', isPlaying);
             mpList.querySelectorAll('.mp-song').forEach(function(btn) {
@@ -265,9 +271,13 @@ const MAIN_SONGS = [
                     btn.type = 'button';
                     btn.className = 'mp-song';
                     btn.dataset.idx = item.i;
+                    const artist = getArtist(item.song);
                     btn.innerHTML = '<span class="mp-song-state"></span>' +
                         '<span class="mp-song-emoji">' + item.song.emoji + '</span>' +
+                        '<div class="mp-song-info">' +
                         '<span class="mp-song-name">' + item.song.name + '</span>' +
+                        '<span class="mp-song-artist">' + artist + '</span>' +
+                        '</div>' +
                         '<span class="mp-song-dur">—</span>';
                     btn.addEventListener('click', function(e) {
                         e.stopPropagation();
@@ -277,7 +287,6 @@ const MAIN_SONGS = [
                         playSongFromPool(item.i);
                     });
                     container.appendChild(btn);
-                    // Durée affichée dès que les métadonnées arrivent
                     setTimeout(function() {
                         fetchDuration(item.i, function(d) {
                             if (d > 0) btn.querySelector('.mp-song-dur').textContent = fmtTime(d);
