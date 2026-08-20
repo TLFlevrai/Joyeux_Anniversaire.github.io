@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="css/timer.css" />
     <!-- CSS presets graphiques (indicateur + legacy / normal / max_graph) -->
     <link rel="stylesheet" href="css/performance.css" />
+    <link rel="stylesheet" href="css/mobile-player.css" />
 </head>
 <body>
 
@@ -137,6 +138,48 @@
             <div class="song-list-items" id="mainSongItems"></div>
             <p class="song-search-empty" hidden>Aucun titre trouvé</p>
         </div>
+    </div>
+
+    <!-- Lecteur mobile type Spotify/Deezer : barre discrète en bas -->
+    <div class="mini-player" id="miniPlayer" hidden>
+        <div class="mini-progress-line" id="miniProgressLine"></div>
+        <button class="mini-player-main" id="miniPlayerMain" aria-label="Ouvrir le lecteur musique">
+            <span class="mini-cover" id="miniCover">🎵</span>
+            <span class="mini-info">
+                <span class="mini-title" id="miniTitle">Musique</span>
+                <span class="mini-sub" id="miniSub">Célébration</span>
+            </span>
+        </button>
+        <button class="mini-play" id="miniPlay" aria-label="Lecture / Pause">▶️</button>
+    </div>
+
+    <!-- Lecteur plein écran mobile (tap sur la barre) -->
+    <div class="mobile-player" id="mobilePlayer" aria-hidden="true">
+        <div class="mp-head">
+            <div class="mp-title">Lecteur musique</div>
+            <button class="mp-close" id="mpClose" aria-label="Fermer le lecteur">✕</button>
+        </div>
+        <div class="mp-track">
+            <div class="mp-cover" id="mpCover">🎵</div>
+            <div class="mp-name" id="mpName">—</div>
+            <div class="mp-artist" id="mpArtist">🎂 Célébration</div>
+        </div>
+        <div class="mp-progress-wrap">
+            <div class="mp-progress" id="mpProgress" role="slider" aria-label="Barre de progression" title="Cliquer ou glisser pour se déplacer dans le morceau">
+                <div class="mp-progress-fill" id="mpProgressFill"></div>
+            </div>
+            <div class="mp-times">
+                <span id="mpTimeCur">0:00</span>
+                <span id="mpTimeDur">0:00</span>
+            </div>
+        </div>
+        <div class="mp-controls">
+            <button class="mp-ctrl" id="mpPrev" aria-label="Titre précédent">↶</button>
+            <button class="mp-ctrl mp-play" id="mpPlay" aria-label="Lecture / Pause">❚❚</button>
+            <button class="mp-ctrl" id="mpNext" aria-label="Titre suivant">↷</button>
+        </div>
+        <div class="mp-list-title">Liste des musiques</div>
+        <div class="mp-list" id="mpList"></div>
     </div>
 
     <!-- Musique de l'écran de verrouillage (9 titres, choix aléatoire sans répétition) -->

@@ -108,6 +108,7 @@ LV.lockScreen = {
             unlocked = true;
             window.__pageLocked = false;
             document.body.style.overflow = '';
+            window.dispatchEvent(new CustomEvent('lockchange', { detail: { locked: false } }));
 
             // Son de transition
             const transSfx = document.getElementById('transitionSfx');
@@ -166,11 +167,13 @@ LV.lockScreen = {
             // Le calque d'effets doit couvrir le verrouillage (20010) mais rester
             // sous les confettis (9999) sur la carte : z-index dynamique
             if (LV.fx && LV.fx.setLayer) LV.fx.setLayer(visible ? '20010' : '9998');
+            // Informe les modules (mini-player mobile, etc.) de l'état verrouillé
+            window.dispatchEvent(new CustomEvent('lockchange', { detail: { locked: !!visible } }));
         }
 
         function showMainView() {
-            setLockScreenVisible(false);
             window.__pageLocked = false;
+            setLockScreenVisible(false);
             document.body.style.overflow = '';
             // Reprendre le fond flottant (mis en pause derrière le verrouillage)
             if (LV.floatingBg && LV.floatingBg.setPaused) LV.floatingBg.setPaused(false);
@@ -181,8 +184,8 @@ LV.lockScreen = {
         function showLockView() {
             const bg = document.getElementById('bgMusic');
             if (bg && !bg.paused) bg.pause();
-            setLockScreenVisible(true);
             window.__pageLocked = true;
+            setLockScreenVisible(true);
             document.body.style.overflow = 'hidden';
             // Fond figé derrière l'écran opaque (perf) ; relancé par showMainView
             if (LV.floatingBg && LV.floatingBg.setPaused) LV.floatingBg.setPaused(true);
@@ -289,12 +292,22 @@ LV.lockScreen = {
             { src: 'assets/audio/music/Best%20Part%20Instrumental.m4a', name: 'Best Part - INSTRU', emoji: '🎹' },
             { src: 'assets/audio/music/Who%20Knows%20Instrumental.m4a', name: 'Who Knows - INSTRU', emoji: '🎶' },
             { src: 'assets/audio/music/MONDE%20Instrumental.m4a', name: 'MONDE - INSTRU', emoji: '🌍' },
-            { src: 'assets/audio/music/ROTOROTO%20-%20REKO.m4a', name: 'Rotoroto - INSTRU', emoji: '🎧' },
-            { src: 'assets/audio/music/Rotoroto%20instrumentale.m4a', name: 'Rotoroto', emoji: '🎵' },
+            { src: 'assets/audio/music/ROTOROTO%20-%20REKO.m4a', name: 'Rotoroto', emoji: '🎧' },
+            { src: 'assets/audio/music/Rotoroto%20instrumental.m4a', name: 'Rotoroto - INSTRU', emoji: '🎵' },
             { src: 'assets/audio/music/Best%20Part.m4a', name: 'Best Part', emoji: '🎤' },
             { src: 'assets/audio/music/Who%20Knows.m4a', name: 'Who Knows', emoji: '🎙️' },
             { src: 'assets/audio/music/MONDE.m4a', name: 'MONDE', emoji: '💜' },
-            { src: 'assets/audio/music/HATRAIZA_AZA%20AVELA.m4a', name: 'Hatraiza Az Avela', emoji: '🌟' }
+            { src: 'assets/audio/music/HATRAIZA_AZA%20AVELA.m4a', name: 'Hatraiza Az Avela', emoji: '🌟' },
+            { src: 'assets/audio/music/Elle%20Pleut.m4a', name: 'Elle Pleut', emoji: '💧' },
+            { src: 'assets/audio/music/Elle%20pleut%20instrumental.m4a', name: 'Elle Pleut - INSTRU', emoji: '🎼' },
+            { src: 'assets/audio/music/Always%20Instrumental.m4a', name: 'Always - INSTRU', emoji: '🎶' },
+            { src: 'assets/audio/music/Always.m4a', name: 'Always', emoji: '🎵' },
+            { src: 'assets/audio/music/Congratulations%20Instrumental.m4a', name: 'Congratulations - INSTRU', emoji: '🎊' },
+            { src: 'assets/audio/music/Congratulations.m4a', name: 'Congratulations', emoji: '🎉' },
+            { src: 'assets/audio/music/Emily%27s%20Song%20Instrumental.m4a', name: 'Emily\'s Song - INSTRU', emoji: '🎶' },
+            { src: 'assets/audio/music/Emily%27s%20Song.m4a', name: 'Emily\'s Song', emoji: '🎤' },
+            { src: 'assets/audio/music/Superpowers%20Instrumental.m4a', name: 'Superpowers - INSTRU', emoji: '⚡' },
+            { src: 'assets/audio/music/Superpowers.m4a', name: 'Superpowers', emoji: '🦸' }
         ];
         const lockMusic = document.getElementById('lockMusic');
         const lockMusicBtn = document.getElementById('lockMusicBtn');
