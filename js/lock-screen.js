@@ -132,6 +132,7 @@ LV.lockScreen = {
 
             lockScreen.classList.add('lock-screen--hidden');
             lockScreen.setAttribute('aria-hidden', 'true');
+            if (LV.fx && LV.fx.setLayer) LV.fx.setLayer('9998');
             setTimeout(() => {
                 lockScreen.style.display = 'none';
                 if (window.__startMusic) window.__startMusic();
@@ -162,12 +163,17 @@ LV.lockScreen = {
                 lockScreen.classList.add('lock-screen--hidden');
                 lockScreen.setAttribute('aria-hidden', 'true');
             }
+            // Le calque d'effets doit couvrir le verrouillage (20010) mais rester
+            // sous les confettis (9999) sur la carte : z-index dynamique
+            if (LV.fx && LV.fx.setLayer) LV.fx.setLayer(visible ? '20010' : '9998');
         }
 
         function showMainView() {
             setLockScreenVisible(false);
             window.__pageLocked = false;
             document.body.style.overflow = '';
+            // Reprendre le fond flottant (mis en pause derrière le verrouillage)
+            if (LV.floatingBg && LV.floatingBg.setPaused) LV.floatingBg.setPaused(false);
             stopLockMusic();
             if (window.__startMusic) window.__startMusic();
         }
@@ -178,6 +184,8 @@ LV.lockScreen = {
             setLockScreenVisible(true);
             window.__pageLocked = true;
             document.body.style.overflow = 'hidden';
+            // Fond figé derrière l'écran opaque (perf) ; relancé par showMainView
+            if (LV.floatingBg && LV.floatingBg.setPaused) LV.floatingBg.setPaused(true);
             startLockMusic();
         }
 
@@ -551,10 +559,17 @@ LV.lockScreen = {
         function openComments() {
             lockCommentsModal.classList.add('open');
             lockCommentsModal.setAttribute('aria-hidden', 'false');
+            // Fond figé pendant la modale : plus de re-blur plein écran (perf)
+            if (LV.floatingBg && LV.floatingBg.setPaused) LV.floatingBg.setPaused(true);
         }
         function closeComments() {
             lockCommentsModal.classList.remove('open');
             lockCommentsModal.setAttribute('aria-hidden', 'true');
+            // On ne reprend le fond que si la carte est visible (sinon il reste
+            // volontairement en pause derrière le verrouillage)
+            if (!window.__pageLocked && LV.floatingBg && LV.floatingBg.setPaused) {
+                LV.floatingBg.setPaused(false);
+            }
         }
         lockCommentsBtn.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -579,8 +594,6 @@ LV.lockScreen = {
         });
 
         // ===== EFFET DE CLIC (particules + emojis, différent du menu principal) =====
-        let activeBursts = 0;
-        const MAX_ACTIVE_BURSTS = 6;
 
         // Debug : le panneau s'ouvre aussi via le cadenas du compte à rebours
         if (lockIcon && window.__toggleDebug) {
@@ -591,41 +604,9 @@ LV.lockScreen = {
         }
 
         function spawnLockBurst(x, y) {
-            if (activeBursts >= MAX_ACTIVE_BURSTS) return;
-            activeBursts++;
-            const colors = ['#ff8aa8', '#7bbf7e', '#ffd166', '#9bcb9e', '#ffb6c9', '#b58fd6'];
-            const burstEmojis = ['🎵', '🎶', '🎹', '🎼', '💚', '💕', '🧸', '🌺'];
-            const burstDensity = window.__graphDensity || 1;
-            const count = Math.max(5, Math.round((IS_MOBILE ? 10 : 14) * burstDensity));
-            for (let i = 0; i < count; i++) {
-                const el = document.createElement('span');
-                const angle = (i / count) * Math.PI * 2 + Math.random() * 0.7;
-                const dist = (IS_MOBILE ? 34 : 45) + Math.random() * (IS_MOBILE ? 55 : 75);
-                const dx = Math.cos(angle) * dist;
-                const dy = Math.sin(angle) * dist;
-                if (Math.random() < 0.35) {
-                    el.textContent = burstEmojis[Math.floor(Math.random() * burstEmojis.length)];
-                    el.style.fontSize = (1 + Math.random() * 1.1) + 'rem';
-                } else {
-                    el.style.width = (5 + Math.random() * 7) + 'px';
-                    el.style.height = el.style.width;
-                    el.style.borderRadius = '50%';
-                    el.style.background = colors[Math.floor(Math.random() * colors.length)];
-                }
-                el.style.position = 'fixed';
-                el.style.left = (x - 8) + 'px';
-                el.style.top = (y - 8) + 'px';
-                el.style.pointerEvents = 'none';
-                el.style.zIndex = '5';
-                el.style.transition = 'transform 0.7s cubic-bezier(.15,.85,.35,1), opacity 0.7s ease';
-                lockScreen.appendChild(el);
-                requestAnimationFrame(() => {
-                    el.style.transform = `translate(${dx}px, ${dy}px) rotate(${(Math.random() - 0.5) * 180}deg) scale(${0.5 + Math.random() * 0.9})`;
-                    el.style.opacity = '0';
-                });
-                setTimeout(() => el.remove(), 750);
-            }
-            setTimeout(() => activeBursts--, 760);
+            // Limite douce : le moteur canvas a son propre plafond de particules
+            if (LV.fx.active() >= 90) return;
+            LV.fx.emitLockBurst(x, y);
         }
 
         lockScreen.addEventListener('click', function(e) {
@@ -645,6 +626,10 @@ LV.lockScreen = {
         document.querySelectorAll('.floating-item').forEach(el => {
             el.style.animationPlayState = 'paused';
         });
+
+        // Le site démarre verrouillé : le calque d'effets passe au-dessus
+        // de l'écran de verrouillage
+        if (LV.fx && LV.fx.setLayer) LV.fx.setLayer('20010');
 
         updateCountdown();
         setInterval(updateCountdown, 1000);

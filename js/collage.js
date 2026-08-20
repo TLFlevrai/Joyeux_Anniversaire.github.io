@@ -25,7 +25,8 @@ const counter = document.getElementById('photoCounter');
 const closeBtn = document.getElementById('closeModalBtn');
 const photosBtn = document.getElementById('photosBtn');
 
-// Créer les éléments <img> pour chaque photo
+// Créer les éléments <img> pour chaque photo (une seule fois : la modale
+// re-randomise les rotations au lieu de re-décoder les images à chaque ouverture)
 function renderCollage() {
     container.innerHTML = '';
     photoUrls.forEach((url, index) => {
@@ -36,18 +37,21 @@ function renderCollage() {
         img.decoding = 'async';
         img.loading = 'lazy';
         img.dataset.index = index;
-        // Rotation et décalage aléatoires pour l'effet collage (mais gérés via CSS)
+        container.appendChild(img);
+    });
+}
+
+// Rotation et décalage aléatoires pour l'effet collage (frais à chaque ouverture)
+function randomizeCollage() {
+    container.querySelectorAll('.collage-photo').forEach(img => {
         const rot = (Math.random() - 0.5) * 12; // -6deg à +6deg
         const offsetX = (Math.random() - 0.5) * 30; // -15px à +15px
         const offsetY = (Math.random() - 0.5) * 30;
         img.style.setProperty('--rot', rot + 'deg');
         img.style.setProperty('--offsetX', offsetX + 'px');
         img.style.setProperty('--offsetY', offsetY + 'px');
-        // Appliquer un style inline pour la rotation et décalage de base
         img.style.transform = `rotate(${rot}) translate(${offsetX}, ${offsetY}) scale(0.9)`;
-        container.appendChild(img);
     });
-    updateCarousel(0);
 }
 
 // Mettre à jour l'affichage en fonction de l'index courant
@@ -103,11 +107,15 @@ function handleTouchEnd(e) {
 function openModal() {
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
-    renderCollage(); // on recharge pour avoir un affichage frais
+    randomizeCollage(); // collage frais (rotations) sans re-décoder les images
+    updateCarousel(0);
+    // Fond figé derrière l'overlay : plus de re-blur plein écran (perf)
+    if (LV.floatingBg && LV.floatingBg.setPaused) LV.floatingBg.setPaused(true);
 }
 function closeModal() {
     modal.classList.remove('active');
     document.body.style.overflow = '';
+    if (LV.floatingBg && LV.floatingBg.setPaused) LV.floatingBg.setPaused(false);
 }
 
 // Événements
@@ -134,3 +142,4 @@ document.addEventListener('keydown', function(e) {
 });
 
 // Initialisation silencieuse
+renderCollage();

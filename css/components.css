@@ -63,17 +63,17 @@ h1 .heart-icon {
     box-shadow: 0 8px 24px rgba(90, 140, 90, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.70);
 }
 
-/* ===== MESSAGE ===== */
+/* ===== MESSAGE =====
+   Idem carte : le blur de fond était re-calculé à chaque frame ;
+   le rendu verre est conservé par le dégradé translucide. */
 .message-box {
-    background: linear-gradient(160deg, rgba(235, 248, 235, 0.72), rgba(250, 240, 247, 0.72));
+    background: linear-gradient(160deg, rgba(235, 248, 235, 0.88), rgba(250, 240, 247, 0.88));
     border-radius: 36px;
     padding: 32px 26px;
     margin: 20px 0 24px;
     border: 1px solid rgba(255, 255, 255, 0.90);
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(12px) saturate(1.05);
-    -webkit-backdrop-filter: blur(12px) saturate(1.05);
     box-shadow: inset 0 2px 12px rgba(255, 255, 255, 0.60), 0 24px 60px rgba(90, 140, 90, 0.12);
 }
 .message-box::before {

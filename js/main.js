@@ -3,7 +3,9 @@
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Ordre important : lock-screen (verrouillage) avant music (autoplay)
+    // Ordre important : fx (canvas d'effets) avant hearts/lock-screen,
+    // lock-screen (verrouillage) avant music (autoplay)
+    LV.fx.init();
     LV.title.init();
     LV.debug.init();
     LV.floatingBg.init();

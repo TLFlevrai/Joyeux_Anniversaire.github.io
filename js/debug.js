@@ -13,7 +13,7 @@ LV.debug = {
             st.id = 'debug-styles';
             st.textContent = `
                 #debug-panel {
-                    position: fixed; top: 10px; left: 10px; z-index: 10001; pointer-events: none; display: none;
+                    position: fixed; top: 10px; left: 10px; z-index: 40000; pointer-events: none; display: none;
                     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 12px; line-height: 1.6;
                     background: rgba(13, 26, 18, 0.95); color: #e6f2e8; padding: 13px 15px; border-radius: 14px;
                     min-width: 268px; box-shadow: 0 10px 34px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.07);
@@ -29,6 +29,7 @@ LV.debug = {
                 #debug-panel .dbg-label { color: #8fb99a; font-size: 11px; }
                 #debug-panel .dbg-value { font-weight: 600; color: #f2fbf4; font-variant-numeric: tabular-nums; }
                 #debug-panel .dbg-chip { font-weight: 700; font-size: 10px; letter-spacing: 1px; padding: 2px 9px; border-radius: 30px; color: #fff; }
+                #debug-panel .dbg-chip.legacy-plus { background: #4a5a52; }
                 #debug-panel .dbg-chip.legacy { background: #5d7268; }
                 #debug-panel .dbg-chip.normal { background: linear-gradient(135deg, #4c9a55, #2f7a3c); }
                 #debug-panel .dbg-chip.max_graph { background: linear-gradient(135deg, #e06d96, #b58fd6); }
@@ -190,11 +191,11 @@ LV.debug = {
                 left: ${e.clientX + 10}px;
                 top: ${e.clientY - 20}px;
                 background: rgba(0,0,0,0.8);
-                color: #fff;
+color: #fff;
                 padding: 4px 8px;
                 border-radius: 4px;
                 font-size: 12px;
-                z-index: 10000;
+                z-index: 40000;
                 pointer-events: none;
                 animation: fadeOut 1s forwards;
             `;

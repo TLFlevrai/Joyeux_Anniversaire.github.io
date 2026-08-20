@@ -1,6 +1,7 @@
 // ============================================================
 //  DÉTECTION DE PUISSANCE & PRESETS GRAPHIQUES
-//  Presets : legacy (compatibilité) | normal (équilibré) | max_graph (ultime)
+//  Presets : legacy-plus (ultra-léger) | legacy (compatibilité)
+//            | normal (équilibré) | max_graph (ultime)
 //  L'appareil est évalué automatiquement (cœurs, RAM, DPR, écran).
 //  L'utilisateur peut forcer un preset via l'indicateur en haut à droite.
 // ============================================================
@@ -33,18 +34,22 @@ LV.performance = {
 
         if (score >= 7) return 'max_graph';
         if (score >= (isMobile ? 4 : 3)) return 'normal';
-        return 'legacy';
+        if (score >= 2) return 'legacy';
+        return 'legacy-plus';
     },
 
     apply: function(preset) {
         this.preset = preset;
-        this.density = preset === 'legacy' ? 0.5 : (preset === 'max_graph' ? 1.5 : 1);
+        const DENSITIES = { 'legacy-plus': 0.35, legacy: 0.5, normal: 1, max_graph: 1.5 };
+        this.density = DENSITIES[preset] || 1;
         const html = document.documentElement;
-        html.classList.remove('preset-legacy', 'preset-normal', 'preset-max_graph');
+        html.classList.remove('preset-legacy-plus', 'preset-legacy', 'preset-normal', 'preset-max_graph');
         html.classList.add('preset-' + preset);
         window.__graphPreset = preset;
         window.__graphDensity = this.density;
         this.updateIndicator();
+        // Les moteurs (fx, confetti) ajustent DPR / plafonds en temps réel
+        window.dispatchEvent(new CustomEvent('presetchange'));
     },
 
     setPreset: function(preset) {
@@ -56,10 +61,12 @@ LV.performance = {
     init: function() {
         let saved = null;
         try { saved = localStorage.getItem('graphPreset'); } catch (e) {}
-        const isKnown = saved === 'legacy' || saved === 'normal' || saved === 'max_graph';
+        const isKnown = saved === 'legacy-plus' || saved === 'legacy' || saved === 'normal' || saved === 'max_graph';
         const preset = isKnown ? saved : this.detect();
-        this.apply(preset);
+        // L'indicateur doit exister AVANT apply() : c'est lui qui affiche
+        // le preset réel (détecté ou sauvegardé), sinon le badge reste "NORM"
         this.buildIndicator();
+        this.apply(preset);
     },
 
     // ===== Indicateur discret en haut à droite + menu de choix =====
@@ -71,6 +78,7 @@ LV.performance = {
             '⚙ <span class="preset-badge-label" id="presetBadgeLabel">NORM</span></button>' +
             '<div class="preset-menu" id="presetMenu" role="menu" aria-hidden="true">' +
             '<div class="preset-menu-title">Qualité graphique</div>' +
+            '<button class="preset-option" data-preset="legacy-plus">🪶 Legacy+ <em>compatibilité ultime</em></button>' +
             '<button class="preset-option" data-preset="legacy">🕊️ Legacy <em>compatibilité maximale</em></button>' +
             '<button class="preset-option" data-preset="normal">🌿 Normal <em>équilibre idéal</em></button>' +
             '<button class="preset-option" data-preset="max_graph">✨ Max Graph <em>beauté maximale</em></button>' +
@@ -110,7 +118,7 @@ LV.performance = {
     updateIndicator: function() {
         const label = document.getElementById('presetBadgeLabel');
         if (label) {
-            const map = { legacy: 'LITE', normal: 'NORM', max_graph: 'MAX' };
+            const map = { 'legacy-plus': 'LITE+', legacy: 'LITE', normal: 'NORM', max_graph: 'MAX' };
             label.textContent = map[this.preset] || 'NORM';
         }
         const menu = document.getElementById('presetMenu');

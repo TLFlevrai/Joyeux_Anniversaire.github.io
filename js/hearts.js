@@ -1,5 +1,8 @@
 // ============================================================
-//  CŒURS AU CLIC : compteur + apparition d'emojis + bouton +1
+//  CŒURS AU CLIC : compteur + effets d'emojis (canvas GPU)
+//  Les effets visuels (pop, explosion, fontaine, anneau, onde)
+//  sont rendus par LV.fx sur un unique canvas, au lieu de
+//  dizaines d'éléments DOM animés + timers.
 // ============================================================
 window.LV = window.LV || {};
 
@@ -8,9 +11,16 @@ LV.hearts = {
         const heartCountEl = document.getElementById('heartCount');
         let heartCount = 0;
 
-        // Limite les éléments spawnés au clic (perf : évite la saturation du DOM)
-        let activeSpawns = 0;
-        const MAX_ACTIVE_SPAWNS = 40;
+        // Limite souple des particules du calque cœurs, selon le preset :
+        // le moteur fx a son propre plafond (120) ; ici on bride plus tôt
+        // en mode léger pour garder des effets réactifs et économes
+        function fxMax() {
+            const p = window.__graphPreset || 'normal';
+            if (p === 'legacy-plus') return 30;
+            if (p === 'legacy') return 45;
+            if (p === 'max_graph') return 90;
+            return 60;
+        }
 
         // Incrémente le compteur de cœurs (avec petite animation "pop")
         function addOne() {
@@ -20,72 +30,27 @@ LV.hearts = {
             setTimeout(() => { heartCountEl.style.transform = 'scale(1)'; }, 200);
         }
 
+        // Pop unique : un emoji bondit puis s'élève (compteur +1 inclus)
         function spawnItemAtCursor(x, y, items = ['💚', '💕', '💗', '🌺', '🧸']) {
-            // Incrémenter le compteur à chaque clic (même si le spawn visuel est limité)
             addOne();
-
-            if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
-            activeSpawns++;
-            const el = document.createElement('span');
-            el.textContent = items[Math.floor(Math.random() * items.length)];
-            el.style.position = 'fixed';
-            el.style.left = (x - 16 + (Math.random() - 0.5) * 40) + 'px';
-            el.style.top = (y - 16 + (Math.random() - 0.5) * 40) + 'px';
-            el.style.fontSize = (1.6 + Math.random() * 2.2) + 'rem';
-            el.style.pointerEvents = 'none';
-            el.style.zIndex = '9998';
-            el.style.transition = 'all 1.2s cubic-bezier(.34, 1.56, .64, 1)';
-            el.style.opacity = '1';
-            el.style.transform = 'scale(0.3) rotate(-20deg)';
-            document.body.appendChild(el);
-
-            requestAnimationFrame(() => {
-                el.style.transform = 'scale(1.4) rotate(10deg) translateY(-80px)';
-                el.style.opacity = '0.8';
-            });
-
-            setTimeout(() => {
-                el.style.transform = 'scale(0.6) rotate(30deg) translateY(-160px)';
-                el.style.opacity = '0';
-            }, 200);
-
-            setTimeout(() => {
-                el.remove();
-                activeSpawns--;
-            }, 1400);
+            if (LV.fx.active() >= fxMax()) return;
+            LV.fx.emitPop(
+                x + (Math.random() - 0.5) * 40,
+                y + (Math.random() - 0.5) * 40,
+                items[Math.floor(Math.random() * items.length)],
+                (1.6 + Math.random() * 2.2) * 16
+            );
         }
 
         // Spawn visuel uniquement (n'incrémente pas le compteur)
         function spawnVisualOnly(x, y, items = ['💚', '💕', '💗']) {
-            if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
-            activeSpawns++;
-            const el = document.createElement('span');
-            el.textContent = items[Math.floor(Math.random() * items.length)];
-            el.style.position = 'fixed';
-            el.style.left = (x - 16 + (Math.random() - 0.5) * 40) + 'px';
-            el.style.top = (y - 16 + (Math.random() - 0.5) * 40) + 'px';
-            el.style.fontSize = (1.6 + Math.random() * 2.2) + 'rem';
-            el.style.pointerEvents = 'none';
-            el.style.zIndex = '9998';
-            el.style.transition = 'all 1.2s cubic-bezier(.34, 1.56, .64, 1)';
-            el.style.opacity = '1';
-            el.style.transform = 'scale(0.3) rotate(-20deg)';
-            document.body.appendChild(el);
-
-            requestAnimationFrame(() => {
-                el.style.transform = 'scale(1.4) rotate(10deg) translateY(-80px)';
-                el.style.opacity = '0.8';
-            });
-
-            setTimeout(() => {
-                el.style.transform = 'scale(0.6) rotate(30deg) translateY(-160px)';
-                el.style.opacity = '0';
-            }, 200);
-
-            setTimeout(() => {
-                el.remove();
-                activeSpawns--;
-            }, 1400);
+            if (LV.fx.active() >= fxMax()) return;
+            LV.fx.emitPop(
+                x + (Math.random() - 0.5) * 40,
+                y + (Math.random() - 0.5) * 40,
+                items[Math.floor(Math.random() * items.length)],
+                (1.6 + Math.random() * 2.2) * 16
+            );
         }
 
         // ============================================================
@@ -93,116 +58,30 @@ LV.hearts = {
         // ============================================================
         const CLICK_ITEMS = ['💚', '💕', '💗', '🌺', '🧸'];
 
-        function makeParticle(x, y, size) {
-            const el = document.createElement('span');
-            el.textContent = CLICK_ITEMS[Math.floor(Math.random() * CLICK_ITEMS.length)];
-            el.style.position = 'fixed';
-            el.style.left = (x - size * 8) + 'px';
-            el.style.top = (y - size * 8) + 'px';
-            el.style.fontSize = size + 'rem';
-            el.style.pointerEvents = 'none';
-            el.style.zIndex = '9998';
-            el.style.opacity = '1';
-            return el;
-        }
-
-        // 1. Pop unique (effet d'origine) : un emoji bondit puis s'élève
-        //    (spawnItemAtCursor existant, compteur +1 inclus)
+        // 1. Pop unique (effet d'origine) : emoji qui monte (compteur +1 inclus)
 
         // 2. Explosion : emojis projetés dans toutes les directions
         function spawnBurstEffect(x, y) {
-            if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
-            activeSpawns++;
-            const n = Math.max(4, Math.round(9 * (window.__graphDensity || 1)));
-            for (let i = 0; i < n; i++) {
-                const el = makeParticle(x, y, 1.1 + Math.random() * 1.3);
-                const angle = (i / n) * Math.PI * 2 + Math.random() * 0.6;
-                const dist = 55 + Math.random() * 85;
-                el.style.transition = 'transform 0.8s cubic-bezier(.17,.89,.32,1.15), opacity 0.8s ease';
-                document.body.appendChild(el);
-                requestAnimationFrame(() => {
-                    el.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) rotate(${(Math.random() - 0.5) * 180}deg) scale(${0.5 + Math.random() * 0.8})`;
-                    el.style.opacity = '0';
-                });
-                setTimeout(() => el.remove(), 830);
-            }
-            setTimeout(() => activeSpawns--, 840);
+            if (LV.fx.active() >= fxMax()) return;
+            LV.fx.emitBurst(x, y, CLICK_ITEMS);
         }
 
         // 3. Fontaine : petits emojis qui jaillissent vers le haut en cascade
         function spawnFountainEffect(x, y) {
-            if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
-            activeSpawns++;
-            const n = Math.max(3, Math.round(7 * (window.__graphDensity || 1)));
-            for (let i = 0; i < n; i++) {
-                setTimeout(() => {
-                    const el = makeParticle(x + (Math.random() - 0.5) * 26, y, 0.8 + Math.random() * 0.7);
-                    el.style.transition = 'transform 1.3s cubic-bezier(.25,.46,.45,.94), opacity 1.3s ease';
-                    document.body.appendChild(el);
-                    requestAnimationFrame(() => {
-                        el.style.transform = `translate(${(Math.random() - 0.5) * 120}px, ${-55 - Math.random() * 140}px) rotate(${(Math.random() - 0.5) * 140}deg) scale(${0.35 + Math.random() * 0.55})`;
-                        el.style.opacity = '0';
-                    });
-                    setTimeout(() => el.remove(), 1350);
-                }, i * 70);
-            }
-            setTimeout(() => activeSpawns--, 950);
+            if (LV.fx.active() >= fxMax()) return;
+            LV.fx.emitFountain(x, y, CLICK_ITEMS);
         }
 
         // 4. Anneau : cœurs éclatent en cercle autour du curseur
         function spawnRingEffect(x, y) {
-            if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
-            activeSpawns++;
-            const n = Math.max(5, Math.round(10 * (window.__graphDensity || 1)));
-            for (let i = 0; i < n; i++) {
-                const el = makeParticle(x, y, 0.85);
-                const angle = (i / n) * Math.PI * 2;
-                const radius = 70 + Math.random() * 30;
-                el.style.transition = 'transform 0.7s cubic-bezier(.17,.89,.32,1.12), opacity 0.7s ease';
-                document.body.appendChild(el);
-                requestAnimationFrame(() => {
-                    el.style.transform = `translate(${Math.cos(angle) * radius}px, ${Math.sin(angle) * radius}px) rotate(${(Math.random() - 0.5) * 90}deg)`;
-                    el.style.opacity = '0';
-                });
-                setTimeout(() => el.remove(), 750);
-            }
-            setTimeout(() => activeSpawns--, 760);
+            if (LV.fx.active() >= fxMax()) return;
+            LV.fx.emitRingEffect(x, y, CLICK_ITEMS);
         }
 
         // 5. Onde : anneaux d'eau + cœur central qui monte
         function spawnRippleEffect(x, y) {
-            if (activeSpawns >= MAX_ACTIVE_SPAWNS) return;
-            activeSpawns++;
-            const ringColors = ['#ff8aa8', '#7bbf7e', '#ffd166'];
-            for (let i = 0; i < 2; i++) {
-                const ring = document.createElement('div');
-                ring.style.position = 'fixed';
-                ring.style.left = (x - 10) + 'px';
-                ring.style.top = (y - 10) + 'px';
-                ring.style.width = '20px';
-                ring.style.height = '20px';
-                ring.style.borderRadius = '50%';
-                ring.style.border = '2px solid ' + ringColors[i];
-                ring.style.pointerEvents = 'none';
-                ring.style.zIndex = '9997';
-                ring.style.transition = 'transform 0.85s cubic-bezier(.22,1,.36,1), opacity 0.85s ease';
-                document.body.appendChild(ring);
-                requestAnimationFrame(() => {
-                    ring.style.transform = 'scale(' + (4.5 + i * 2.5) + ')';
-                    ring.style.opacity = '0';
-                });
-                setTimeout(() => ring.remove(), 880);
-            }
-            const heart = makeParticle(x, y, 1.6);
-            heart.textContent = '💗';
-            heart.style.transition = 'transform 0.6s cubic-bezier(.34,1.56,.64,1), opacity 0.6s ease';
-            document.body.appendChild(heart);
-            requestAnimationFrame(() => {
-                heart.style.transform = 'translateY(-48px) scale(1.5)';
-                heart.style.opacity = '0';
-            });
-            setTimeout(() => heart.remove(), 650);
-            setTimeout(() => activeSpawns--, 890);
+            if (LV.fx.active() >= fxMax()) return;
+            LV.fx.emitRipple(x, y);
         }
 
         // Pioche aléatoire parmi les styles (compteur +1 à chaque clic)
@@ -235,6 +114,7 @@ LV.hearts = {
             if (window.__pageLocked) return;
             if (e.target.closest('.btn') || e.target.closest('.card') || e.target.closest('.music-btn') ||
                 e.target.closest('.main-music-ctrl') || e.target.closest('.main-msg-zone')) return;
+            if (document.querySelector('.modal-overlay.active')) return;
             spawnClickEffect(e.clientX, e.clientY);
             if (Math.random() < 0.15) LV.confetti.launch(12);
         });

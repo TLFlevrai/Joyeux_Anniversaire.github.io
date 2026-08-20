@@ -22,5 +22,13 @@ LV.floatingBg = {
             el.style.opacity = 0.35 + Math.random() * 0.3;
             container.appendChild(el);
         }
+    // Helper partagé : fige/relance le fond flottant (utilisé pendant
+        // les modales pour éviter les re-blur plein écran invisibles)
+        LV.floatingBg.setPaused = function(paused) {
+            const items = container.querySelectorAll('.floating-item');
+            for (let i = 0; i < items.length; i++) {
+                items[i].style.animationPlayState = paused ? 'paused' : '';
+            }
+        };
     }
 };

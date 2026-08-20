@@ -41,11 +41,13 @@ body::after {
     background: radial-gradient(ellipse at center, transparent 55%, rgba(80, 120, 90, 0.07) 100%);
 }
 
-/* ===== CARTE : GLASSMORPHISM ===== */
+/* ===== CARTE : GLASSMORPHISM =====
+   Le blur plein écran était re-calculé à chaque frame (les emojis
+   flottants s'animent derrière la carte) : la surface est quasi
+   opaque, le rendu verre est conservé par le dégradé + liseré +
+   ombres, sans coût de re-floutage permanent. */
 .card {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.82) 100%);
-    backdrop-filter: blur(18px) saturate(1.15);
-    -webkit-backdrop-filter: blur(18px) saturate(1.15);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.90) 100%);
     border: 1.5px solid rgba(255, 255, 255, 0.80);
     box-shadow:
         0 40px 90px rgba(80, 130, 90, 0.18),
