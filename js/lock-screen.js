@@ -236,24 +236,49 @@ LV.lockScreen = {
 
         // Mot du moment : message aléatoire sous les emojis (avec emoji assorti)
         const LOCK_MESSAGES = [
-            { emoji: '🧸', text: 'Savais-tu ? Les nounours ont été inventés en 1902… et ils fêtent déjà 124 ans cette année !' },
             { emoji: '🎂', text: "Savais-tu ? Le gâteau d'anniversaire le plus ancien a plus de 4000 ans : les Grecs le dédiaient à Artémis !" },
-            { emoji: '🕯️', text: "Savais-tu ? Les bougies sur les gâteaux viennent des Grecs, qui pensaient qu'elles portaient les vœux jusqu'aux dieux." },
+            { emoji: '🎂', text: 'Savais-tu ? Le mot « anniversaire » vient du latin anniversarius, qui signifie « qui revient chaque année ».' },
             { emoji: '🎹', text: 'Le pianiste attend le 28 août pour jouer "Joyeux anniversaire". Il répète encore. Il revient le 28 août à 00:00:01.' },
+            { emoji: '🎹', text: 'La playlist d\'anniversaire est en préparation. Le piano a demandé à être prévenu avant de jouer.' },
+            { emoji: '🎹', text: 'Savais-tu ? Le piano possède 88 touches : 52 blanches et 36 noires.' },
+            { emoji: '🎵', text: 'Savais-tu ? Le mot "musique" vient du grec "mousikē", l\'art des Muses.' },
+            { emoji: '🎶', text: 'Chaque seconde qui passe nous rapproche un peu plus de notre destination : le 28 août.' },
+            { emoji: '🎶', text: 'Une chanson peut durer trois minutes. Il faudrait donc 3523 chansons avant d\'arriver au 28 août.' },
+            { emoji: '🕯️', text: "Savais-tu ? Les bougies sur les gâteaux viennent des Grecs, qui pensaient qu'elles portaient les vœux jusqu'aux dieux." },
+            { emoji: '🕯️', text: 'Les bougies attendent leur moment. Le gâteau aussi. Et le moment a un nom : 28 août.' },
+            { emoji: '🕯️', text: 'Même les bougies savent quelle date approche.' },
+            { emoji: '🌌', text: 'Tous les éléments composant l\'univers, les galaxies, les amas de poussière, les astres, s\'éloignent les uns des autres inexorablement... un peu comme nous.' },
+            { emoji: '🌙', text: 'La Lune fait le tour de la Terre. La Terre fait le tour du Soleil. Et toi, tu attends juste le 28 août.' },
             { emoji: '🌺', text: "Savais-tu ? Chaque fleur d'hibiscus ne vit qu'un jour : elle s'ouvre le matin et se fane le soir… mais une nouvelle repousse dès le lendemain." },
             { emoji: '🌺', text: 'Savais-tu ? Il existe plus de 200 espèces d\'hibiscus dans le monde… mais aucune n\'est assez belle pour toi.' },
             { emoji: '🌺', text: 'Savais-tu ? Il existe plus de 200 espèces d\'hibiscus dans le monde…' },
-            { emoji: '🎹', text: 'Savais-tu ? Le piano possède 88 touches : 52 blanches et 36 noires.' },
-            { emoji: '🎵', text: 'Savais-tu ? Le mot "musique" vient du grec "mousikē", l\'art des Muses.' },
             { emoji: '📅', text: 'Savais-tu ? Le 28 août est la 240ᵉ journée de l\'année — un chiffre qui se lit "2-4-0", comme "2 fois 120", soit 240 raisons de fêter ton anniversaire.' },
-            { emoji: '🎹', text: 'La playlist d\'anniversaire est en préparation. Le piano a demandé à être prévenu avant de jouer.' },
-            { emoji: '⏳', text: 'Chaque seconde passée est une seconde de moins avant le 28 août. Le compte à rebours est officiellement lancé. Enfin, presque.' },
-            { emoji: '🕯️', text: 'Même les bougies savent quelle date approche.' },
-            { emoji: '🌌', text: 'Tous les éléments composant l\'univers, les galaxies, les amas de poussière, les astres, s\'éloignent les uns des autres inexorablement... un peu comme nous.' },
-            { emoji: '⭐', text: 'Et quand deux étoiles sont trop proches et que l\'une d\'entre elles explose, il arrive qu\'elle condamne l\'autre étoile à errer sans trajectoire dans l\'univers. On les appelle les étoiles vagabondes.' },
+            { emoji: '📢', text: 'Communiqué officiel : merci de ne pas oublier le 28 août. Merci.' },
+            { emoji: '👀', text: 'Tu regardes probablement ce message en te demandant pourquoi il existe. Excellente question.' },
+            { emoji: '💀', text: 'Update #23 : Work in Progress… or Work without Progress? 💀' },
+            { emoji: '💻', text: 'Pour une expérience optimale, veuillez lancer le site avec un ordinateur.' },
+            { emoji: '🚨', text: 'ALERTE : le 28 août se rapproche dangereusement.' },
             { emoji: '🦇', text: 'Batman est passé par là.' },
-            { emoji: '💻', text: 'Pour une expérience optimale, veuillez lancer le site avec un ordinateur.' }
+            { emoji: '⏳', text: 'Chaque seconde passée est une seconde de moins avant le 28 août. Le compte à rebours est officiellement lancé. Enfin, presque.' },
+            { emoji: '⏳', text: 'Chaque seconde qui passe nous rapproche un peu plus de notre destination : le 28 août.' },
+            { emoji: '⭐', text: 'Et quand deux étoiles sont trop proches et que l\'une d\'entre elles explose, il arrive qu\'elle condamne l\'autre étoile à errer sans trajectoire dans l\'univers. On les appelle les étoiles vagabondes.' },
+            { emoji: '🧸', text: 'Savais-tu ? Les nounours ont été inventés en 1902… et ils fêtent déjà 124 ans cette année !' }
         ];
+
+        // Calcul du nombre de chansons de 3 minutes avant le 28 août 00:00:01
+        (function() {
+            const now = Date.now();
+            const diffMs = UNLOCK_DATE - now;
+            if (diffMs > 0) {
+                const totalMinutes = Math.floor(diffMs / 60000);
+                const songsCount = Math.floor(totalMinutes / 3);
+                LOCK_MESSAGES.push({
+                    emoji: '🎶',
+                    text: 'Une chanson peut durer trois minutes. Il faudrait donc ' + songsCount + ' chansons avant d\'arriver au 28 août.'
+                });
+            }
+        })();
+
         let currentPick = LOCK_MESSAGES[Math.floor(Math.random() * LOCK_MESSAGES.length)];
         const mainMessage = document.getElementById('mainMessage');
         const mainMessageZone = document.getElementById('mainMessageZone');
@@ -428,24 +453,61 @@ LV.lockScreen = {
 
         function buildLockSongList() {
             lockSongItems.innerHTML = '';
+            // Séparer voix (sans INSTRU) et instrumentales (avec INSTRU)
+            const vocals = [];
+            const instrumentals = [];
             LOCK_SONGS.forEach(function(song, i) {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'lock-song-item';
-                btn.setAttribute('role', 'menuitem');
-                btn.dataset.name = song.name.toLowerCase();
-                btn.innerHTML = '<span class="song-emoji">' + song.emoji +
-                    '</span><span class="song-name">' + song.name +
-                    '</span><span class="song-state"></span>';
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    var sfx = document.getElementById('clickMusicSfx');
-                    if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
-                    playLockSong(i);
-                    closeLockSongList();
-                });
-                lockSongItems.appendChild(btn);
+                if (song.name.includes('INSTRU')) instrumentals.push({ song, i });
+                else vocals.push({ song, i });
             });
+            vocals.sort((a, b) => a.song.name.localeCompare(b.song.name));
+            instrumentals.sort((a, b) => a.song.name.localeCompare(b.song.name));
+
+            function renderGroup(group, container) {
+                group.forEach(function(item) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'lock-song-item';
+                    btn.setAttribute('role', 'menuitem');
+                    btn.dataset.name = item.song.name.toLowerCase();
+                    btn.innerHTML = '<span class="song-emoji">' + item.song.emoji +
+                        '</span><span class="song-name">' + item.song.name +
+                        '</span><span class="song-state"></span>';
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var sfx = document.getElementById('clickMusicSfx');
+                        if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
+                        playLockSong(item.i);
+                        closeLockSongList();
+                    });
+                    container.appendChild(btn);
+                });
+            }
+
+            // Deux colonnes : voix à gauche, instrumentales à droite
+            lockSongItems.style.display = 'grid';
+            lockSongItems.style.gridTemplateColumns = '1fr 1fr';
+            lockSongItems.style.gap = '8px';
+            lockSongItems.style.maxHeight = '180px';
+            lockSongItems.style.overflowY = 'auto';
+            lockSongItems.style.padding = '4px';
+            lockSongItems.style.borderLeft = '1px solid rgba(99, 114, 104, 0.18)';
+            lockSongItems.style.paddingLeft = '12px';
+
+            const leftCol = document.createElement('div');
+            leftCol.style.display = 'flex';
+            leftCol.style.flexDirection = 'column';
+            leftCol.style.gap = '4px';
+            const rightCol = document.createElement('div');
+            rightCol.style.display = 'flex';
+            rightCol.style.flexDirection = 'column';
+            rightCol.style.gap = '4px';
+
+            renderGroup(vocals, leftCol);
+            renderGroup(instrumentals, rightCol);
+
+            lockSongItems.appendChild(leftCol);
+            lockSongItems.appendChild(rightCol);
         }
 
         function filterLockSongList() {

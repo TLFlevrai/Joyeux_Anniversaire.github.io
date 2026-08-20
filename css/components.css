@@ -63,6 +63,16 @@ h1 .heart-icon {
     box-shadow: 0 8px 24px rgba(90, 140, 90, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.70);
 }
 
+/* ===== MESSAGE D'ANNIVERSAIRE : animation "le monde" / "mon monde" ===== */
+.world-word {
+    display: inline-block;
+    transform-origin: center center;
+    will-change: transform, opacity;
+}
+.birthday-line {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 /* ===== MESSAGE =====
    Idem carte : le blur de fond était re-calculé à chaque frame ;
    le rendu verre est conservé par le dégradé translucide. */

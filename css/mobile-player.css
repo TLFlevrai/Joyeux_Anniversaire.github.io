@@ -274,14 +274,23 @@ html.mobile .mobile-player.open {
     height: 1px;
     background: rgba(63, 111, 63, 0.18);
 }
+/* ===== LISTE DES MUSIQUES (grille 2 colonnes : voix / instrumentales) ===== */
 .mp-list {
     flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-height: 100%;
     overflow-y: auto;
+    padding: 0 8px 16px;
+    border-left: 1px solid rgba(99, 114, 104, 0.18);
+    padding-left: 16px;
+    -webkit-overflow-scrolling: touch;
+}
+.mp-list > div {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding-bottom: 10px;
-    -webkit-overflow-scrolling: touch;
+    gap: 10px;
 }
 .mp-song {
     display: flex;

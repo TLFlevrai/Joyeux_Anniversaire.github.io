@@ -216,8 +216,8 @@ const MAIN_SONGS = [
             mpName.textContent = song.name;
             mpPlayBtn.textContent = isPlaying ? '❚❚' : '▶';
             mpPlayBtn.classList.toggle('playing', isPlaying);
-            mpList.querySelectorAll('.mp-song').forEach(function(btn, i) {
-                const isCurrent = (i === currentIdx);
+            mpList.querySelectorAll('.mp-song').forEach(function(btn) {
+                const isCurrent = (parseInt(btn.dataset.idx, 10) === currentIdx);
                 btn.classList.toggle('current', isCurrent);
                 btn.querySelector('.mp-song-state').textContent = isCurrent ? (isPlaying ? '▶' : '❚❚') : '';
             });
@@ -249,29 +249,68 @@ const MAIN_SONGS = [
 
         function buildMobileList() {
             mpList.innerHTML = '';
+            // Séparer voix (sans INSTRU) et instrumentales (avec INSTRU)
+            const vocals = [];
+            const instrumentals = [];
             MAIN_SONGS.forEach(function(song, i) {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'mp-song';
-                btn.innerHTML = '<span class="mp-song-state"></span>' +
-                    '<span class="mp-song-emoji">' + song.emoji + '</span>' +
-                    '<span class="mp-song-name">' + song.name + '</span>' +
-                    '<span class="mp-song-dur">—</span>';
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    var sfx = document.getElementById('clickMusicSfx');
-                    if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
-                    hasUserInteracted = true;
-                    playSongFromPool(i);
-                });
-                mpList.appendChild(btn);
-                // Durée affichée dès que les métadonnées arrivent
-                setTimeout(function() {
-                    fetchDuration(i, function(d) {
-                        if (d > 0) btn.querySelector('.mp-song-dur').textContent = fmtTime(d);
-                    });
-                }, i * 80);
+                if (song.name.includes('INSTRU')) instrumentals.push({ song, i });
+                else vocals.push({ song, i });
             });
+            vocals.sort((a, b) => a.song.name.localeCompare(b.song.name));
+            instrumentals.sort((a, b) => a.song.name.localeCompare(b.song.name));
+
+            function renderGroup(group, container) {
+                group.forEach(function(item) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'mp-song';
+                    btn.dataset.idx = item.i;
+                    btn.innerHTML = '<span class="mp-song-state"></span>' +
+                        '<span class="mp-song-emoji">' + item.song.emoji + '</span>' +
+                        '<span class="mp-song-name">' + item.song.name + '</span>' +
+                        '<span class="mp-song-dur">—</span>';
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var sfx = document.getElementById('clickMusicSfx');
+                        if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
+                        hasUserInteracted = true;
+                        playSongFromPool(item.i);
+                    });
+                    container.appendChild(btn);
+                    // Durée affichée dès que les métadonnées arrivent
+                    setTimeout(function() {
+                        fetchDuration(item.i, function(d) {
+                            if (d > 0) btn.querySelector('.mp-song-dur').textContent = fmtTime(d);
+                        });
+                    }, Math.random() * 100);
+                });
+            }
+
+            // Deux colonnes : voix à gauche, instrumentales à droite
+            mpList.style.display = 'grid';
+            mpList.style.gridTemplateColumns = '1fr 1fr';
+            mpList.style.gap = '8px';
+            mpList.style.maxHeight = '100%';
+            mpList.style.overflowY = 'auto';
+            mpList.style.padding = '0 4px 10px';
+            mpList.style.borderLeft = '1px solid rgba(99, 114, 104, 0.18)';
+            mpList.style.paddingLeft = '12px';
+
+            const leftCol = document.createElement('div');
+            leftCol.style.display = 'flex';
+            leftCol.style.flexDirection = 'column';
+            leftCol.style.gap = '8px';
+            const rightCol = document.createElement('div');
+            rightCol.style.display = 'flex';
+            rightCol.style.flexDirection = 'column';
+            rightCol.style.gap = '8px';
+
+            renderGroup(vocals, leftCol);
+            renderGroup(instrumentals, rightCol);
+
+            mpList.appendChild(leftCol);
+            mpList.appendChild(rightCol);
+
             updateMobilePlayer();
         }
 
@@ -384,25 +423,63 @@ const MAIN_SONGS = [
         // ===== LISTE DES CHANSONS (sélection directe au clic sur le titre) =====
         function buildSongList() {
             mainSongItems.innerHTML = '';
+            // Séparer voix (sans INSTRU) et instrumentales (avec INSTRU)
+            const vocals = [];
+            const instrumentals = [];
             MAIN_SONGS.forEach(function(song, i) {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'main-song-item';
-                btn.setAttribute('role', 'menuitem');
-                btn.dataset.name = song.name.toLowerCase();
-                btn.innerHTML = '<span class="song-emoji">' + song.emoji +
-                    '</span><span class="song-name">' + song.name +
-                    '</span><span class="song-state"></span>';
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    var sfx = document.getElementById('clickMusicSfx');
-                    if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
-                    hasUserInteracted = true;
-                    playSongFromPool(i);
-                    closeSongList();
-                });
-                mainSongItems.appendChild(btn);
+                if (song.name.includes('INSTRU')) instrumentals.push({ song, i });
+                else vocals.push({ song, i });
             });
+            // Trier chaque groupe alphabétiquement par nom
+            vocals.sort((a, b) => a.song.name.localeCompare(b.song.name));
+            instrumentals.sort((a, b) => a.song.name.localeCompare(b.song.name));
+
+            function renderGroup(group, container) {
+                group.forEach(function(item) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'main-song-item';
+                    btn.setAttribute('role', 'menuitem');
+                    btn.dataset.name = item.song.name.toLowerCase();
+                    btn.innerHTML = '<span class="song-emoji">' + item.song.emoji +
+                        '</span><span class="song-name">' + item.song.name +
+                        '</span><span class="song-state"></span>';
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var sfx = document.getElementById('clickMusicSfx');
+                        if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
+                        hasUserInteracted = true;
+                        playSongFromPool(item.i);
+                        closeSongList();
+                    });
+                    container.appendChild(btn);
+                });
+            }
+
+            // Deux colonnes : voix à gauche, instrumentales à droite
+            mainSongItems.style.display = 'grid';
+            mainSongItems.style.gridTemplateColumns = '1fr 1fr';
+            mainSongItems.style.gap = '8px';
+            mainSongItems.style.maxHeight = '180px'; // ~4 items visibles
+            mainSongItems.style.overflowY = 'auto';
+            mainSongItems.style.padding = '4px';
+            mainSongItems.style.borderLeft = '1px solid rgba(99, 114, 104, 0.18)';
+            mainSongItems.style.paddingLeft = '12px';
+
+            const leftCol = document.createElement('div');
+            leftCol.style.display = 'flex';
+            leftCol.style.flexDirection = 'column';
+            leftCol.style.gap = '4px';
+            const rightCol = document.createElement('div');
+            rightCol.style.display = 'flex';
+            rightCol.style.flexDirection = 'column';
+            rightCol.style.gap = '4px';
+
+            renderGroup(vocals, leftCol);
+            renderGroup(instrumentals, rightCol);
+
+            mainSongItems.appendChild(leftCol);
+            mainSongItems.appendChild(rightCol);
         }
 
         function filterSongList() {
