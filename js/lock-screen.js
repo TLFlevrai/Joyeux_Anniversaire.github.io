@@ -332,7 +332,9 @@ LV.lockScreen = {
             { src: 'assets/audio/music/Emily%27s%20Song%20Instrumental.m4a', name: 'Emily\'s Song - INSTRU', emoji: '🎶' },
             { src: 'assets/audio/music/Emily%27s%20Song.m4a', name: 'Emily\'s Song', emoji: '🎤' },
             { src: 'assets/audio/music/Superpowers%20Instrumental.m4a', name: 'Superpowers - INSTRU', emoji: '⚡' },
-            { src: 'assets/audio/music/Superpowers.m4a', name: 'Superpowers', emoji: '🦸' }
+            { src: 'assets/audio/music/Superpowers.m4a', name: 'Superpowers', emoji: '🦸' },
+            { src: 'assets/audio/music/NY%20ANARANAO.webm', name: 'NY ANARANAO', emoji: '🗽' },
+            { src: 'assets/audio/music/TSARA%20KOKOA.webm', name: 'TSARA KOKOA', emoji: '🍫' }
         ];
         const lockMusic = document.getElementById('lockMusic');
         const lockMusicBtn = document.getElementById('lockMusicBtn');

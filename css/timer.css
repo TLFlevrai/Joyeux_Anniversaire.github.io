@@ -534,14 +534,17 @@
     50%      { transform: scaleY(1); }
 }
 
-/* ===== LISTE DES CHANSONS (sélection directe) ===== */
+/* ===== LISTE DES CHANSONS (sélection directe) =====
+   Largeur dynamique : basée sur le label le plus long (24 car. = "Congratulations - INSTRU")
+   ~8.5px/car (0.85rem) + emoji(18px) + gap(10px) + padding(24px) + state(50px) ≈ 340px min
+   clamp(350px, 28vw, 480px) pour s'adapter sans wrap. */
 .lock-song-list,
 .main-song-list {
     position: absolute;
     bottom: calc(100% + 10px);
     left: 50%;
     transform: translateX(-50%);
-    width: 403px;
+    width: clamp(360px, 28vw, 480px);
     display: none;
     flex-direction: column;
     gap: 4px;
@@ -568,7 +571,7 @@
     padding: 8px;
     border-left: 1px solid rgba(99, 114, 104, 0.18);
     padding-left: 16px;
-    min-width: 363px;
+    min-width: 320px;
 }
 .song-list-items > div {
     display: flex;
@@ -967,7 +970,7 @@ html.mobile .lock-progress-wrap {
     margin-bottom: 2px;
 }
 html.mobile .lock-song-list {
-    width: 263px;
+    width: clamp(280px, 85vw, 340px);
 }
 
 /* -- POP-UP : SHEET QUI MONTE DEPUIS LE BAS (iOS-style) -- */

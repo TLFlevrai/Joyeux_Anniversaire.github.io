@@ -22,21 +22,13 @@ const MAIN_SONGS = [
             { src: 'assets/audio/music/Who%20Knows%20Instrumental.m4a', name: 'Who Knows - INSTRU', emoji: '🎶' },
             { src: 'assets/audio/music/MONDE%20Instrumental.m4a', name: 'MONDE - INSTRU', emoji: '🌍' },
             { src: 'assets/audio/music/ROTOROTO%20-%20REKO.m4a', name: 'Rotoroto', emoji: '🎧' },
-            { src: 'assets/audio/music/Rotoroto%20instrumental.m4a', name: 'Rotoroto - INSTRU', emoji: '🎵' },
+            { src: 'assets/audio/music/Rotoroto%20instrumentale.m4a', name: 'Rotoroto - INSTRU', emoji: '🎵' },
             { src: 'assets/audio/music/Best%20Part.m4a', name: 'Best Part', emoji: '🎤' },
             { src: 'assets/audio/music/Who%20Knows.m4a', name: 'Who Knows', emoji: '🎙️' },
             { src: 'assets/audio/music/MONDE.m4a', name: 'MONDE', emoji: '💜' },
             { src: 'assets/audio/music/HATRAIZA_AZA%20AVELA.m4a', name: 'Hatraiza Az Avela', emoji: '🌟' },
-            { src: 'assets/audio/music/Elle%20Pleut.m4a', name: 'Elle Pleut', emoji: '💧' },
-            { src: 'assets/audio/music/Elle%20pleut%20instrumental.m4a', name: 'Elle Pleut - INSTRU', emoji: '🎼' },
-            { src: 'assets/audio/music/Always.m4a', name: 'Always', emoji: '🎵' },
-            { src: 'assets/audio/music/Always%20Instrumental.m4a', name: 'Always - INSTRU', emoji: '🎶' },
-            { src: 'assets/audio/music/Congratulations.m4a', name: 'Congratulations', emoji: '🎉' },
-            { src: 'assets/audio/music/Congratulations%20Instrumental.m4a', name: 'Congratulations - INSTRU', emoji: '🎊' },
-            { src: 'assets/audio/music/Emily%27s%20Song.m4a', name: 'Emily\'s Song', emoji: '🎤' },
-            { src: 'assets/audio/music/Emily%27s%20Song%20Instrumental.m4a', name: 'Emily\'s Song - INSTRU', emoji: '🎶' },
-            { src: 'assets/audio/music/Superpowers.m4a', name: 'Superpowers', emoji: '🦸' },
-            { src: 'assets/audio/music/Superpowers%20Instrumental.m4a', name: 'Superpowers - INSTRU', emoji: '⚡' }
+            { src: 'assets/audio/music/NY%20ANARANAO.webm', name: 'NY ANARANAO', emoji: '🗽' },
+            { src: 'assets/audio/music/TSARA%20KOKOA.webm', name: 'TSARA KOKOA', emoji: '🍫' }
         ];
         let songPool = [];
 
@@ -195,18 +187,17 @@ const MAIN_SONGS = [
             const s = Math.floor(t % 60);
             return m + ':' + (s < 10 ? '0' : '') + s;
         }
-        function currentSong() { return currentIdx !== null ? MAIN_SONGS[currentIdx] : null; }
-
         function getArtist(song) {
-            // Heuristique simple : si INSTRU -> Instrumental, sinon on garde l'emoji comme signature
             if (song.name.includes('INSTRU')) return 'Instrumental';
-            // Pour les versions vocales, on peut extraire un "artiste" du nom
             return song.emoji + ' Artiste';
         }
+
+        function currentSong() { return currentIdx !== null ? MAIN_SONGS[currentIdx] : null; }
 
         function updateMiniPlayer(lockedOverride) {
             const song = currentSong();
             if (!song) { miniPlayer.hidden = true; return; }
+            // La barre appartient à la carte : masquée derrière le verrouillage
             const locked = (lockedOverride !== undefined) ? lockedOverride : !!window.__pageLocked;
             miniPlayer.hidden = locked;
             miniTitle.textContent = song.name;
@@ -255,71 +246,29 @@ const MAIN_SONGS = [
 
         function buildMobileList() {
             mpList.innerHTML = '';
-            // Séparer voix (sans INSTRU) et instrumentales (avec INSTRU)
-            const vocals = [];
-            const instrumentals = [];
             MAIN_SONGS.forEach(function(song, i) {
-                if (song.name.includes('INSTRU')) instrumentals.push({ song, i });
-                else vocals.push({ song, i });
-            });
-            vocals.sort((a, b) => a.song.name.localeCompare(b.song.name));
-            instrumentals.sort((a, b) => a.song.name.localeCompare(b.song.name));
-
-            function renderGroup(group, container) {
-                group.forEach(function(item) {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'mp-song';
-                    btn.dataset.idx = item.i;
-                    const artist = getArtist(item.song);
-                    btn.innerHTML = '<span class="mp-song-state"></span>' +
-                        '<span class="mp-song-emoji">' + item.song.emoji + '</span>' +
-                        '<div class="mp-song-info">' +
-                        '<span class="mp-song-name">' + item.song.name + '</span>' +
-                        '<span class="mp-song-artist">' + artist + '</span>' +
-                        '</div>' +
-                        '<span class="mp-song-dur">—</span>';
-                    btn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        var sfx = document.getElementById('clickMusicSfx');
-                        if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
-                        hasUserInteracted = true;
-                        playSongFromPool(item.i);
-                    });
-                    container.appendChild(btn);
-                    setTimeout(function() {
-                        fetchDuration(item.i, function(d) {
-                            if (d > 0) btn.querySelector('.mp-song-dur').textContent = fmtTime(d);
-                        });
-                    }, Math.random() * 100);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'mp-song';
+                btn.innerHTML = '<span class="mp-song-state"></span>' +
+                    '<span class="mp-song-emoji">' + song.emoji + '</span>' +
+                    '<span class="mp-song-name">' + song.name + '</span>' +
+                    '<span class="mp-song-dur">—</span>';
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var sfx = document.getElementById('clickMusicSfx');
+                    if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
+                    hasUserInteracted = true;
+                    playSongFromPool(i);
                 });
-            }
-
-            // Deux colonnes : voix à gauche, instrumentales à droite
-            mpList.style.display = 'grid';
-            mpList.style.gridTemplateColumns = '1fr 1fr';
-            mpList.style.gap = '8px';
-            mpList.style.maxHeight = '100%';
-            mpList.style.overflowY = 'auto';
-            mpList.style.padding = '0 4px 10px';
-            mpList.style.borderLeft = '1px solid rgba(99, 114, 104, 0.18)';
-            mpList.style.paddingLeft = '12px';
-
-            const leftCol = document.createElement('div');
-            leftCol.style.display = 'flex';
-            leftCol.style.flexDirection = 'column';
-            leftCol.style.gap = '8px';
-            const rightCol = document.createElement('div');
-            rightCol.style.display = 'flex';
-            rightCol.style.flexDirection = 'column';
-            rightCol.style.gap = '8px';
-
-            renderGroup(vocals, leftCol);
-            renderGroup(instrumentals, rightCol);
-
-            mpList.appendChild(leftCol);
-            mpList.appendChild(rightCol);
-
+                mpList.appendChild(btn);
+                // Durée affichée dès que les métadonnées arrivent
+                setTimeout(function() {
+                    fetchDuration(i, function(d) {
+                        if (d > 0) btn.querySelector('.mp-song-dur').textContent = fmtTime(d);
+                    });
+                }, i * 80);
+            });
             updateMobilePlayer();
         }
 
@@ -432,63 +381,25 @@ const MAIN_SONGS = [
         // ===== LISTE DES CHANSONS (sélection directe au clic sur le titre) =====
         function buildSongList() {
             mainSongItems.innerHTML = '';
-            // Séparer voix (sans INSTRU) et instrumentales (avec INSTRU)
-            const vocals = [];
-            const instrumentals = [];
             MAIN_SONGS.forEach(function(song, i) {
-                if (song.name.includes('INSTRU')) instrumentals.push({ song, i });
-                else vocals.push({ song, i });
-            });
-            // Trier chaque groupe alphabétiquement par nom
-            vocals.sort((a, b) => a.song.name.localeCompare(b.song.name));
-            instrumentals.sort((a, b) => a.song.name.localeCompare(b.song.name));
-
-            function renderGroup(group, container) {
-                group.forEach(function(item) {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'main-song-item';
-                    btn.setAttribute('role', 'menuitem');
-                    btn.dataset.name = item.song.name.toLowerCase();
-                    btn.innerHTML = '<span class="song-emoji">' + item.song.emoji +
-                        '</span><span class="song-name">' + item.song.name +
-                        '</span><span class="song-state"></span>';
-                    btn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        var sfx = document.getElementById('clickMusicSfx');
-                        if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
-                        hasUserInteracted = true;
-                        playSongFromPool(item.i);
-                        closeSongList();
-                    });
-                    container.appendChild(btn);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'main-song-item';
+                btn.setAttribute('role', 'menuitem');
+                btn.dataset.name = song.name.toLowerCase();
+                btn.innerHTML = '<span class="song-emoji">' + song.emoji +
+                    '</span><span class="song-name">' + song.name +
+                    '</span><span class="song-state"></span>';
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var sfx = document.getElementById('clickMusicSfx');
+                    if (sfx) { sfx.currentTime = 0; sfx.play().catch(function() {}); }
+                    hasUserInteracted = true;
+                    playSongFromPool(i);
+                    closeSongList();
                 });
-            }
-
-            // Deux colonnes : voix à gauche, instrumentales à droite
-            mainSongItems.style.display = 'grid';
-            mainSongItems.style.gridTemplateColumns = '1fr 1fr';
-            mainSongItems.style.gap = '8px';
-            mainSongItems.style.maxHeight = '180px'; // ~4 items visibles
-            mainSongItems.style.overflowY = 'auto';
-            mainSongItems.style.padding = '4px';
-            mainSongItems.style.borderLeft = '1px solid rgba(99, 114, 104, 0.18)';
-            mainSongItems.style.paddingLeft = '12px';
-
-            const leftCol = document.createElement('div');
-            leftCol.style.display = 'flex';
-            leftCol.style.flexDirection = 'column';
-            leftCol.style.gap = '4px';
-            const rightCol = document.createElement('div');
-            rightCol.style.display = 'flex';
-            rightCol.style.flexDirection = 'column';
-            rightCol.style.gap = '4px';
-
-            renderGroup(vocals, leftCol);
-            renderGroup(instrumentals, rightCol);
-
-            mainSongItems.appendChild(leftCol);
-            mainSongItems.appendChild(rightCol);
+                mainSongItems.appendChild(btn);
+            });
         }
 
         function filterSongList() {
